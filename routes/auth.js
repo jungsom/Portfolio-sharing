@@ -11,7 +11,7 @@ router.post("/join", async (req, res, next) => {
   try {
     const { email, name, password, description } = req.body;
 
-    if (!email || !name || !password || !description) {
+    if (!email || !name || !password) {
       res.status(400).json({
         error: "입력되지 않은 내용이 있습니다.",
         data: null,
