@@ -15,12 +15,6 @@ router.get("/:id", async (req, res) => {
   res.json(users);
 });
 
-router.get("/ex/:id", async (req, res) => {
-  const id = req.params.id;
-  const user = await User.find({ id });
-  res.json(user);
-});
-
 router.post("/:id", async (req, res) => {
   const id = req.params.id;
   const { schoolName, major, schoolState } = req.body;

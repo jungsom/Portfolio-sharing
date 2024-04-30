@@ -1,9 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config(); // env 관련
-const bodyParser = require("body-parser");
-
 const authRouter = require("./routes/auth");
+const bodyParser = require("body-parser");
+const passport = require("passport");
+require("./passport")();
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+
 const userRouter = require("./routes/user");
 const educationRouter = require("./routes/education");
 
@@ -31,6 +35,22 @@ app.get("/", (req, res) => {
 // 서버 설정
 app.use(express.json());
 app.use(bodyParser.json());
+
+// 세션 설정
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false, //session 정보가 변경되었을 때만 저장
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+    }),
+  })
+);
+
+// Request가 들어오면 passport가 구동됨
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);

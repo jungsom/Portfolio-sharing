@@ -19,13 +19,8 @@ const UserSchema = new Schema({
   },
   description: {
     type: String,
+    default: "설명이 아직 없습니다. 설명을 추가해주세요.",
   },
-  education: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Education",
-    },
-  ],
 });
 
 module.exports = UserSchema;
