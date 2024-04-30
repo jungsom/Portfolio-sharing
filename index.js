@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 require("./passport")();
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
 
@@ -46,6 +47,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // 세션 설정
+app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -64,6 +66,20 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/education", educationRouter);
+
+// 등록되지 않은 path로 요청이 오면 404 에러 발생
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+// error handler
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  res.status(err.status || 500);
+  res.render("error");
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`서버가 ${process.env.PORT}번 포트에서 시작되었습니다.`);

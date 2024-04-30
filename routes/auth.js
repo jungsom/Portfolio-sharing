@@ -44,31 +44,24 @@ router.post("/join", async (req, res, next) => {
       description,
     });
 
-    // 가입 완료되면 기본 경로로 이동
-    res.status(201).redirect("/");
+    res.status(201).json("가입 완료");
   } catch (err) {
     next(err);
   }
 });
 
 // 로그인
-// 실패할 경우 다시 login 경로로 이동하고, 성공하면 기본 경로로 이동
-router.post(
-  "/login",
-  passport.authenticate("local", { failureRedirect: "/login" }),
-  (req, res) => {
-    req.session.save(() => {
-      res.status(200).redirect("/");
-    });
-  }
-);
+router.post("/login", passport.authenticate("local"), (req, res) => {
+  req.session.save(() => {
+    res.status(200).json("로그인 성공");
+  });
+});
 
 // 로그아웃
 router.get("/logout", (req, res) => {
   req.logout();
-  // 로그아웃하고 기본 경로로 이동
   req.session.save(() => {
-    res.status(200).redirect("/");
+    res.status(200).json("로그아웃 성공");
   });
 });
 
