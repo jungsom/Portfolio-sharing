@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config(); // env 관련
-const authRouter = require("./routes/auth");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 require("./passport")();
@@ -9,6 +8,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
 
+const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const educationRouter = require("./routes/education");
 
@@ -37,7 +37,6 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 app.get("/", (req, res) => {
-  // res.send("Hello World!");
   res.render("index.html");
 });
 
@@ -64,6 +63,14 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/education", educationRouter);
+
+// 오류 처리
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).send({
+    name: err.name || "Internal Server Error",
+    message: err.message || "서버 내부에서 오류가 발생했습니다.",
+  });
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`서버가 ${process.env.PORT}번 포트에서 시작되었습니다.`);
