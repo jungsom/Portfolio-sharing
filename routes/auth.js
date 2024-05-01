@@ -3,6 +3,7 @@ const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 const passport = require("passport");
+const { Unauthorized, BadRequest, Conflict } = require("../middlewares");
 
 const router = Router();
 
@@ -12,23 +13,15 @@ router.post("/join", async (req, res, next) => {
     const { email, name, password, description } = req.body;
 
     if (!email || !name || !password) {
-      res.status(400).json({
-        error: "입력되지 않은 내용이 있습니다.",
-        data: null,
-      });
-      return;
+      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
 
     // 같은 이메일로 이미 가입이 되어 있는지 확인
     const exists = await User.findOne({ email });
 
-    // 이미 가입된 이메일이 있으면 상태코드 400, 에러 메시지를 보냄
+    // 이미 가입된 이메일이 있으면 상태코드 409, 에러 메시지를 보냄
     if (exists) {
-      res.status(400).json({
-        error: "이미 가입된 이메일입니다.",
-        data: null,
-      });
-      return;
+      throw new Conflict("이미 가입된 이메일입니다.");
     }
 
     // bcrypt를 사용해서 salting
@@ -64,14 +57,20 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 });
 
 // 로그아웃
-router.get("/logout", (req, res) => {
-  req.logout();
-  req.session.save(() => {
-    res.status(200).json({
-      error: null,
-      data: "로그아웃 성공",
+router.post("/logout", (req, res, next) => {
+  if (req.isAuthenticated()) {
+    req.logout((err) => {
+      if (err) {
+        next(err);
+      }
+      res.status(200).json({
+        error: null,
+        data: "로그아웃 성공",
+      });
     });
-  });
+  } else {
+    throw new Unauthorized("로그인이 되어있지 않습니다.");
+  }
 });
 
 module.exports = router;
