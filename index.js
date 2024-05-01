@@ -67,8 +67,8 @@ app.use("/education", educationRouter);
 // 오류 처리
 app.use((err, req, res, next) => {
   res.status(err.status || 500).send({
-    name: err.name || "Internal Server Error",
-    message: err.message || "서버 내부에서 오류가 발생했습니다.",
+    // name: err.name || "Internal Server Error",
+    error: err.message || "서버 내부에서 오류가 발생했습니다.",
   });
 });
 

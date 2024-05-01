@@ -11,7 +11,6 @@ router.get("/", async (req, res, next) => {
     if (!req.session.passport) {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
-    // console.log(req.session.passport);
 
     const users = await User.find({});
 
