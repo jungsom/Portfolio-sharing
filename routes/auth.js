@@ -44,7 +44,10 @@ router.post("/join", async (req, res, next) => {
       description,
     });
 
-    res.status(201).json("가입 완료");
+    res.status(201).json({
+      error: null,
+      data: user,
+    });
   } catch (err) {
     next(err);
   }
@@ -53,7 +56,10 @@ router.post("/join", async (req, res, next) => {
 // 로그인
 router.post("/login", passport.authenticate("local"), (req, res) => {
   req.session.save(() => {
-    res.status(200).json("로그인 성공");
+    res.status(200).json({
+      error: null,
+      data: "로그인 성공",
+    });
   });
 });
 
@@ -61,7 +67,10 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 router.get("/logout", (req, res) => {
   req.logout();
   req.session.save(() => {
-    res.status(200).json("로그아웃 성공");
+    res.status(200).json({
+      error: null,
+      data: "로그아웃 성공",
+    });
   });
 });
 
