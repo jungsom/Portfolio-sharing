@@ -24,3 +24,5 @@ router.post("/", async (req, res) => {
 
   res.json(addEducation);
 });
+
+module.exports = router;
