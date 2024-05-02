@@ -14,12 +14,21 @@ async function fetchUser() {
     return datas;
 }
 
-// //사용자 정보 조회 api 요청(?)
-// async function fetchUserInfo() {
-//     const res = await fetch(`http://localhost:8080/users/${id}`)
-//     const datas = await res.json();
-//     return datas;
+/** 사용자 정보 조회 api 요청 */
+async function fetchUserInfo(id) {
+    const res = await fetch(`http://localhost:8080/users/${id}`)
+    const datas = await res.json();
+    return datas;
+}
+
+// function logInPopup() {
+//     const modal = document.querySelector('.modal')
+//     const close = document.querySelector('.close');    
+
+//     modal.style.display = "block";
+//     close.addEventListener('click', () => modal.style.display="none");
 // }
+
 
 
 /** 메뉴바 이벤트 핸들러 */ 
@@ -40,29 +49,30 @@ async function menuClickHandler() {
     }   
 }
 
+
 /** 다른 사용자 목록 이벤트 핸들러 */ 
 async function ImgClickHandler() {
     try {
         const checkLogin = await isLoggedIn();
         const checkUser = await isCurrentUser();
-        
+
         // fetch로 이미지, 유저 데이터 가져온다고 가정
         // const userId = users.find(data => data.id === images.url)
-        userId = 1;
+        const userId = 1;
 
         if ( checkLogin === true && checkUser === false ) {
-            window.location.href=`/users/${userId}` //다른 사용자 페이지 이동 
+            window.location.href=`/users/${userId}`; //다른 사용자 페이지 이동 
         } 
         else if ( checkLogin === true && checkUser === true) {
-            window.location.href='mypage'           //개인 페이지로 이동
+            window.location.href='mypage';           //개인 페이지로 이동
         }
         else {
-            throw new Error('로그인 후 이용 가능합니다.')
+            throw new Error('로그인 후 이용 가능합니다.');
         }
     } catch(error) {   
-            console.log("401 error")
-            alert(error.message)    //팝업창으로 수정 예정
-            window.location.href=`/login`
+            console.log("401 error");
+            alert(error.message);
+            window.location.href=`/login`;
     };
 }
 
@@ -73,7 +83,7 @@ function isLoggedIn() {
 
 /** 현재 사용자인지 여부 판단 */ 
 function isCurrentUser() {
-    return true; // 현재 사용자가 일치하지 않다고 가정
+    return false; // 현재 사용자가 일치하지 않다고 가정
 }
 
 /** 로그인 상태에 따라 메뉴 변경 */
@@ -139,6 +149,7 @@ async function getUserImage() {
                 ${users[index].description}`;
             } else {
                 textElem.innerHTML = `사용자 정보가 없습니다.`;
+                // 401 에러로 아직 데이터가 보이지 않음
             }
 
             imageElem.addEventListener('mouseenter', () => {
@@ -184,13 +195,11 @@ async function getUserImage() {
 // }
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    mypageElem = document.querySelector('.mypage');
-    loginElem = document.querySelector('.login')
+mypageElem = document.querySelector('.mypage');
+loginElem = document.querySelector('.login')
 
-    mypageElem.addEventListener('click', menuClickHandler);
-    loginElem.addEventListener('click', menuClickHandler);
+mypageElem.addEventListener('click', menuClickHandler);
+loginElem.addEventListener('click', menuClickHandler);
 
-    getUserImage();
-    updateMenu();
-})
+getUserImage();
+updateMenu();

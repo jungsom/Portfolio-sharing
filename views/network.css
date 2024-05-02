@@ -92,3 +92,10 @@ header ul li a {
     border : 5px solid rgb(117, 92, 36);
     color: rgb(88, 75, 35);
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}

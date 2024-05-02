@@ -8,6 +8,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
+const path = require("path"); 
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
@@ -32,6 +33,11 @@ const app = express();
 
 // view 경로 설정
 app.set("views", __dirname + "/views");
+
+
+//static 파일 경로 설정 (추가)
+app.use(express.static(path.join(__dirname, "views"))); 
+
 
 // 화면 engine을 ejs로 설정
 app.set("view engine", "ejs");
