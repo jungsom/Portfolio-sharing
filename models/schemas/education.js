@@ -1,10 +1,13 @@
 const { Schema } = require("mongoose");
 
 const EducationSchema = new Schema({
-  id: {
-    // 누구의 학력인지 알기 위해 id 넣음
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
+    required: true,
+  },
+  id: {
+    type: String,
     required: true,
   },
   schoolName: {
@@ -15,8 +18,9 @@ const EducationSchema = new Schema({
     type: String,
     required: true,
   },
-  schoolState: {
+  schoolStatus: {
     type: String,
+    enum: ["재학중", "학사졸업", "석사졸업", "박사졸업"],
     required: true,
   },
 });

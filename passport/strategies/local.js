@@ -1,6 +1,7 @@
 const LocalStrategy = require("passport-local").Strategy;
 const { User } = require("../../models");
 const bcrypt = require("bcrypt");
+const { Unauthorized } = require("../../middlewares");
 
 const config = {
   usernameField: "email",
@@ -12,8 +13,7 @@ const local = new LocalStrategy(config, async (email, password, done) => {
     //입력된 유저의 email이 DB에 있는지 찾고 없으면 에러 처리
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error("회원을 찾을 수 없습니다.");
-      return;
+      throw new Unauthorized("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
 
     //입력된 password가 DB에 있는 salting된 password와 같은지 비교하고 없으면 에러 처리
@@ -21,8 +21,7 @@ const local = new LocalStrategy(config, async (email, password, done) => {
     const passwordCorrect = await bcrypt.compare(password, hashedPassword);
 
     if (!passwordCorrect) {
-      throw new Error("비밀번호가 일치하지 않습니다.");
-      return;
+      throw new Unauthorized("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
 
     done(null, {
