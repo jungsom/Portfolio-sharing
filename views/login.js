@@ -9,7 +9,7 @@
 
 //Nav 페이지이동
 function gotoNetworkpage() {
-  window.location.href = "/Networkpage";
+  window.location.href = "/network";
 }
 
 //Email,Pw 입력 값 초기화
@@ -27,19 +27,16 @@ function clear() {
 const modal = document.querySelector(".modal");
 const modalOpen = document.querySelector(".modal_btn");
 const modalClose = document.querySelector(".close_btn");
-var modaltextflag = "";
-var ismodalopen = 0;
+let modaltextflag = "";
 
 function openmodal() {
   changemodaltext();
   modal.classList.add("on");
-  ismodalopen = 1;
 }
 
 function closemodal() {
   changemodaltext();
   modal.classList.remove("on");
-  ismodalopen = 0;
 }
 
 // 팝업창 텍스트 설정
@@ -114,7 +111,7 @@ function Login() {
       modaltextflag = 2;
       openmodal();
       clear();
-      window.location.href = "/index";
+      window.location.href = "/network";
     }
   });
 }
