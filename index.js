@@ -31,21 +31,12 @@ mongoose.connection.on("disconnected", () => {
 
 const app = express();
 
-// view 경로 설정
-app.set("views", __dirname + "/views");
-
-
-//static 파일 경로 설정 (추가)
-app.use(express.static(path.join(__dirname, "views"))); 
-
-
-// 화면 engine을 ejs로 설정
-app.set("view engine", "ejs");
-app.engine("html", require("ejs").renderFile);
-
 app.get("/", (req, res) => {
-  res.render("index.html");
+  res.send("Hello World!");
 });
+
+app.use('/front', express.static(__dirname + '/views/front'));
+
 
 // 서버 설정
 app.use(express.json());
