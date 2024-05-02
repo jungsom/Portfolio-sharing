@@ -15,12 +15,12 @@ router.get("/:id", async (req, res) => {
   res.json(users);
 });
 
-router.post("/:id", async (req, res) => {
-  const id = req.params.id;
+router.post("/", async (req, res) => {
+  // const id = req.params.id;
   const { schoolName, major, schoolState } = req.body;
-  const user = await User.findOne({ id });
+  // const user = await User.findOne({ id });
   const posts = await Education.create({
-    id: user["_id"],
+    // id: user["_id"],
     schoolName,
     major,
     schoolState,

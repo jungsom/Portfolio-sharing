@@ -8,7 +8,7 @@ require("./passport")();
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
-const path = require('path'); 
+const path = require("path");
 
 const userRouter = require("./routes/user");
 const educationRouter = require("./routes/education");
@@ -38,16 +38,14 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 app.get("/", (req, res) => {
-  res.render("index"); // .ejs 확장자는 생략 가능
+  res.render("userpage"); // .ejs 확장자는 생략 가능
 });
 
-app.get("/mypage", (req, res) => {
-  res.render("mypage");
+app.get("/userpage", (req, res) => {
+  res.render("userpage");
 });
 
-app.use(express.static(path.join(__dirname, 'views')));
-
-
+app.use(express.static(path.join(__dirname, "views")));
 
 // 서버 설정
 app.use(express.json());
