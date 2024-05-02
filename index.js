@@ -1,17 +1,19 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config(); // env 관련
-const authRouter = require("./routes/auth");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 require("./passport")();
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
-const path = require("path");
+const path = require("path"); 
 
+const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const educationRouter = require("./routes/education");
+const awardRouter = require("./routes/award");
 
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
@@ -33,25 +35,35 @@ const app = express();
 // view 경로 설정
 app.set("views", __dirname + "/views");
 
+//static 파일 경로 설정 (추가)
+app.use(express.static(path.join(__dirname, "views"))); 
+
 // 화면 engine을 ejs로 설정
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 app.get("/", (req, res) => {
-  res.render("userpage"); // .ejs 확장자는 생략 가능
+  res.render("index.html");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login.html");
 });
 
 app.get("/userpage", (req, res) => {
-  res.render("userpage");
+  res.render("userpage.html");
 });
 
-app.use(express.static(path.join(__dirname, "views")));
+app.get("/index", (req, res) => {
+  res.render("index.html");
+});
 
 // 서버 설정
 app.use(express.json());
 app.use(bodyParser.json());
 
 // 세션 설정
+app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -70,6 +82,15 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/education", educationRouter);
+app.use("/award", awardRouter);
+
+// 오류 처리
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).send({
+    error: err.message || "서버 내부에서 오류가 발생했습니다.",
+    data: err.data,
+  });
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`서버가 ${process.env.PORT}번 포트에서 시작되었습니다.`);
