@@ -3,26 +3,30 @@ const { User, Education } = require("../models");
 
 const router = Router();
 
-// 학력 정보 조회
-router.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const education = await Education.find({ user: id });
-
-  res.json(education);
+router.get("/", async (req, res) => {
+  const users = await Education.find({});
+  res.json(users);
 });
 
-// 학력 추가
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const user = await User.findOne({ id });
+  const users = await Education.find({ id: user["_id"] }).populate("id");
+  res.json(users);
+});
+
 router.post("/", async (req, res) => {
-  const { userId, id, schoolName, major, schoolStatus } = req.body;
-  const addEducation = await Education.create({
-    user: userId,
-    id,
+  // const id = req.params.id;
+  const { schoolName, major, schoolState } = req.body;
+  // const user = await User.findOne({ id });
+  const posts = await Education.create({
+    // id: user["_id"],
     schoolName,
     major,
-    schoolStatus,
+    schoolState,
   });
 
-  res.json(addEducation);
+  res.json(posts);
 });
 
 module.exports = router;

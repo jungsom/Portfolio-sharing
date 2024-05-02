@@ -4,31 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>마이페이지</title>
-    <link rel="stylesheet" href="./front/mypage.css" />
+    <link rel="stylesheet" href="./mypage.css" />
   </head>
   <body>
-    <!-- 상단 네비게이션 바 -->
-    <div class="navbar">
-      <p class="logo">Devcartes</p>
-    </div>
     <div class="container">
       <div class="profile">
         <!-- 프로필 정보 -->
         <img
-          src="./front/studyhard.jpeg"
+          src="./studyhard.jpeg"
           alt="프로필 이미지"
           style="width: 150px; height: 150px"
         />
-        <div class="nameContainer">
-          <h3 class="Name">데브카르트</h3>
-        </div>
-        <div class="emailContainer">
-          <h4 class="Email">Email@email.com</h4>
-        </div>
-        <div class="commentContainer">
-          <p class="Comment">---설명---</p>
-        </div>
-        <button class="profileEditButton" onclick="editProfile()">Edit</button>
+        <p>김민규</p>
+        <p>kkim@elicer.com</p>
+        <p>설명이 여기에 옵니다.</p>
+        <button onclick="editProfile()">Edit</button>
       </div>
       <div class="education">
         <!-- 학력 정보 -->
@@ -67,30 +57,32 @@
             <input type="date" placeholder="졸업 년월" />
           </div>
         </div>
-        <button
-          id="delete-button"
-          onclick="removeEducation(this)"
-          style="display: none"
-        >
-          삭제
-        </button>
-        <button
-          id="confirm-button"
-          onclick="confirmEducation()"
-          style="display: none"
-        >
-          확인
-        </button>
-        <button
-          id="edit-button"
-          onclick="editEducation()"
-          style="display: none"
-        >
-          edit
-        </button>
-        <button id="plus-button" onclick="addEducation()">+</button>
+        <div id="buttons-container">
+          <button
+            id="delete-button"
+            onclick="removeEducation(this)"
+            style="display: none"
+          >
+            삭제
+          </button>
+          <button
+            id="confirm-button"
+            onclick="confirmEducation()"
+            style="display: none"
+          >
+            확인
+          </button>
+          <button
+            id="edit-button"
+            onclick="editEducation()"
+            style="display: none"
+          >
+            edit
+          </button>
+          <button id="plus-button" onclick="addEducation()">+</button>
+        </div>
       </div>
     </div>
-    <script src="./front/mypage.js"></script>
+    <script src="./mypage.js"></script>
   </body>
 </html>
