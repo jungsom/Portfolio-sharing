@@ -92,4 +92,38 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/identification/:id", async (req, res, next) => {
+  const id = req.params.id;
+
+  try {
+    // 세션 확인(401 error)
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
+    const user = await User.findOne({ id });
+
+    // id 확인(404 error)
+    if (!user) {
+      throw new NotFound("존재하지 않는 id입니다.");
+    }
+
+    // 본인 확인
+    const identification = Identification(req.session, user);
+    if (identification === true) {
+      res.status(200).json({
+        status: identification,
+        message: "본인입니다.",
+      });
+    } else {
+      res.status(200).json({
+        status: identification,
+        message: "본인이 아닙니다.",
+      });
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
 module.exports = router;
