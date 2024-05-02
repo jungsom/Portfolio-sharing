@@ -7,6 +7,7 @@ const passport = require("passport");
 require("./passport")();
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const ejs = require("ejs");
 
 const userRouter = require("./routes/user");
 const educationRouter = require("./routes/education");
@@ -28,9 +29,24 @@ mongoose.connection.on("disconnected", () => {
 
 const app = express();
 
+// view 경로 설정
+app.set("views", __dirname + "/views");
+
+// 화면 engine을 ejs로 설정
+app.set("view engine", "ejs");
+app.engine("html", require("ejs").renderFile);
+
+// app.get("/", (req, res) => {
+//   // res.send("Hello World!");
+//   res.render("mypage.html");
+// });
+
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.render("mypage"); // .ejs 확장자는 생략 가능
 });
+
+app.use('/front', express.static(__dirname + '/views/front'));
+
 
 // 서버 설정
 app.use(express.json());
@@ -53,7 +69,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRouter);
-app.use("/user", userRouter);
+app.use("/users", userRouter);
 app.use("/education", educationRouter);
 
 app.listen(process.env.PORT || 3000, () => {
