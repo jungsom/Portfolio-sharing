@@ -75,12 +75,12 @@ router.post("/logout", (req, res, next) => {
 router.get("/status", (req, res) => {
   if (req.isAuthenticated()) {
     res.json({
-      Status: true,
+      status: true,
       message: "로그인이 된 상태입니다.",
     })
   } else {
     res.json({
-      Status: false,
+      status: false,
       message: "로그인이 되지 않았습니다."
     })
   }
