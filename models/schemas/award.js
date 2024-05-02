@@ -1,6 +1,10 @@
 const { Schema } = require("mongoose");
 
 const AwardSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+  },
   awards: {
     // 수상내역
     type: String,
