@@ -43,7 +43,7 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 app.get("/", (req, res) => {
-  res.render("index.html");
+  res.render("network.html");
 });
 
 app.get("/login", (req, res) => {
@@ -54,8 +54,8 @@ app.get("/userpage", (req, res) => {
   res.render("userpage.html");
 });
 
-app.get("/index", (req, res) => {
-  res.render("index.html");
+app.get("/network", (req, res) => {
+  res.render("network.html");
 });
 
 // 서버 설정
