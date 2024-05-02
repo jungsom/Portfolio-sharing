@@ -13,6 +13,7 @@ const path = require("path");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const educationRouter = require("./routes/education");
+const awardRouter = require("./routes/award");
 
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
@@ -31,12 +32,31 @@ mongoose.connection.on("disconnected", () => {
 
 const app = express();
 
+// view 경로 설정
+app.set("views", __dirname + "/views");
+
+//static 파일 경로 설정 (추가)
+app.use(express.static(path.join(__dirname, "views"))); 
+
+// 화면 engine을 ejs로 설정
+app.set("view engine", "ejs");
+app.engine("html", require("ejs").renderFile);
+
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.render("index.html");
 });
 
-app.use('/front', express.static(__dirname + '/views/front'));
+app.get("/login", (req, res) => {
+  res.render("login.html");
+});
 
+app.get("/userpage", (req, res) => {
+  res.render("userpage.html");
+});
+
+app.get("/index", (req, res) => {
+  res.render("index.html");
+});
 
 // 서버 설정
 app.use(express.json());
@@ -62,6 +82,7 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/education", educationRouter);
+app.use("/award", awardRouter);
 
 // 오류 처리
 app.use((err, req, res, next) => {
