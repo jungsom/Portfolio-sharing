@@ -7,75 +7,79 @@ async function fetchUsers() {
     return imageData;
 }
 
-//사용자 목록 api 요청
+/** 유저 정보 api 요청 */
 async function fetchUser() {
-    const res = await fetch('http://localhost:8080/users')
+    const res = await fetch(`http://localhost:8080/users`)
     const datas = await res.json();
     return datas;
 }
 
-//사용자 정보 조회 api 요청(?)
-async function fetchUserInfo() {
-    const res = await fetch('http://localhost:8080/users/{id}')
-    const datas = await res.json();
-    return datas;
-}
+// //사용자 정보 조회 api 요청(?)
+// async function fetchUserInfo() {
+//     const res = await fetch(`http://localhost:8080/users/${id}`)
+//     const datas = await res.json();
+//     return datas;
+// }
 
 
-//홈 되돌아가기 기능
-document.querySelector(".logo").addEventListener("click", function(event) {
-    event.preventDefault(); 
-    window.location.href = "/"; 
-});
-
-
-
-// 메뉴바 이벤트 핸들러
+/** 메뉴바 이벤트 핸들러 */ 
 async function menuClickHandler() {
     try {
         const checkLogin = await isLoggedIn();
 
-        if ( checkLogin ) {
-            window.location.href='/mypage'
+        if (checkLogin === true) {
+            window.location.href = `/mypage`;   //개인 페이지 이동
+        } 
+        else if (checkLogin === false) {
+            throw new Error('로그인 후 이용 가능합니다.')
         }
-    } catch(error) {
-            console.error(error)
-            window.location.href=`/login`
-    };
-    
+    } catch (error) {
+        console.error("401 error");
+        alert(error.message);   //팝업창으로 수정 예정
+        window.location.href = `/login`;
+    }   
 }
 
-// 다른 사용자 게시물 이벤트 핸들러
+/** 다른 사용자 목록 이벤트 핸들러 */ 
 async function ImgClickHandler() {
     try {
         const checkLogin = await isLoggedIn();
-        const checkUser = await isUser();
+        const checkUser = await isCurrentUser();
         
-        // const users = fetchUser(); // 이미지 데이터 가져온다고 가정
-        // const userId = users.find(data => data.user.id === data.image.id);
+        // fetch로 이미지, 유저 데이터 가져온다고 가정
+        // const userId = users.find(data => data.id === images.url)
+        userId = 1;
 
-        if ( checkLogin && checkUser ) {
-            window.location.href=`/users${userId}` //다른 사용자 페이지 이동
+        if ( checkLogin === true && checkUser === false ) {
+            window.location.href=`/users/${userId}` //다른 사용자 페이지 이동 
+        } 
+        else if ( checkLogin === true && checkUser === true) {
+            window.location.href='mypage'           //개인 페이지로 이동
         }
-    } catch(error) {
-            console.error(error)
+        else {
+            throw new Error('로그인 후 이용 가능합니다.')
+        }
+    } catch(error) {   
+            console.log("401 error")
+            alert(error.message)    //팝업창으로 수정 예정
             window.location.href=`/login`
     };
 }
 
-// 로그인 상태 체크 (세션 관련)
+/** 로그인 상태 여부 판단 */ 
 function isLoggedIn() {
-    return true;
+    return false;    //로그인이 되어있지 않다고 가정
 }
 
-// 사용자 구별 (세션 관련)
-function isUser() {
-    return true;
+/** 현재 사용자인지 여부 판단 */ 
+function isCurrentUser() {
+    return true; // 현재 사용자가 일치하지 않다고 가정
 }
 
-
-function updateMenu() {
-    if (isLoggedIn()) {
+/** 로그인 상태에 따라 메뉴 변경 */
+async function updateMenu() {
+    const checkLogin = await isLoggedIn();
+    if (checkLogin === true) {
         document.querySelector('.mypage').style.display = 'block';
         document.querySelector('.login').style.display = 'none';
     }
@@ -108,6 +112,7 @@ function updateMenu() {
 // }
 
 
+/** 다른 사용자 목록 미리 보기 기능 */ 
 async function getUserImage() {
     try {
         const userElem = document.getElementById('userContent');
@@ -151,7 +156,6 @@ async function getUserImage() {
     }
 }
 
-
 // async function getuserInfo() {
 //     try {      
 //         const userElem = document.getElementById('userContent');
@@ -179,13 +183,14 @@ async function getUserImage() {
 //     }
 // }
 
-document.querySelector('.login').addEventListener('click', menuClickHandler);
-document.querySelector('.myPage').addEventListener('click', menuClickHandler);
-window.addEventListener('unload', () => {
-    document.querySelector('.login').removeEventListener('click', NavClickHandler);
-});
-getUserImage();
-// getuserInfo();
-updateMenu();
 
+document.addEventListener("DOMContentLoaded", () => {
+    mypageElem = document.querySelector('.mypage');
+    loginElem = document.querySelector('.login')
 
+    mypageElem.addEventListener('click', menuClickHandler);
+    loginElem.addEventListener('click', menuClickHandler);
+
+    getUserImage();
+    updateMenu();
+})
