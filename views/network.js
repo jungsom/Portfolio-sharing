@@ -9,29 +9,47 @@ async function fetchUsers() {
 
 /** 유저 정보 api 요청 */
 async function fetchUser() {
-  const res = await fetch(`http://localhost:3000/users`);
+  const res = await fetch(`http://localhost:8080/users`);
   const datas = await res.json();
   return datas;
 }
 
 /** 현재 사용자인지 여부 판단 */
-async function fetchStatus() {
+async function fetchTrue() {
   try {
-    const res = await fetch(`http://localhost:3000/auth/status`);
-    const data = await res.json();
+    const response = await fetch(`http://localhost:8080/auth/true`);
+    if (!response.ok) {
+      throw new Errow("사용자가 현재 로그인 상태가 아님");
+    }
+    const data = await response.json();
     console.log(data);
     return data;
   } catch (error) {
-    throw new Error("로그인 후 이용 가능합니다.");
+    console.error("오류:", error);
+  }
+}
+
+async function fetchFalse() {
+  try {
+    const response = await fetch(`http://localhost:8080/auth/false`);
+    if (!response.ok) {
+      throw new Errow("사용자가 현재 로그인 상태가 아님");
+    }
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("오류:", error);
   }
 }
 
 /** 메뉴바 이벤트 핸들러 */
 async function menuClickHandler() {
   try {
-    const checkLogin = await fetchStatus();
+    const loginTrue = await fetchTrue();
+    const loginFalse = await fetchFalse();
 
-    if (checkLogin.status === true) {
+    if (loginTrue.status === true) {
       window.location.href = `/userpage`; //개인 페이지 이동
     } else {
       alert("오류가 발생했습니다.");
@@ -46,12 +64,10 @@ async function menuClickHandler() {
 /** 다른 사용자 목록 이벤트 핸들러 */
 async function ImgClickHandler() {
   try {
-    const checkLogin = await fetchStatus();
+    const loginTrue = await fetchTrue();
+    const loginFalse = await fetchFalse();
 
-    console.log(checkLogin);
-    console.log(checkLogin.data);
-
-    if (checkLogin.status === true) {
+    if (loginTrue.status === true) {
       window.location.href = "/userpage"; //개인 페이지로 이동
     } else {
       alert("오류가 발생했습니다.");
@@ -66,13 +82,21 @@ async function ImgClickHandler() {
 /** 로그인(유저 가입) 상태에 따라 메뉴 변경 */
 async function updateMenu() {
   try {
-    const checkLogin = await fetchStatus();
-    if (checkLogin.status === true) {
-      document.querySelector(".userpage").style.display = "block";
-      document.querySelector(".login").style.display = "none";
+    const loginTrue = await fetchTrue();
+
+    const userpageElem = document.querySelector(".userpage");
+    const loginElem = document.querySelector(".login");
+
+    //로그아웃 구현 시 login 작동 버튼 예정 // 테스트 o
+    if (loginTrue.status === true) {
+      userpageElem.style.display = "block";
+      loginElem.style.display = "block"; //none;
+    } else {
+      userpageElem.style.display = "block"; //none;
+      loginElem.style.display = "block";
     }
   } catch (error) {
-    console.log(error);
+    console.error("메뉴가 업데이트 되지 않았습니다.");
   }
 }
 
@@ -98,12 +122,11 @@ async function getUserImage() {
 
       textElem.style.display = "none";
 
-      if (userData[index] && userData[index].description) {
+      if (userData.data[index] && userData.data[index].description) {
         textElem.innerHTML = `안녕하세요! <br>
-                ${userData[index].description}`;
+                ${userData.data[index].description}`;
       } else {
         textElem.innerHTML = `사용자 정보가 없습니다.`;
-        // 401 에러로 아직 데이터가 보이지 않음
       }
 
       imageElem.addEventListener("mouseenter", () => {
@@ -114,20 +137,22 @@ async function getUserImage() {
         textElem.style.display = "none";
       });
     });
-    userElem.addEventListener("click", ImgClickHandler); //dblclick
   } catch (error) {
     console.error(error);
   }
 }
 
+
 function init() {
   updateMenu();
   getUserImage();
 
-  mypageElem = document.querySelector(".userpage");
-  loginElem = document.querySelector(".login");
+  const userpageElem = document.querySelector(".userpage");
+  const loginElem = document.querySelector(".login");
+  const userElem = document.getElementById("userContent");
 
-  mypageElem.addEventListener("click", menuClickHandler);
+  userElem.addEventListener("click", ImgClickHandler);
+  userpageElem.addEventListener("click", menuClickHandler);
   loginElem.addEventListener("click", menuClickHandler);
 }
 
