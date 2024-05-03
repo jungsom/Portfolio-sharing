@@ -4,6 +4,7 @@ const plusButton = document.getElementById("plus-button");
 const editButton = document.getElementById("edit-button");
 const selectElements = document.querySelectorAll(".education-list select");
 const inputElements = document.querySelectorAll(".education-list input");
+
 var Editcount = 0;
 var nameEdit,
   nameValue,
@@ -261,6 +262,7 @@ function confirmEducation() {
       if (!res.ok) {
         throw new Error("네트워크 오류입니다.");
       }
+      console.log("안녕");
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {

@@ -74,12 +74,12 @@ async function ImgClickHandler() {
 
 /** 로그인 상태 여부 판단 */
 function isLoggedIn() {
-  return false; //로그인이 되어있지 않다고 가정
+  return true; //로그인이 되어있지 않다고 가정
 }
 
 /** 현재 사용자인지 여부 판단 */
 function isCurrentUser() {
-  return false; // 현재 사용자가 일치하지 않다고 가정
+  return true; // 현재 사용자가 일치하지 않다고 가정
 }
 
 /** 로그인 상태에 따라 메뉴 변경 */
