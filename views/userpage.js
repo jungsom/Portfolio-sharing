@@ -1,6 +1,9 @@
+const deleteButton = document.getElementById("delete-button");
+const confirmButton = document.getElementById("confirm-button");
+const plusButton = document.getElementById("plus-button");
+const editButton = document.getElementById("edit-button");
 const selectElements = document.querySelectorAll(".education-list select");
 const inputElements = document.querySelectorAll(".education-list input");
-
 var Editcount = 0;
 var nameEdit,
   nameValue,
@@ -19,9 +22,14 @@ var nameContainer,
   profile,
   profileEditButton;
 
-// fetch("http://localhost:8080/users")
-//   .then((res) => res.json())
-//   .then((data) => console.log(data));
+fetch("http://localhost:8080/auth/status") //로그인 한 유저꺼만 가져오기 어떻게 하지
+  .then((res) => res.json())
+  .then((data) => {
+    document.querySelector(".Name").innerText = data.data.name;
+    document.querySelector(".Email").innerText = data.data.email;
+    document.querySelector(".Comment").innerText = data.data.description;
+  });
+
 // 프로필 편집 기능
 
 function editProfile() {
@@ -183,9 +191,6 @@ function editProfile() {
 //학력 추가 기능
 function addEducation() {
   var educationList = document.getElementById("educationList");
-  const deleteButton = document.getElementById("delete-button");
-  const confirmButton = document.getElementById("confirm-button");
-  const plusButton = document.getElementById("plus-button");
 
   if (educationList.style.display === "none") {
     educationList.style.display = "block";
@@ -199,27 +204,12 @@ function addEducation() {
 
 function removeEducation(deleteButton) {
   const educationDiv = document.querySelector(".education-list");
-  const confirmButton = document.getElementById("confirm-button");
-  const plusButton = document.getElementById("plus-button");
-  const editButton = document.getElementById("edit-button");
-
   educationDiv.style.display = "none";
 
   plusButton.style.display = "block";
   editButton.style.display = "none";
   deleteButton.style.display = "none";
   confirmButton.style.display = "none";
-
-  app.delete("http://localhost:8080/education/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      // 교육 정보 삭제 로직 구현, 예: MongoDB에서 해당 ID로 데이터 삭제
-      await Education.findByIdAndRemove(id);
-      res.status(204).json({ message: "학력 정보가 삭제되었습니다" });
-    } catch (error) {
-      res.status(500).json({ error: "서버 에러 입니다." });
-    }
-  });
 }
 
 // 학력 편집 기능
@@ -237,8 +227,6 @@ function confirmEducation() {
   // 각 select 요소를 선택합니다.
   const selectElements = document.querySelectorAll(".education-list select");
   const inputElements = document.querySelectorAll(".education-list input");
-  const confirmButton = document.getElementById("confirm-button");
-  const editButton = document.getElementById("edit-button");
 
   // 각 select 요소에서 선택된 값을 저장할 변수를 선언합니다.
   let educationType, degree;
@@ -278,7 +266,6 @@ function confirmEducation() {
       if (!res.ok) {
         throw new Error("네트워크 오류입니다.");
       }
-      console.log("안녕");
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
@@ -303,8 +290,6 @@ function confirmEducation() {
 }
 
 function editEducation() {
-  const confirmButton = document.getElementById("confirm-button");
-  const editButton = document.getElementById("edit-button");
   // 입력 필드 및 선택 필드 활성화
   selectElements.forEach((element) => (element.disabled = false));
   inputElements.forEach((element) => (element.disabled = false));
