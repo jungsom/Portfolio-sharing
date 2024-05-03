@@ -8,7 +8,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
-const path = require("path"); 
+const path = require("path");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
@@ -36,7 +36,7 @@ const app = express();
 app.set("views", __dirname + "/views");
 
 //static 파일 경로 설정 (추가)
-app.use(express.static(path.join(__dirname, "views"))); 
+app.use(express.static(path.join(__dirname, "views")));
 
 // 화면 engine을 ejs로 설정
 app.set("view engine", "ejs");
@@ -92,6 +92,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 8080, () => {
   console.log(`서버가 ${process.env.PORT}번 포트에서 시작되었습니다.`);
 });
