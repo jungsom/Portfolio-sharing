@@ -47,10 +47,12 @@ router.post("/join", async (req, res, next) => {
 });
 
 // 로그인
-router.post("/login", passport.authenticate("local"), (req, res) => {
+router.post("/login", passport.authenticate("local"), async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
   res.status(200).json({
     error: null,
-    data: "로그인 성공",
+    data: user,
   });
 });
 
@@ -72,18 +74,21 @@ router.post("/logout", (req, res, next) => {
 });
 
 //로그인이 되어있는지 확인
-router.get("/status", (req, res) => {
+router.get("/status", async (req, res) => {
   if (req.isAuthenticated()) {
+    const { email } = req.session.passport.user;
+    const user = await User.findOne({ email });
     res.json({
       status: true,
       message: "로그인이 된 상태입니다.",
-    })
+      data: user,
+    });
   } else {
     res.json({
       status: false,
-      message: "로그인이 되지 않았습니다."
-    })
+      message: "로그인이 되지 않았습니다.",
+    });
   }
-})
+});
 
 module.exports = router;
