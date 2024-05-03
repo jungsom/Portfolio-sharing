@@ -39,10 +39,6 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
-app.get("/", (req, res) => {
-  res.render("index.html");
-});
-
 // 서버 설정
 app.use(express.json());
 app.use(bodyParser.json());
