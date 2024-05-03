@@ -279,7 +279,28 @@ function addEducation() {
   educationList.style.display = "block";
 }
 
-function removeEducation(educationId) {
+function addAwards() {
+  const AwardsList = document.getElementById("awardsList");
+  const deleteButton = document.getElementById("awards_delete_button");
+  const confirmButton = document.getElementById("awards_confirm_button");
+  const plusButton = document.getElementById("awards_plus_button");
+
+  if (AwardsList.style.display === "none") {
+    AwardsList.style.display = "block";
+  }
+
+  const newAwardDiv = document.createElement("div");
+  newAwardDiv.innerHTML = `
+        <input type="text" placeholder="수상 내역" />
+        <input type="date" placeholder="수상 날짜" />
+        <button onclick="removeAward(this)">Remove</button>
+    `;
+
+  // awardsList에 생성된 필드 추가
+  AwardsList.appendChild(newAwardDiv);
+}
+
+function deleteEducation(educationId) {
   const educationDiv = document.querySelector(".education-list");
   const confirmButton = document.getElementById("confirm-button");
   const deleteButton = document.getElementById("delete-button");
@@ -292,25 +313,30 @@ function removeEducation(educationId) {
   editButton.style.display = "none";
   deleteButton.style.display = "none";
   confirmButton.style.display = "none";
+
   fetch(`http://localhost:8080/education/${educationId}`, {
     method: "DELETE",
   })
     .then((response) => {
       // 상태 코드 확인
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`에러!! status: ${response.status}`);
       }
       return response.json();
     })
     .then((data) => {
       console.log(data.message); // 성공 메시지 출력
       alert("학력 정보가 삭제되었습니다.");
-      // 추가적인 UI 업데이트 로직
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
+}
+
+function deleteAward(button) {
+  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
+  button.parentElement.remove();
 }
 
 // 학력 편집 기능
@@ -321,6 +347,16 @@ function editEducation(educationItem) {
   if (!isEditable) {
     educationItem.focus(); // 편집 가능 상태가 되면 포커스
   }
+}
+
+function editEducation() {
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
 }
 
 function confirmEducation() {
@@ -390,38 +426,6 @@ function confirmEducation() {
   editButton.style.display = "block";
 }
 
-function editEducation() {
-  // 입력 필드 및 선택 필드 활성화
-  selectElements.forEach((element) => (element.disabled = false));
-  inputElements.forEach((element) => (element.disabled = false));
-
-  // 수정 버튼 숨기기, 확인 버튼 보이기
-  confirmButton.style.display = "block";
-  editButton.style.display = "none";
-}
-
-function addAwards() {
-  const AwardsList = document.getElementById("awardsList");
-  const deleteButton = document.getElementById("awards_delete_button");
-  const confirmButton = document.getElementById("awards_confirm_button");
-  const plusButton = document.getElementById("awards_plus_button");
-
-  if (AwardsList.style.display === "none") {
-    AwardsList.style.display = "block";
-  }
-
-  const newAwardDiv = document.createElement("div");
-  newAwardDiv.innerHTML = `
-        <input type="text" placeholder="수상 내역" />
-        <input type="date" placeholder="수상 날짜" />
-        <button onclick="removeAward(this)">Remove</button>
-    `;
-
-  // awardsList에 생성된 필드 추가
-  AwardsList.appendChild(newAwardDiv);
-}
-
-function removeAward(button) {
-  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
-  button.parentElement.remove();
+function confirmAwards() {
+  console.log("아직");
 }

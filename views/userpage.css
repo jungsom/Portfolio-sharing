@@ -104,7 +104,7 @@ button {
 
 #delete-button {
   margin-right: 10px;
-  background-color: #8f98eb; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #d67d86; /* 삭제 버튼은 빨간색으로 표시 */
   color: white;
   padding: 0 15px;
   border: none;
@@ -112,7 +112,7 @@ button {
 }
 #confirm-button {
   margin-right: 10px;
-  background-color: #df6a81; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #6d78d4; /* 삭제 버튼은 빨간색으로 표시 */
   color: white;
   padding: 0 15px;
   border: none;
