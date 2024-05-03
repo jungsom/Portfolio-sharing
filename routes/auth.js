@@ -61,16 +61,18 @@ router.post("/logout", (req, res, next) => {
     throw new Unauthorized("로그인이 되어있지 않습니다.");
   }
   const { user } = req.session.passport;
-  req.logout((err) => {
-    if (err) {
-      next(err);
-    }
-    res.status(200).json({
-      error: null,
-      message: "로그아웃 성공",
-      data: user,
+  if (req.isAuthenticated()) {
+    req.logout((err) => {
+      if (err) {
+        next(err);
+      }
+      res.status(200).json({
+        error: null,
+        message: "로그아웃 성공",
+        data: user,
+      });
     });
-  });
+  }
 });
 
 //로그인이 되어있는지 확인
@@ -80,15 +82,20 @@ router.get("/status", async (req, res) => {
       status: false,
       message: "로그인이 되지 않았습니다.",
     });
-  } else {
-    const { email } = req.session.passport.user;
-    const user = await User.findOne({ email });
-    res.json({
-      status: true,
-      message: "로그인이 된 상태입니다.",
-      data: user,
-    });
+    return;
   }
+  const { email } = req.session.passport.user;
+  const user = await User.findOne({ email });
+  res.json({
+    status: true,
+    message: "로그인이 된 상태입니다.",
+    data: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      description: user.description,
+    },
+  });
 });
 
 module.exports = router;
