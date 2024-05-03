@@ -1,8 +1,19 @@
 # ✨Dev.cartes! backend Page (임시 페이지)
 
-## 🌱 Branch
+## 🪄 API 수정 사항
 
-자세한 내용은 API 문서를 참고해 주세요.
+자세한 내용은 [API 문서](https://docs.google.com/spreadsheets/d/1xZFiT2gpMSSY5c2hOz8VhJL_gC7Prh9ZJ5Q6wfp4Itk/edit?usp=sharing)를 참고해 주세요.
+
+- 2024년 5월 3일
+  **- !BREAKING CHANGE : PATH, BODY, RESPONSE 대규모 수정**
+  - 2024년 5월 3일 오피스 아워 이후 PATH 경로의 대대적인 수정이 필요해서 불가피하게 바뀐 부분이 많습니다.
+  - 코치님께서 PATH 경로에 id가 없는게 좋다고 하셔서 id를 삭제했습니다.
+  - PATH 뒤에 있는 동사명을 삭제했습니다.
+  - 이제 서버에 FETCH 요청을 하실 때 주소에 id를 적었던 부분은 body안에 넣어서 보내주셔야 합니다. (API 문서 참고)
+
+**- 변경된 부분이 많아서 오류가 나는 경우에는, 언제든지 디스코드 백엔드 채널에 문의 남겨 주세요.**
+
+## 🌱 Branch
 
 - Backend
   - back_auth

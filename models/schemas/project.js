@@ -1,28 +1,30 @@
 const { Schema } = require("mongoose");
 
-const EducationSchema = new Schema({
-  id: {
+const ProjectSchema = new Schema({
+  userId: {
     type: String,
     required: true,
   },
-  educationId: {
+  id: {
     type: Number,
     required: true,
-    default: 1,
   },
-  schoolName: {
+  title: {
     type: String,
     required: true,
   },
-  major: {
+  startDate: {
     type: String,
     required: true,
   },
-  schoolStatus: {
+  endDate: {
     type: String,
-    enum: ["재학중", "학사졸업", "석사졸업", "박사졸업"],
+    required: true,
+  },
+  details: {
+    type: String,
     required: true,
   },
 });
 
-module.exports = EducationSchema;
+module.exports = ProjectSchema;
