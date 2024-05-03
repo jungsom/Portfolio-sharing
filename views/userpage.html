@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="./userpage.css" />
   </head>
   <body>
+    <!-- 상단 네비게이션 바 -->
+    <div class="navbar">
+      <p class="logo">Devcartes</p>
+    </div>
     <div class="container">
       <div class="profile">
         <!-- 프로필 정보 -->
@@ -15,10 +19,16 @@
           alt="프로필 이미지"
           style="width: 150px; height: 150px"
         />
-        <p>김민규</p>
-        <p>kkim@elicer.com</p>
-        <p>설명이 여기에 옵니다.</p>
-        <button onclick="editProfile()">Edit</button>
+        <div class="nameContainer">
+          <h3 class="Name">데브카르트</h3>
+        </div>
+        <div class="emailContainer">
+          <h4 class="Email">Email@email.com</h4>
+        </div>
+        <div class="commentContainer">
+          <p class="Comment">---설명---</p>
+        </div>
+        <button class="profileEditButton" onclick="editProfile()">Edit</button>
       </div>
       <div class="education">
         <!-- 학력 정보 -->
