@@ -11,23 +11,27 @@ var nameEdit,
   emailEdit,
   emailValue,
   email,
-  commentEdit,
-  commentValue,
-  comment;
+  descriptionEdit,
+  descriptionValue,
+  description;
 var nameContainer,
   emailContainer,
-  commentContainer,
+  descriptionContainer,
   submitEditButton,
   cancelEditButton,
   profile,
-  profileEditButton;
+  profileEditButton,
+  userid;
 
-fetch("http://localhost:8080/auth/status") //로그인 한 유저꺼만 가져오기 어떻게 하지
+fetch("http://localhost:8080/auth/status")
   .then((res) => res.json())
   .then((data) => {
     document.querySelector(".Name").innerText = data.data.name;
     document.querySelector(".Email").innerText = data.data.email;
-    document.querySelector(".Comment").innerText = data.data.description;
+    document.querySelector(".Description").innerText = data.data.description;
+    userid = data.data.id;
+    // console.log(data.data);
+    // console.log(data.data.id);
   });
 
 // 프로필 편집 기능
@@ -46,43 +50,46 @@ function editProfile() {
     Name.className = "_h4";
     Name.innerText = "이름";
 
-    //이메일 편집 input 생성
-    emailEdit = document.createElement("input");
-    emailEdit.setAttribute("type", "text");
-    emailEdit.className = "input";
-    emailValue = document.querySelector(".Email");
-    emailEdit.setAttribute("placeholder", `${emailValue.innerText}`);
+    // //이메일 편집 input 생성
+    // emailEdit = document.createElement("input");
+    // emailEdit.setAttribute("type", "text");
+    // emailEdit.className = "input";
+    // emailValue = document.querySelector(".Email");
+    // emailEdit.setAttribute("placeholder", `${emailValue.innerText}`);
 
-    email = document.createElement("h4");
-    email.className = "_h4";
-    email.innerText = "이메일 주소";
+    // email = document.createElement("h4");
+    // email.className = "_h4";
+    // email.innerText = "이메일 주소";
 
     //설명 편집 input 생성
-    commentEdit = document.createElement("input");
-    commentEdit.setAttribute("type", "text");
-    commentEdit.className = "input";
-    commentValue = document.querySelector(".Comment");
-    commentEdit.setAttribute("placeholder", `${commentValue.innerText}`);
+    descriptionEdit = document.createElement("input");
+    descriptionEdit.setAttribute("type", "text");
+    descriptionEdit.className = "input";
+    descriptionValue = document.querySelector(".Description");
+    descriptionEdit.setAttribute(
+      "placeholder",
+      `${descriptionValue.innerText}`
+    );
 
-    comment = document.createElement("h4");
-    comment.className = "_h4";
-    comment.innerText = "설명";
+    description = document.createElement("h4");
+    description.className = "_h4";
+    description.innerText = "설명";
 
     //div에 자식으로 등록
     nameContainer = document.querySelector(".nameContainer");
-    emailContainer = document.querySelector(".emailContainer");
-    commentContainer = document.querySelector(".commentContainer");
+    // emailContainer = document.querySelector(".emailContainer");
+    descriptionContainer = document.querySelector(".descriptionContainer");
     nameContainer.append(Name);
     nameContainer.append(nameEdit);
-    emailContainer.append(email);
-    emailContainer.append(emailEdit);
-    commentContainer.append(comment);
-    commentContainer.append(commentEdit);
+    // emailContainer.append(email);
+    // emailContainer.append(emailEdit);
+    descriptionContainer.append(description);
+    descriptionContainer.append(descriptionEdit);
 
     //요소 숨기기
     nameValue.style.display = "none";
-    emailValue.style.display = "none";
-    commentValue.style.display = "none";
+    // emailValue.style.display = "none";
+    descriptionValue.style.display = "none";
 
     //submit, cancel 버튼 생성
     submitEditButton = document.createElement("button");
@@ -90,47 +97,75 @@ function editProfile() {
     cancelEditButton = document.createElement("button");
     cancelEditButton.innerText = "Cancel";
 
-    //submit, cancel 버튼 클릭시 함수
+    //submit버튼 클릭시 프로필 편집 정보 저장, 서버로 변경점 업데이트
     submitEditButton.onclick = function submitEditProfile() {
       // 편집 값 저장 & 공백시 "없음" 출력
       nameValue.innerText = nameEdit.value;
       if (!nameValue.innerText) nameValue.innerText = "없음";
-      emailValue.innerText = emailEdit.value;
-      if (!emailValue.innerText) emailValue.innerText = "없음";
-      commentValue.innerText = commentEdit.value;
-      if (!commentValue.innerText) commentValue.innerText = "없음";
+      // emailValue.innerText = emailEdit.value;
+      // if (!emailValue.innerText) emailValue.innerText = "없음";
+      descriptionValue.innerText = descriptionEdit.value;
+      if (!descriptionValue.innerText) descriptionValue.innerText = "없음";
 
       //요소 보이기
       nameValue.style.display = "block";
-      emailValue.style.display = "block";
-      commentValue.style.display = "block";
+      // emailValue.style.display = "block";
+      descriptionValue.style.display = "block";
       profileEditButton.style.display = "block";
 
       //요소 숨기기
       nameEdit.style.display = "none";
-      emailEdit.style.display = "none";
-      commentEdit.style.display = "none";
+      // emailEdit.style.display = "none";
+      descriptionEdit.style.display = "none";
       Name.style.display = "none";
-      email.style.display = "none";
-      comment.style.display = "none";
+      // email.style.display = "none";
+      description.style.display = "none";
 
       submitEditButton.style.display = "none";
       cancelEditButton.style.display = "none";
+
+      //서버로 name, description 보내기
+      fetch(`http://localhost:8080/users/${userid}`, {
+        method: "PUT", // HTTP 메서드
+        headers: {
+          "Content-Type": "application/json", // 컨텐트 타입 설정
+          Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+        },
+        body: JSON.stringify({
+          name: nameEdit.value,
+          description: descriptionEdit.value,
+        }), // JSON 문자열로 변환하여 데이터 전송
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("네트워크 오류입니다.");
+          }
+          return res.json(); // 응답을 JSON 형태로 파싱
+        })
+        .then((data) => {
+          console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+          alert("프로필 정보가 성공적으로 등록되었습니다.");
+        })
+        .catch((error) => {
+          console.error("Error:", error); // 에러 처리
+          alert("에러가 발생했습니다");
+        });
     };
+
     cancelEditButton.onclick = function cancelEditProfile() {
       //요소 보이기
       nameValue.style.display = "block";
-      emailValue.style.display = "block";
-      commentValue.style.display = "block";
+      // emailValue.style.display = "block";
+      descriptionValue.style.display = "block";
       profileEditButton.style.display = "block";
 
       //요소 숨기기
       nameEdit.style.display = "none";
-      emailEdit.style.display = "none";
-      commentEdit.style.display = "none";
+      // emailEdit.style.display = "none";
+      descriptionEdit.style.display = "none";
       Name.style.display = "none";
-      email.style.display = "none";
-      comment.style.display = "none";
+      // email.style.display = "none";
+      description.style.display = "none";
 
       submitEditButton.style.display = "none";
       cancelEditButton.style.display = "none";
@@ -163,28 +198,31 @@ function editProfile() {
   } else {
     //요소 보이기
     nameEdit.style.display = "";
-    emailEdit.style.display = "";
-    commentEdit.style.display = "";
+    // emailEdit.style.display = "";
+    descriptionEdit.style.display = "";
     Name.style.display = "";
-    email.style.display = "";
-    comment.style.display = "";
+    // email.style.display = "";
+    description.style.display = "";
 
     submitEditButton.style.display = "";
     cancelEditButton.style.display = "";
 
     //요소 숨기기
     nameValue.style.display = "none";
-    emailValue.style.display = "none";
-    commentValue.style.display = "none";
+    // emailValue.style.display = "none";
+    descriptionValue.style.display = "none";
     profileEditButton.style.display = "none";
 
     //이전 입력값은 회색글씨로 남게하기
     nameEdit.value = "";
     nameEdit.setAttribute("placeholder", `${nameValue.innerText}`);
-    emailEdit.value = "";
-    emailEdit.setAttribute("placeholder", `${emailValue.innerText}`);
-    commentEdit.value = "";
-    commentEdit.setAttribute("placeholder", `${commentValue.innerText}`);
+    // emailEdit.value = "";
+    // emailEdit.setAttribute("placeholder", `${emailValue.innerText}`);
+    descriptionEdit.value = "";
+    descriptionEdit.setAttribute(
+      "placeholder",
+      `${descriptionValue.innerText}`
+    );
   }
 }
 
