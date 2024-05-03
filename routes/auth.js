@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
 const passport = require("passport");
 const { Unauthorized, BadRequest, Conflict } = require("../middlewares");
-const { ReturnDocument } = require("mongodb");
 
 const router = Router();
 
@@ -26,11 +25,12 @@ router.post("/join", async (req, res, next) => {
     }
 
     // bcrypt를 사용해서 salting
+    const nano_id = nanoid(10);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // User를 create하고 결과값을 user에 저장
     const user = await User.create({
-      id: nanoid(10),
+      id: nano_id,
       email,
       name,
       password: hashedPassword,
@@ -47,20 +47,15 @@ router.post("/join", async (req, res, next) => {
 });
 
 // 로그인
-router.post("/login", passport.authenticate("local"), async (req, res) => {
+router.post("/login", passport.authenticate("local"), (req, res) => {
   res.status(200).json({
     error: null,
-    message: "로그인 성공",
-    data: req.user,
+    data: "로그인 성공",
   });
 });
 
 // 로그아웃
 router.post("/logout", (req, res, next) => {
-  if (!req.isAuthenticated()) {
-    throw new Unauthorized("로그인이 되어있지 않습니다.");
-  }
-  const { user } = req.session.passport;
   if (req.isAuthenticated()) {
     req.logout((err) => {
       if (err) {
@@ -68,34 +63,27 @@ router.post("/logout", (req, res, next) => {
       }
       res.status(200).json({
         error: null,
-        message: "로그아웃 성공",
-        data: user,
+        data: "로그아웃 성공",
       });
     });
+  } else {
+    throw new Unauthorized("로그인이 되어있지 않습니다.");
   }
 });
 
 //로그인이 되어있는지 확인
-router.get("/status", async (req, res) => {
-  if (!req.isAuthenticated()) {
+router.get("/status", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({
+      status: true,
+      message: "로그인이 된 상태입니다.",
+    });
+  } else {
     res.json({
       status: false,
       message: "로그인이 되지 않았습니다.",
     });
-    return;
   }
-  const { email } = req.session.passport.user;
-  const user = await User.findOne({ email });
-  res.json({
-    status: true,
-    message: "로그인이 된 상태입니다.",
-    data: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      description: user.description,
-    },
-  });
 });
 
 module.exports = router;
