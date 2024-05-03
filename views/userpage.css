@@ -33,13 +33,23 @@ body {
 }
 
 .profile,
-.education {
+.education,
+.awards {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .education-list {
+  display: flex;
+  flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.awards-list {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
@@ -50,7 +60,12 @@ body {
 .education-list > div {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* 중앙 정렬 */
+  align-items: center; /*중앙 정렬*/
+  margin-bottom: 10px; /*하단 여백 */
+}
+
+.awards-list > div {
+  display: flex;
   margin-bottom: 10px; /* 하단 여백 */
 }
 
@@ -59,10 +74,16 @@ body {
 .education-list input {
   flex-grow: 1; /* 필요에 따라 컨테이너 크기에 맞게 요소를 확장 */
   margin-right: 10px; /* 우측 마진 */
+  margin-bottom: 10px;
 }
 
 .education-list input:last-child,
 .education-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
+.awards-list input:last-child,
+.awards-list select:last-child {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
@@ -78,11 +99,12 @@ button {
   height: 40px; /* 모든 입력 필드와 버튼의 높이 */
   padding: 0 10px; /* 좌우 패딩 */
   box-sizing: border-box; /* border와 padding을 너비에 포함 */
+  margin-right: 10px;
 }
 
 #delete-button {
   margin-right: 10px;
-  background-color: red; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #8f98eb; /* 삭제 버튼은 빨간색으로 표시 */
   color: white;
   padding: 0 15px;
   border: none;
@@ -90,7 +112,7 @@ button {
 }
 #confirm-button {
   margin-right: 10px;
-  background-color: blue; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #df6a81; /* 삭제 버튼은 빨간색으로 표시 */
   color: white;
   padding: 0 15px;
   border: none;
