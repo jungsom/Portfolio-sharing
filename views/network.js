@@ -9,7 +9,7 @@ async function fetchUsers() {
 
 /** 유저 정보 api 요청 */
 async function fetchUser() {
-  const res = await fetch(`http://localhost:8080/users`);
+  const res = await fetch(`http://localhost:3000/users`);
   const datas = await res.json();
   return datas;
 }
@@ -17,7 +17,7 @@ async function fetchUser() {
 /** 현재 사용자인지 여부 판단 */
 async function fetchStatus() {
   try {
-    const res = await fetch(`http://localhost:8080/auth/status`);
+    const res = await fetch(`http://localhost:3000/auth/status`);
     const data = await res.json();
     console.log(data);
     return data;
@@ -121,6 +121,7 @@ async function getUserImage() {
 }
 
 function init() {
+  updateMenu();
   getUserImage();
 
   mypageElem = document.querySelector(".userpage");
@@ -128,8 +129,6 @@ function init() {
 
   mypageElem.addEventListener("click", menuClickHandler);
   loginElem.addEventListener("click", menuClickHandler);
-
-  updateMenu();
 }
 
 init();
