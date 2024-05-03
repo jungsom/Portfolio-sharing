@@ -12,7 +12,7 @@
 }
 
 .logo {
-  font-family: "continuous" /* font-face해결시 추가 */, Arial, sans-serif;
+  font-family: "continuous", Arial, sans-serif;
   font-size: 36px;
   padding-left: 20px;
   align-content: center;
@@ -102,17 +102,19 @@ button {
   margin-right: 10px;
 }
 
-#delete-button {
+#education_delete_button,
+#awards_delete_button {
   margin-right: 10px;
-  background-color: #d67d86; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #d67d86;
   color: white;
   padding: 0 15px;
   border: none;
   cursor: pointer;
 }
-#confirm-button {
+#education_confirm_button,
+#awards_delete_button {
   margin-right: 10px;
-  background-color: #6d78d4; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #6d78d4;
   color: white;
   padding: 0 15px;
   border: none;

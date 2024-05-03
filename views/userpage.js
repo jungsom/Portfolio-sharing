@@ -1,10 +1,7 @@
-const deleteButton = document.getElementById("delete-button");
-const confirmButton = document.getElementById("confirm-button");
-const plusButton = document.getElementById("plus-button");
-const editButton = document.getElementById("edit-button");
 const selectElements = document.querySelectorAll(".education-list select");
 const inputElements = document.querySelectorAll(".education-list input");
 var Editcount = 0;
+
 var nameEdit,
   nameValue,
   Name,
@@ -229,17 +226,12 @@ function editProfile() {
 //학력 추가 기능
 function addEducation() {
   const educationList = document.getElementById("educationList");
-  const deleteButton = document.getElementById("delete-button");
-  const confirmButton = document.getElementById("confirm-button");
-  const plusButton = document.getElementById("plus-button");
+  const confirmButton = document.getElementById("education_confirm_button");
   const newEducationDiv = document.createElement("div"); // 새로운 div 생성
 
   if (educationList.style.display === "none") {
     educationList.style.display = "block";
-    deleteButton.style.display = "block";
     confirmButton.style.display = "block";
-  } else {
-    educationList.style.display = "none";
   }
 
   newEducationDiv.innerHTML = `
@@ -272,6 +264,7 @@ function addEducation() {
       </select>
       <input type="date" placeholder="입학 년월" />
       <input type="date" placeholder="졸업 년월" />
+      <button id = "education_delete_button" onclick="deleteEducation(this)">Remove</button>
     </div>
   `;
 
@@ -281,38 +274,35 @@ function addEducation() {
 
 function addAwards() {
   const AwardsList = document.getElementById("awardsList");
-  const deleteButton = document.getElementById("awards_delete_button");
   const confirmButton = document.getElementById("awards_confirm_button");
   const plusButton = document.getElementById("awards_plus_button");
 
   if (AwardsList.style.display === "none") {
     AwardsList.style.display = "block";
   }
+  confirmButton.style.display = "block";
+  plusButton.style.display = "block";
 
   const newAwardDiv = document.createElement("div");
   newAwardDiv.innerHTML = `
         <input type="text" placeholder="수상 내역" />
         <input type="date" placeholder="수상 날짜" />
-        <button onclick="removeAward(this)">Remove</button>
+        <button id = "awards_delete_button" onclick="deleteAward(this)">Remove</button>
     `;
 
   // awardsList에 생성된 필드 추가
   AwardsList.appendChild(newAwardDiv);
 }
 
-function deleteEducation(educationId) {
-  const educationDiv = document.querySelector(".education-list");
-  const confirmButton = document.getElementById("confirm-button");
-  const deleteButton = document.getElementById("delete-button");
-  const plusButton = document.getElementById("plus-button");
-  const editButton = document.getElementById("edit-button");
+function deleteEducation(button, educationId) {
+  const plusButton = document.getElementById("education_plus_button");
 
-  educationDiv.style.display = "none";
+  button.parentElement.remove();
 
   plusButton.style.display = "block";
-  editButton.style.display = "none";
-  deleteButton.style.display = "none";
-  confirmButton.style.display = "none";
+  // editButton.style.display = "none";
+  // deleteButton.style.display = "none";
+  // confirmButton.style.display = "none";
 
   fetch(`http://localhost:8080/education/${educationId}`, {
     method: "DELETE",
@@ -340,16 +330,20 @@ function deleteAward(button) {
 }
 
 // 학력 편집 기능
-function editEducation(educationItem) {
-  // contentEditable 상태 토글
-  const isEditable = educationItem.contentEditable === "true";
-  educationItem.contentEditable = isEditable ? "false" : "true";
-  if (!isEditable) {
-    educationItem.focus(); // 편집 가능 상태가 되면 포커스
-  }
-}
+// function editEducation(educationItem) {
+//   // contentEditable 상태 토글
+//   const isEditable = educationItem.contentEditable === "true";
+//   educationItem.contentEditable = isEditable ? "false" : "true";
+//   if (!isEditable) {
+//     educationItem.focus(); // 편집 가능 상태가 되면 포커스
+//   }
+// }
 
 function editEducation() {
+  const selectElements = document.querySelectorAll(".education-list select");
+  const inputElements = document.querySelectorAll(".education-list input");
+  const confirmButton = document.getElementById("education_confirm_button");
+  const editButton = document.getElementById("education_edit_button");
   // 입력 필드 및 선택 필드 활성화
   selectElements.forEach((element) => (element.disabled = false));
   inputElements.forEach((element) => (element.disabled = false));
@@ -361,6 +355,12 @@ function editEducation() {
 
 function confirmEducation() {
   // 각 정보를 가져옵니다.
+  const editButton = document.getElementById("education_edit_button");
+  const confirmButton = document.getElementById("education_confirm_button");
+
+  confirmButton.style.display = "none";
+  editButton.style.display = "block";
+
   // 각 select 요소를 선택합니다.
   const selectElements = document.querySelectorAll(".education-list select");
   const inputElements = document.querySelectorAll(".education-list input");
@@ -422,8 +422,6 @@ function confirmEducation() {
   inputElements.forEach((element) => (element.disabled = true));
 
   // 확인 버튼 숨기기, 수정 버튼 보이기
-  confirmButton.style.display = "none";
-  editButton.style.display = "block";
 }
 
 function confirmAwards() {
