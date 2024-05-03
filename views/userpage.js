@@ -26,7 +26,7 @@ fetch("http://localhost:8080/auth/status")
     document.querySelector(".Name").innerText = data.data.name;
     document.querySelector(".Email").innerText = data.data.email;
     document.querySelector(".Description").innerText = data.data.description;
-    userid = data.data.id;
+    userid = data.id;
     // console.log(data.data);
     // console.log(data.data.id);
   });
@@ -384,7 +384,7 @@ function deleteProject(button, projectId) {
 //   }
 // }
 
-function editEducation(educationId, newEducationData) {
+function editEducation(educationId, updateEducation) {
   const selectElements = document.querySelectorAll(".education-list select");
   const inputElements = document.querySelectorAll(".education-list input");
   const confirmButton = document.getElementById("education_confirm_button");
@@ -403,14 +403,14 @@ function editEducation(educationId, newEducationData) {
       "Content-Type": "application/json",
       Authorization: "...",
     },
-    body: JSON.stringify(newEducationData),
+    body: JSON.stringify(updateEducation),
   })
     .then((response) => response.json())
     .then((data) => console.log(" 학력이 업데이트 되었습니다:", data))
     .catch((error) => console.error("에러:", error));
 }
 
-function editAwards(awardId, newAwardData) {
+function editAwards(awardId, updateAward) {
   const selectElements = document.querySelectorAll(".awards-list select");
   const inputElements = document.querySelectorAll(".awards-list input");
   const confirmButton = document.getElementById("awards_confirm_button");
@@ -429,14 +429,14 @@ function editAwards(awardId, newAwardData) {
       "Content-Type": "application/json",
       Authorization: "...",
     },
-    body: JSON.stringify(newAwardData),
+    body: JSON.stringify(updateAward),
   })
     .then((response) => response.json())
     .then((data) => console.log("수상 이력이 업데이트 되었습니다:", data))
     .catch((error) => console.error("에러:", error));
 }
 
-function editProject(projectId, newProjectData) {
+function editProject(projectId, updateProject) {
   const selectElements = document.querySelectorAll(".project-list select");
   const inputElements = document.querySelectorAll(".project-list input");
   const confirmButton = document.getElementById("project_confirm_button");
@@ -455,7 +455,7 @@ function editProject(projectId, newProjectData) {
       "Content-Type": "application/json",
       Authorization: "...",
     },
-    body: JSON.stringify(newProjectData),
+    body: JSON.stringify(updateProject),
   })
     .then((response) => response.json())
     .then((data) => console.log("프로젝트 이력이 업데이트 되었습니다:", data))
@@ -500,7 +500,7 @@ function confirmEducation() {
     schoolState: degree,
   };
 
-  fetch("http://localhost:8080/mypage/education", {
+  fetch(`http://localhost:8080/mypage/education`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
