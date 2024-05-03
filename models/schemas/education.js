@@ -1,14 +1,14 @@
 const { Schema } = require("mongoose");
 
 const EducationSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
   id: {
     type: String,
     required: true,
+  },
+  educationId: {
+    type: Number,
+    required: true,
+    default: 0,
   },
   schoolName: {
     type: String,

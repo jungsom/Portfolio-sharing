@@ -77,13 +77,13 @@ router.get("/status", (req, res) => {
     res.json({
       status: true,
       message: "로그인이 된 상태입니다.",
-    })
+    });
   } else {
     res.json({
       status: false,
-      message: "로그인이 되지 않았습니다."
-    })
+      message: "로그인이 되지 않았습니다.",
+    });
   }
-})
+});
 
 module.exports = router;
