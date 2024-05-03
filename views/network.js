@@ -121,7 +121,6 @@ async function getUserImage() {
 }
 
 function init() {
-  updateMenu();
   getUserImage();
 
   mypageElem = document.querySelector(".userpage");
@@ -129,6 +128,8 @@ function init() {
 
   mypageElem.addEventListener("click", menuClickHandler);
   loginElem.addEventListener("click", menuClickHandler);
+
+  updateMenu();
 }
 
 init();
