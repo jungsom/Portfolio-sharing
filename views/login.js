@@ -27,16 +27,22 @@ function clear() {
 const modal = document.querySelector(".modal");
 const modalOpen = document.querySelector(".modal_btn");
 const modalClose = document.querySelector(".close_btn");
+// 해쉬형태로 수정 필요
 let modaltextflag = "";
 
 function openModal() {
   changeModalText();
-  modal.classList.add("on");
+  document.getElementById("modal").style.display = "block";
+  // modal.classList.add("on");
 }
 
 function closeModal() {
   changeModalText();
-  modal.classList.remove("on");
+  document.getElementById("modal").style.display = "none";
+  // modal.classList.remove("on");
+  if (modaltextflag == 2) {
+    window.location.href = "/network";
+  }
 }
 
 // 팝업창 텍스트 설정
@@ -113,13 +119,12 @@ function login() {
         openModal();
         clear();
         console.log(response);
-        // window.location.href = "/network";
       }
       return response.json();
     })
     .then((data) => {
       console.log(data);
-    });
+    }); // data로 구분하는것 수정해야함
 }
 
 function setAccounttoServer() {
@@ -128,6 +133,18 @@ function setAccounttoServer() {
   const name = document.getElementById("setname").value;
   const email = document.getElementById("setemail").value;
   var setaccountflag = 0;
+  const emailpattern =
+    /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+  //email 정규식 확인
+  function emailCheck(email) {
+    console.log(emailpattern.test(email));
+    if (emailpattern.test(email)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   if (pw != pwchk) {
     modaltextflag = 3;
@@ -135,7 +152,7 @@ function setAccounttoServer() {
     setaccountflag = 1;
     openModal();
   }
-  if (email.includes("@") == false) {
+  if (emailCheck(email) == false) {
     modaltextflag = 7;
     // confirm("올바른 형태의 email 을 입력해주세요.");
     setaccountflag = 1;
