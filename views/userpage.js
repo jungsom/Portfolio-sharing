@@ -182,24 +182,61 @@ function editProfile() {
 
 //학력 추가 기능
 function addEducation() {
-  var educationList = document.getElementById("educationList");
+  const educationList = document.getElementById("educationList");
   const deleteButton = document.getElementById("delete-button");
   const confirmButton = document.getElementById("confirm-button");
   const plusButton = document.getElementById("plus-button");
+  const newEducationDiv = document.createElement("div"); // 새로운 div 생성
 
   if (educationList.style.display === "none") {
     educationList.style.display = "block";
     deleteButton.style.display = "block";
     confirmButton.style.display = "block";
-    plusButton.style.display = "none";
   } else {
     educationList.style.display = "none";
   }
+
+  newEducationDiv.innerHTML = `
+    <div>
+      <select>
+        <option value="">학력 구분 선택</option>
+        <option value="elementry">초등학교 졸업</option>
+        <option value="middle">중학교 졸업</option>
+        <option value="high">고등학교 졸업</option>
+        <option value="colleage">대학교,대학원 졸업</option>
+      </select>
+      <select>
+        <option value="">학위 선택</option>
+        <option value="재학중">대학(2,3년)</option>
+        <option value="학사졸업">대학(4년)</option>
+        <option value="석사졸업">대학원(석사)</option>
+        <option value="박사졸업">대학원(박사)</option>
+      </select>
+      <input type="text" placeholder="대학교" />
+      <input type="text" placeholder="전공" />
+      <select>
+        <option value="">졸업여부</option>
+        <option value="bachelor">졸업</option>
+        <option value="master">재학중</option>
+        <option value="master">휴학중</option>
+        <option value="phd">수료</option>
+        <option value="phd">중퇴</option>
+        <option value="phd">자퇴</option>
+        <option value="phd">졸업예정</option>
+      </select>
+      <input type="date" placeholder="입학 년월" />
+      <input type="date" placeholder="졸업 년월" />
+    </div>
+  `;
+
+  educationList.appendChild(newEducationDiv);
+  educationList.style.display = "block";
 }
 
-function removeEducation(deleteButton) {
+function removeEducation(educationId) {
   const educationDiv = document.querySelector(".education-list");
   const confirmButton = document.getElementById("confirm-button");
+  const deleteButton = document.getElementById("delete-button");
   const plusButton = document.getElementById("plus-button");
   const editButton = document.getElementById("edit-button");
 
@@ -209,23 +246,31 @@ function removeEducation(deleteButton) {
   editButton.style.display = "none";
   deleteButton.style.display = "none";
   confirmButton.style.display = "none";
-
-  app.delete("http://localhost:8080/education/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      // 교육 정보 삭제 로직 구현, 예: MongoDB에서 해당 ID로 데이터 삭제
-      await Education.findByIdAndRemove(id);
-      res.status(204).json({ message: "학력 정보가 삭제되었습니다" });
-    } catch (error) {
-      res.status(500).json({ error: "서버 에러 입니다." });
-    }
-  });
+  fetch(`http://localhost:8080/education/${educationId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      // 상태 코드 확인
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data.message); // 성공 메시지 출력
+      alert("학력 정보가 삭제되었습니다.");
+      // 추가적인 UI 업데이트 로직
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
+    });
 }
 
 // 학력 편집 기능
 function editEducation(educationItem) {
   // contentEditable 상태 토글
-  var isEditable = educationItem.contentEditable === "true";
+  const isEditable = educationItem.contentEditable === "true";
   educationItem.contentEditable = isEditable ? "false" : "true";
   if (!isEditable) {
     educationItem.focus(); // 편집 가능 상태가 되면 포커스
@@ -312,4 +357,30 @@ function editEducation() {
   // 수정 버튼 숨기기, 확인 버튼 보이기
   confirmButton.style.display = "block";
   editButton.style.display = "none";
+}
+
+function addAwards() {
+  const AwardsList = document.getElementById("awardsList");
+  const deleteButton = document.getElementById("awards_delete_button");
+  const confirmButton = document.getElementById("awards_confirm_button");
+  const plusButton = document.getElementById("awards_plus_button");
+
+  if (AwardsList.style.display === "none") {
+    AwardsList.style.display = "block";
+  }
+
+  const newAwardDiv = document.createElement("div");
+  newAwardDiv.innerHTML = `
+        <input type="text" placeholder="수상 내역" />
+        <input type="date" placeholder="수상 날짜" />
+        <button onclick="removeAward(this)">Remove</button>
+    `;
+
+  // awardsList에 생성된 필드 추가
+  AwardsList.appendChild(newAwardDiv);
+}
+
+function removeAward(button) {
+  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
+  button.parentElement.remove();
 }

@@ -34,7 +34,7 @@
         <!-- 학력 정보 -->
         <h2>학력</h2>
         <div class="education-list" id="educationList" style="display: none">
-          <div>
+          <!-- <div>
             <select>
               <option value="">학력 구분 선택</option>
               <option value="elementry">초등학교 졸업</option>
@@ -65,12 +65,12 @@
             </select>
             <input type="date" placeholder="입학 년월" />
             <input type="date" placeholder="졸업 년월" />
-          </div>
+          </div> -->
         </div>
         <div id="buttons-container">
           <button
             id="delete-button"
-            onclick="removeEducation(this)"
+            onclick="removeEducation()"
             style="display: none"
           >
             삭제
@@ -90,6 +90,37 @@
             edit
           </button>
           <button id="plus-button" onclick="addEducation()">+</button>
+        </div>
+      </div>
+      <div class="awards">
+        <!-- 학력 정보 -->
+        <h2>수상 내역</h2>
+        <div class="awards-list" id="awardsList" style="display: none">
+          <div></div>
+        </div>
+        <div id="buttons-container">
+          <button
+            id="awards_delete_button"
+            onclick="removeAwards()"
+            style="display: none"
+          >
+            삭제
+          </button>
+          <button
+            id="awards_confirm_button"
+            onclick="confirmAwards()"
+            style="display: none"
+          >
+            확인
+          </button>
+          <button
+            id="awards_edit_button"
+            onclick="editAwards()"
+            style="display: none"
+          >
+            edit
+          </button>
+          <button id="awards_plus_button" onclick="addAwards()">+</button>
         </div>
       </div>
     </div>
