@@ -32,19 +32,20 @@ router.get("/:id", async (req, res, next) => {
 // 학력 추가
 router.post("/:id", async (req, res, next) => {
   const id = req.params.id;
+  const { schoolName, major, schoolStatus } = req.body;
+
   try {
     // id 값 관련
     const education = await Education.find({ id });
     let ids = [];
     let educationId = 1;
     for (const data of education) {
-      ids.push(parseInt(data.id));
+      ids.push(Number(data.educationId));
     }
     if (ids.length !== 0) {
       educationId += Math.max.apply(null, ids);
     }
 
-    const { schoolName, major, schoolStatus } = req.body;
     const addEducation = await Education.create({
       id,
       educationId,
@@ -60,29 +61,35 @@ router.post("/:id", async (req, res, next) => {
 });
 
 // 학력 수정
-router.put("/:id", async (req, res) => {
+router.put("/:id/:educationId", async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const { id, schoolName, major, schoolStatus } = req.body;
+    const id = req.params.id;
+    const educationId = Number(req.params.educationId);
+    const { schoolName, major, schoolStatus } = req.body;
 
     const updateEducation = await Education.findOneAndUpdate(
-      { user: userId },
-      { id, schoolName, major, schoolStatus }
+      { id, educationId },
+      { schoolName, major, schoolStatus }
     );
 
-    res.status(200).json({ error: null, data: updateEducation });
+    res.status(200).json({
+      error: null,
+      data: await Education.findOne({ id, educationId }),
+    });
   } catch (error) {
     next(error);
   }
 });
 
 // 학력 삭제
-router.delete("/:id", async (req, res) => {
+router.delete("/:id/:educationId", async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const id = req.params.id;
+    const educationId = Number(req.params.educationId);
 
     const deleteEducation = await Education.findOneAndDelete({
-      user: userId,
+      id,
+      educationId,
     });
 
     if (!deleteEducation) {
