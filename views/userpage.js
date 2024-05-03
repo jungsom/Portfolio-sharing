@@ -210,14 +210,14 @@ function removeEducation(deleteButton) {
   deleteButton.style.display = "none";
   confirmButton.style.display = "none";
 
-  app.delete('http://localhost:8080/education/:id', async (req, res) => {
+  app.delete("http://localhost:8080/education/:id", async (req, res) => {
     try {
       const { id } = req.params;
       // 교육 정보 삭제 로직 구현, 예: MongoDB에서 해당 ID로 데이터 삭제
       await Education.findByIdAndRemove(id);
-      res.status(204).json({ message: '학력 정보가 삭제되었습니다' });
+      res.status(204).json({ message: "학력 정보가 삭제되었습니다" });
     } catch (error) {
-      res.status(500).json({ error: '서버 에러 입니다.' });
+      res.status(500).json({ error: "서버 에러 입니다." });
     }
   });
 }
