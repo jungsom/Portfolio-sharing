@@ -71,4 +71,22 @@ router.post("/logout", (req, res, next) => {
   }
 });
 
+//로그인이 되어있는지 확인
+router.get("/status", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const { email } = req.session.passport.user;
+    const user = await User.findOne({ email });
+    res.json({
+      status: true,
+      message: "로그인이 된 상태입니다.",
+      data: user,
+    });
+  } else {
+    res.json({
+      status: false,
+      message: "로그인이 되지 않았습니다.",
+    });
+  }
+});
+
 module.exports = router;
