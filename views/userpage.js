@@ -287,11 +287,35 @@ function addAwards() {
   newAwardDiv.innerHTML = `
         <input type="text" placeholder="수상 내역" />
         <input type="date" placeholder="수상 날짜" />
+        <input type="text" placeholder="부가 설명" />
         <button id = "awards_delete_button" onclick="deleteAward(this)">Remove</button>
     `;
 
   // awardsList에 생성된 필드 추가
   AwardsList.appendChild(newAwardDiv);
+}
+
+function addProject() {
+  const projectList = document.getElementById("projectList");
+  const confirmButton = document.getElementById("project_confirm_button");
+  const plusButton = document.getElementById("project_plus_button");
+
+  if (projectList.style.display === "none") {
+    projectList.style.display = "block";
+  }
+  confirmButton.style.display = "block";
+  plusButton.style.display = "block";
+
+  const newProjectDiv = document.createElement("div");
+  newProjectDiv.innerHTML = `
+        <input type="text" placeholder="프로젝트 이름" />
+        <input type="date" placeholder="프로젝트 진행 날짜" />
+        <input type="text" placeholder="프로젝트 설명" />
+        <button id = "project_delete_button" onclick="deleteProject(this)">Remove</button>
+    `;
+
+  // awardsList에 생성된 필드 추가
+  projectList.appendChild(newProjectDiv);
 }
 
 function deleteEducation(button, educationId) {
@@ -336,6 +360,20 @@ function deleteAward(button, awardId) {
     .catch((error) => console.error("Error:", error));
 }
 
+function deleteProject(button, projectId) {
+  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
+  button.parentElement.remove();
+
+  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "...", // 인증이 필요하다면 추가
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("프로젝트 내역이 삭제되었습니다.:", data))
+    .catch((error) => console.error("Error:", error));
+}
 // 학력 편집 기능
 // function editEducation(educationItem) {
 //   // contentEditable 상태 토글
@@ -395,6 +433,32 @@ function editAwards(awardId, newAwardData) {
   })
     .then((response) => response.json())
     .then((data) => console.log("수상 이력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
+}
+
+function editProject(projectId, newProjectData) {
+  const selectElements = document.querySelectorAll(".project-list select");
+  const inputElements = document.querySelectorAll(".project-list input");
+  const confirmButton = document.getElementById("project_confirm_button");
+  const editButton = document.getElementById("project_edit_button");
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(newProjectData),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("프로젝트 이력이 업데이트 되었습니다:", data))
     .catch((error) => console.error("에러:", error));
 }
 
@@ -483,14 +547,17 @@ function confirmAwards() {
   // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
   const awardDate = selectElements.value;
   const awardName = inputElements[0].value;
+  const awardDetail = inputElements[1].value;
 
   // 가져온 정보를 화면에 출력합니다.
   console.log("수상 내용:", awardName);
   console.log("수상 날짜:", awardDate);
+  console.log("부가 설명:", awardDetail);
 
   const awardsData = {
     title: awardName,
     acqdate: awardDate,
+    details: awardDetail,
   };
 
   fetch("http://localhost:8080/mypage/award", {
@@ -509,7 +576,7 @@ function confirmAwards() {
     })
     .then((data) => {
       console.log("Success:", data);
-      const confirmedInfo = `수상 이름: ${awardName}\n수상 날짜: ${awardDate}`;
+      const confirmedInfo = `수상 이름: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
       alert("수상 정보가 성공적으로 등록되었습니다.");
       alert(confirmedInfo);
     })
@@ -518,7 +585,66 @@ function confirmAwards() {
       alert("수상 정보 등록에 실패하였습니다.");
     });
 
-  const confirmedInfo = `수상 내용: ${awardName}\n수상 날짜: ${awardDate}`;
+  const confirmedInfo = `수상 내용: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
+  alert(confirmedInfo);
+
+  selectElements.forEach((element) => (element.disabled = true));
+  inputElements.forEach((element) => (element.disabled = true));
+}
+
+function confirmProject() {
+  const editButton = document.getElementById("project_edit_button");
+  const confirmButton = document.getElementById("project_confirm_button");
+
+  confirmButton.style.display = "none";
+  editButton.style.display = "block";
+
+  // 각 select 요소를 선택합니다.
+  const inputElements = document.querySelectorAll(".project-list input");
+  const selectElements = document.querySelectorAll(".project-list select");
+
+  // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
+  const projectDate = selectElements.value;
+  const projectName = inputElements[0].value;
+  const projectDetail = inputElements[1].value;
+
+  // 가져온 정보를 화면에 출력합니다.
+  console.log("프로젝트 내용:", projectName);
+  console.log("프로젝트 진행 날짜:", projectDate);
+  console.log("프로젝트 설명:", projectDetail);
+
+  const projectData = {
+    title: projectName,
+    acqdate: projectDate,
+    details: projectDetail,
+  };
+
+  fetch("http://localhost:8080/mypage/project", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(projectData),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
+      alert("프로젝트 정보가 성공적으로 등록되었습니다.");
+      alert(confirmedInfo);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("프로젝트 정보 등록에 실패하였습니다.");
+    });
+
+  const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
   alert(confirmedInfo);
 
   selectElements.forEach((element) => (element.disabled = true));

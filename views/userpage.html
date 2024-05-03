@@ -108,6 +108,51 @@
           <button id="awards_plus_button" onclick="addAwards()">+</button>
         </div>
       </div>
+      <div class="awards">
+        <!-- 학력 정보 -->
+        <h2>프로젝트 내역</h2>
+        <div class="project-list" id="projectList" style="display: none">
+          <div></div>
+        </div>
+        <div id="buttons-container">
+          <button
+            id="project_delete_button"
+            onclick="removeproject()"
+            style="display: none"
+          >
+            삭제
+          </button>
+          <button
+            id="project_confirm_button"
+            onclick="confirmProject()"
+            style="display: none"
+          >
+            확인
+          </button>
+          <button
+            id="project_edit_button"
+            onclick="editProject()"
+            style="display: none"
+          >
+            edit
+          </button>
+          <button
+            id="project_delete_button"
+            onclick="deleteProject()"
+            style="display: none"
+          >
+            삭제
+          </button>
+          <button
+            id="project_confirm_button"
+            onclick="addProject()"
+            style="display: none"
+          >
+            확인
+          </button>
+          <button id="project_plus_button" onclick="addProject()">+</button>
+        </div>
+      </div>
     </div>
     <script src="./userpage.js"></script>
   </body>

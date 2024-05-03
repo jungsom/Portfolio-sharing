@@ -49,7 +49,8 @@ body {
   padding: 0;
 }
 
-.awards-list {
+.awards-list,
+.project-list {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
@@ -64,7 +65,8 @@ body {
   margin-bottom: 10px; /*하단 여백 */
 }
 
-.awards-list > div {
+.awards-list,
+.project-list > div {
   display: flex;
   margin-bottom: 10px; /* 하단 여백 */
 }
@@ -87,6 +89,11 @@ body {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
+.project-list input:last-child,
+.project-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
 .profile-image {
   width: 100px;
   height: 100px;
@@ -103,7 +110,8 @@ button {
 }
 
 #education_delete_button,
-#awards_delete_button {
+#awards_delete_button,
+#project_delete_button {
   margin-right: 10px;
   background-color: #d67d86;
   color: white;
@@ -111,8 +119,10 @@ button {
   border: none;
   cursor: pointer;
 }
+
 #education_confirm_button,
-#awards_confirm_button {
+#awards_confirm_button,
+#project_confirm_button {
   margin-right: 10px;
   background-color: #6d78d4;
   color: white;
