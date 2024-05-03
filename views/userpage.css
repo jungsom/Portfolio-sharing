@@ -112,7 +112,7 @@ button {
   cursor: pointer;
 }
 #education_confirm_button,
-#awards_delete_button {
+#awards_confirm_button {
   margin-right: 10px;
   background-color: #6d78d4;
   color: white;

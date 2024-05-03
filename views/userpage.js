@@ -300,11 +300,8 @@ function deleteEducation(button, educationId) {
   button.parentElement.remove();
 
   plusButton.style.display = "block";
-  // editButton.style.display = "none";
-  // deleteButton.style.display = "none";
-  // confirmButton.style.display = "none";
 
-  fetch(`http://localhost:8080/education/${educationId}`, {
+  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -315,7 +312,7 @@ function deleteEducation(button, educationId) {
       return response.json();
     })
     .then((data) => {
-      console.log(data.message); // 성공 메시지 출력
+      console.log(data);
       alert("학력 정보가 삭제되었습니다.");
     })
     .catch((error) => {
@@ -324,9 +321,19 @@ function deleteEducation(button, educationId) {
     });
 }
 
-function deleteAward(button) {
+function deleteAward(button, awardId) {
   // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
   button.parentElement.remove();
+
+  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "...", // 인증이 필요하다면 추가
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("수상 내역이 삭제되었습니다.:", data))
+    .catch((error) => console.error("Error:", error));
 }
 
 // 학력 편집 기능
@@ -339,7 +346,7 @@ function deleteAward(button) {
 //   }
 // }
 
-function editEducation() {
+function editEducation(educationId, newEducationData) {
   const selectElements = document.querySelectorAll(".education-list select");
   const inputElements = document.querySelectorAll(".education-list input");
   const confirmButton = document.getElementById("education_confirm_button");
@@ -351,6 +358,44 @@ function editEducation() {
   // 수정 버튼 숨기기, 확인 버튼 보이기
   confirmButton.style.display = "block";
   editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(newEducationData),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(" 학력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
+}
+
+function editAwards(awardId, newAwardData) {
+  const selectElements = document.querySelectorAll(".awards-list select");
+  const inputElements = document.querySelectorAll(".awards-list input");
+  const confirmButton = document.getElementById("awards_confirm_button");
+  const editButton = document.getElementById("awards_edit_button");
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(newAwardData),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("수상 이력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
 }
 
 function confirmEducation() {
@@ -391,7 +436,7 @@ function confirmEducation() {
     schoolState: degree,
   };
 
-  fetch("http://localhost:8080/education", {
+  fetch("http://localhost:8080/mypage/education", {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -425,5 +470,57 @@ function confirmEducation() {
 }
 
 function confirmAwards() {
-  console.log("아직");
+  const editButton = document.getElementById("awards_edit_button");
+  const confirmButton = document.getElementById("awards_confirm_button");
+
+  confirmButton.style.display = "none";
+  editButton.style.display = "block";
+
+  // 각 select 요소를 선택합니다.
+  const inputElements = document.querySelectorAll(".awards-list input");
+  const selectElements = document.querySelectorAll(".awards-list select");
+
+  // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
+  const awardDate = selectElements.value;
+  const awardName = inputElements[0].value;
+
+  // 가져온 정보를 화면에 출력합니다.
+  console.log("수상 내용:", awardName);
+  console.log("수상 날짜:", awardDate);
+
+  const awardsData = {
+    title: awardName,
+    acqdate: awardDate,
+  };
+
+  fetch("http://localhost:8080/mypage/award", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(awardsData),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      const confirmedInfo = `수상 이름: ${awardName}\n수상 날짜: ${awardDate}`;
+      alert("수상 정보가 성공적으로 등록되었습니다.");
+      alert(confirmedInfo);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("수상 정보 등록에 실패하였습니다.");
+    });
+
+  const confirmedInfo = `수상 내용: ${awardName}\n수상 날짜: ${awardDate}`;
+  alert(confirmedInfo);
+
+  selectElements.forEach((element) => (element.disabled = true));
+  inputElements.forEach((element) => (element.disabled = true));
 }
