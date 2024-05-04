@@ -14,7 +14,7 @@ function gotoNetworkpage() {
 
 //Email,Pw 입력 값 초기화
 function clear() {
-  console.log("clear");
+  // console.log("clear");
   document.getElementById("email").value = "";
   document.getElementById("pw").value = "";
   document.getElementById("setemail").value = "";
@@ -124,6 +124,7 @@ function login() {
     })
     .then((data) => {
       console.log(data);
+      localStorage.setItem("login", "test");
     }); // data로 구분하는것 수정해야함
 }
 
@@ -138,7 +139,7 @@ function setAccounttoServer() {
 
   //email 정규식 확인
   function emailCheck(email) {
-    console.log(emailpattern.test(email));
+    // console.log(emailpattern.test(email));
     if (emailpattern.test(email)) {
       return true;
     } else {
