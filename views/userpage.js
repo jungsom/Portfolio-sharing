@@ -26,6 +26,34 @@ var nameContainer,
 
 const massId = "ydiatvo560";
 
+// mypage/project post 테스트
+// fetch("http://localhost:8080/mypage/project", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify({
+//     title: "테스트프로젝트타이틀",
+//     startDate: "2024-04-29",
+//     endDate: "2024-05-12",
+//     details: "프로젝트 post 테스트입니다.",
+//   }),
+// })
+//   .then((res) => {
+//     console.log("res ", res);
+//     res.json();
+//   })
+//   .then((data) => {
+//     console.log("data ", data);
+//   });
+
+// mypage/project get 테스트
+fetch("http://localhost:8080/mypage/project")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log(data);
+  });
+
 // edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 editBtns이라는 class 할당해서 일괄 display 설정
 function isVisibleBtns() {
   fetch("http://localhost:8080/auth/status")
