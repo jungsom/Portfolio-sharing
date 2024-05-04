@@ -19,24 +19,39 @@ var nameContainer,
   profile,
   profileEditButton;
 
-fetch("http://localhost:8080/auth/status")
-  .then((res) => res.json())
-  .then((data) => {
-    // console.log(data);
-    // console.log(data.data.id);
-    if (data.status == true) {
-      fetch(`http://localhost:8080/users/${data.data.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          // console.log(data);
-          //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
-          document.querySelector(".Name").innerText = data.user.name;
-          document.querySelector(".Email").innerText = data.user.email;
-          document.querySelector(".Description").innerText =
-            data.user.description;
-        });
-    }
-  });
+//네트워크 페이지에서 담아보낼값 아래 localStorage 처럼 사용하면됨
+// let massId = localStorage.getItem("tempId"); // 작동되는거확인 Ok
+// massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
+// 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
+
+const massId = "ydiatvo560";
+
+//현재 내가 로그인 한 계정이랑 userpage이동시 받아온 id값이랑 같으면 true 아니면 false 반환하는 함수
+function isMyPage() {
+  fetch("http://localhost:8080/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.data.id == massId) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+}
+
+//userpage 에 표시될 유저 data 받아오기 및 표시
+//본인 userpage 던 타 userpage던 아래 코드로 바로 표시가능(구분방법 massId)
+function getUserData() {
+  fetch(`http://localhost:8080/users/${massId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      // console.log(data);
+      //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
+      document.querySelector(".Name").innerText = data.user.name;
+      document.querySelector(".Email").innerText = data.user.email;
+      document.querySelector(".Description").innerText = data.user.description;
+    });
+}
 
 // 프로필 편집 기능
 function editProfile() {
@@ -776,3 +791,5 @@ function confirmCertificate() {
   selectElements.forEach((element) => (element.disabled = true));
   inputElements.forEach((element) => (element.disabled = true));
 }
+
+getUserData();
