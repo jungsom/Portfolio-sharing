@@ -11,9 +11,7 @@ const ejs = require("ejs");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
-const educationRouter = require("./routes/education");
-const awardRouter = require("./routes/award");
-const projectRouter = require("./routes/project");
+const mypageRouter = require("./routes/mypage");
 
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
@@ -66,9 +64,7 @@ app.use(passport.session());
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
-app.use("/education", educationRouter);
-app.use("/award", awardRouter);
-app.use("/project", projectRouter);
+app.use("/mypage", mypageRouter);
 
 // 오류 처리
 app.use((err, req, res, next) => {
