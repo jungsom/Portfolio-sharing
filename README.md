@@ -4,6 +4,10 @@
 
 자세한 내용은 [API 문서](https://docs.google.com/spreadsheets/d/1xZFiT2gpMSSY5c2hOz8VhJL_gC7Prh9ZJ5Q6wfp4Itk/edit?usp=sharing)를 참고해 주세요.
 
+- 2024년 5월 5일
+
+  - MVP 조회 Body params 부분에서 id 삭제
+
 - 2024년 5월 4일
 
   - 로그인 상태 확인: response에서 description 안보내주도록 변경
@@ -41,6 +45,10 @@
 
 ## 💻 백엔드 Changelog
 
+- 2024년 5월 5일
+
+  - 프로젝트 기능 구현
+
 - 2024년 5월 4일
   - Users: 페이지네이션 구현
   - project: ProjectId AutoIncrement 구현 **(proejct Schema 문서를 확인해주세요.!!!!!!)**
@@ -50,11 +58,11 @@
 - 🔑 회원가입, 로그인 (채명희)
 - 🧸 User MVP (이유민)
 - 🎓 Education MVP (박수정)
+- 🗂️ Project MVP (채명희)
 
 ## 🎯️ 미구현 기능
 
 - 🏆 Award MVP
-- 🗂️ Project MVP
 - ️🪪 Certificate MVP
 
 ## ✏️ 개발 완료
