@@ -27,6 +27,7 @@ function clear() {
 const modal = document.querySelector(".modal");
 const modalOpen = document.querySelector(".modal_btn");
 const modalClose = document.querySelector(".close_btn");
+
 // 해쉬형태로 수정 필요
 let modaltextflag = "";
 

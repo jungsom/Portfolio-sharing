@@ -26,16 +26,19 @@ var nameContainer,
 
 const massId = "ydiatvo560";
 
-//현재 내가 로그인 한 계정이랑 userpage이동시 받아온 id값이랑 같으면 true 아니면 false 반환하는 함수
-function isMyPage() {
+// edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 editBtns이라는 class 할당해서 일괄 display 설정
+function isVisibleBtns() {
   fetch("http://localhost:8080/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      if (data.data.id == massId) {
-        return true;
-      } else {
-        return false;
-      }
+      targets = document.querySelectorAll(".editBtns");
+      targets.forEach((target) => {
+        if (data.data.id == massId) {
+          target.style.display = "block";
+        } else {
+          target.style.display = "none";
+        }
+      });
     });
 }
 
@@ -793,3 +796,4 @@ function confirmCertificate() {
 }
 
 getUserData();
+isVisibleBtns();
