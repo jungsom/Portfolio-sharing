@@ -41,7 +41,7 @@
 
 - 2024년 5월 4일
   - Users: 페이지네이션 구현
-  - project: ProjectId AutoIncrement 구현
+  - project: ProjectId AutoIncrement 구현 **(proejct Schema 문서를 확인해주세요.!!!!!!)**
 
 ## 🔧 개발 중
 
