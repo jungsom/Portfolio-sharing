@@ -1,4 +1,4 @@
-# ✨Dev.cartes! backend Page (임시 페이지) - Merge 문제가 있어서 수정중입니다.ㅠㅠ
+# ✨Dev.cartes! backend Page (임시 페이지)
 
 ## 🪄 API 수정 사항
 
