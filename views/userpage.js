@@ -17,22 +17,28 @@ var nameContainer,
   submitEditButton,
   cancelEditButton,
   profile,
-  profileEditButton,
-  userid;
+  profileEditButton;
 
 fetch("http://localhost:8080/auth/status")
   .then((res) => res.json())
   .then((data) => {
-    document.querySelector(".Name").innerText = data.data.name;
-    document.querySelector(".Email").innerText = data.data.email;
-    document.querySelector(".Description").innerText = data.data.description;
-    userid = data.id;
-    // console.log(data.data);
+    // console.log(data);
     // console.log(data.data.id);
+    if (data.status == true) {
+      fetch(`http://localhost:8080/users/${data.data.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(data);
+          //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
+          document.querySelector(".Name").innerText = data.user.name;
+          document.querySelector(".Email").innerText = data.user.email;
+          document.querySelector(".Description").innerText =
+            data.user.description;
+        });
+    }
   });
 
 // 프로필 편집 기능
-
 function editProfile() {
   // 프로필 편집 로직
   //이름 편집 input 생성
@@ -122,7 +128,7 @@ function editProfile() {
       cancelEditButton.style.display = "none";
 
       //서버로 name, description 보내기
-      fetch(`http://localhost:8080/users/${userid}`, {
+      fetch("http://localhost:8080/users/mypage", {
         method: "PUT", // HTTP 메서드
         headers: {
           "Content-Type": "application/json", // 컨텐트 타입 설정
