@@ -73,6 +73,7 @@ async function ImgClickHandler() {
     const login = localStorage.getItem("login");
 
     if (loginTrue.status === true && login) {
+      localStorage.setItem("massID", loginTrue.id);
       window.location.href = "/userpage"; //개인 페이지로 이동
     } else {
       alert("로그인 창으로 이동합니다.");
@@ -131,7 +132,8 @@ async function getUserImage() {
 
       if (userData.data[index] && userData.data[index].description) {
         textElem.innerHTML = `안녕하세요! <br>
-                ${userData.data[index].description}`;
+                이름: ${userData.data[index].name} <br>
+                자기소개: ${userData.data[index].description}`;
       } else {
         textElem.innerHTML = `사용자 정보가 없습니다.`;
       }
@@ -198,3 +200,7 @@ function init() {
 }
 
 init();
+
+// async function paging(totalData, currentPage) {
+//   const data
+// }
