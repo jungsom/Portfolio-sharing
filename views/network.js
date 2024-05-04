@@ -17,42 +17,45 @@ async function fetchUser() {
 /** 현재 사용자인지 여부 판단 */
 async function fetchTrue() {
   try {
-    const response = await fetch(`http://localhost:8080/auth/true`);
+    const response = await fetch(`http://localhost:8080/auth/status`);
     if (!response.ok) {
-      throw new Errow("사용자가 현재 로그인 상태가 아님");
+      throw new Errow("데이터를 가져오는데 문제가 있습니다.");
     }
     const data = await response.json();
     console.log(data);
     return data;
   } catch (error) {
-    console.error("오류:", error);
+    console.error("error:", error);
   }
 }
 
-async function fetchFalse() {
-  try {
-    const response = await fetch(`http://localhost:8080/auth/false`);
-    if (!response.ok) {
-      throw new Errow("사용자가 현재 로그인 상태가 아님");
-    }
-    const data = await response.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("오류:", error);
-  }
-}
+// async function fetchFalse() {
+//   try {
+//     const response = await fetch(`http://localhost:8080/auth/false`);
+//     if (!response.ok) {
+//       throw new Errow("사용자가 현재 로그인 상태가 아닙니다.");
+//     }
+//     const data = await response.json();
+//     console.log(data);
+//     return data;
+//   } catch (error) {
+//     console.error("error:", error);
+//   }
+// }
 
 /** 메뉴바 이벤트 핸들러 */
 async function menuClickHandler() {
   try {
     const loginTrue = await fetchTrue();
-    const loginFalse = await fetchFalse();
+    // const loginFalse = await fetchFalse();
 
-    if (loginTrue.status === true) {
+    const login = localStorage.getItem("login");
+
+    if (loginTrue.status === true && login) {
       window.location.href = `/userpage`; //개인 페이지 이동
     } else {
-      alert("오류가 발생했습니다.");
+      alert("로그인 창으로 이동합니다.");
+      window.location.href = `/login`;
     }
   } catch (error) {
     console.error("401 error");
@@ -65,12 +68,15 @@ async function menuClickHandler() {
 async function ImgClickHandler() {
   try {
     const loginTrue = await fetchTrue();
-    const loginFalse = await fetchFalse();
+    // const loginFalse = await fetchFalse();
 
-    if (loginTrue.status === true) {
+    const login = localStorage.getItem("login");
+
+    if (loginTrue.status === true && login) {
       window.location.href = "/userpage"; //개인 페이지로 이동
     } else {
-      alert("오류가 발생했습니다.");
+      alert("로그인 창으로 이동합니다.");
+      window.location.href = `/login`;
     }
   } catch (error) {
     console.error("401 error");
@@ -80,25 +86,26 @@ async function ImgClickHandler() {
 }
 
 /** 로그인(유저 가입) 상태에 따라 메뉴 변경 */
-async function updateMenu() {
-  try {
-    const loginTrue = await fetchTrue();
+// async function updateMenu() {
+//   try {
+//     const loginTrue = await fetchTrue();
+//     const logoutTest = localStorage.getItem("logout");
 
-    const userpageElem = document.querySelector(".userpage");
-    const loginElem = document.querySelector(".login");
+//     const userpageElem = document.querySelector(".userpage");
+//     const loginElem = document.querySelector(".login");
 
-    //로그아웃 구현 시 login 작동 버튼 예정 // 테스트 o
-    if (loginTrue.status === true) {
-      userpageElem.style.display = "block";
-      loginElem.style.display = "block"; //none;
-    } else {
-      userpageElem.style.display = "block"; //none;
-      loginElem.style.display = "block";
-    }
-  } catch (error) {
-    console.error("메뉴가 업데이트 되지 않았습니다.");
-  }
-}
+//     //로그아웃 구현 시 login 작동 버튼 예정 // 테스트 o
+//     if (logoutTest) {
+//       userpageElem.style.display = "block";
+//       loginElem.style.display = "none"; //none;
+//     } else {
+//       userpageElem.style.display = "none"; //none;
+//       loginElem.style.display = "block";
+//     }
+//   } catch (error) {
+//     console.error("메뉴가 업데이트 되지 않았습니다.");
+//   }
+// }
 
 /** 다른 사용자 목록 미리 보기 기능 */
 async function getUserImage() {
@@ -142,9 +149,44 @@ async function getUserImage() {
   }
 }
 
+//로그아웃
+async function updateMenu() {
+  const userpageElem = document.querySelector(".userpage");
+  const loginElem = document.querySelector(".login");
+  const logoutElem = document.querySelector(".logout");
+  const loginTrue = await fetchTrue();
+  // const loginFalse = await fetchFalse();
+
+  const login = localStorage.getItem("login");
+
+  if (loginTrue.status === true && login) {
+    logoutElem.style.display = "block";
+    userpageElem.style.display = "block";
+    loginElem.style.display = "none"; //none;
+  } else {
+    localStorage.removeItem("login");
+    userpageElem.style.display = "none"; //none;
+    loginElem.style.display = "block";
+    logoutElem.style.display = "none";
+  }
+  // 서버한테 로그아웃 post 요청 (status를 false로)
+  // or 로컬 스토리지로 데이터 임시 서장 형태
+  //로그아웃 테스트
+}
+
+function logOut() {
+  const logoutElem = document.querySelector(".logout");
+
+  logoutElem.addEventListener("click", () => {
+    localStorage.removeItem("login");
+    window.location.href = "/";
+  });
+}
+
 function init() {
   updateMenu();
   getUserImage();
+  logOut();
 
   const userpageElem = document.querySelector(".userpage");
   const loginElem = document.querySelector(".login");

@@ -124,6 +124,7 @@ function login() {
     })
     .then((data) => {
       console.log(data);
+      localStorage.setItem("login", "test"); //로그아웃 테스트
     }); // data로 구분하는것 수정해야함
 }
 
