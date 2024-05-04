@@ -1,10 +1,7 @@
-const deleteButton = document.getElementById("delete-button");
-const confirmButton = document.getElementById("confirm-button");
-const plusButton = document.getElementById("plus-button");
-const editButton = document.getElementById("edit-button");
 const selectElements = document.querySelectorAll(".education-list select");
 const inputElements = document.querySelectorAll(".education-list input");
 var Editcount = 0;
+
 var nameEdit,
   nameValue,
   Name,
@@ -29,7 +26,7 @@ fetch("http://localhost:8080/auth/status")
     document.querySelector(".Name").innerText = data.data.name;
     document.querySelector(".Email").innerText = data.data.email;
     document.querySelector(".Description").innerText = data.data.description;
-    userid = data.data.id;
+    userid = data.id;
     // console.log(data.data);
     // console.log(data.data.id);
   });
@@ -229,17 +226,12 @@ function editProfile() {
 //학력 추가 기능
 function addEducation() {
   const educationList = document.getElementById("educationList");
-  const deleteButton = document.getElementById("delete-button");
-  const confirmButton = document.getElementById("confirm-button");
-  const plusButton = document.getElementById("plus-button");
+  const confirmButton = document.getElementById("education_confirm_button");
   const newEducationDiv = document.createElement("div"); // 새로운 div 생성
 
   if (educationList.style.display === "none") {
     educationList.style.display = "block";
-    deleteButton.style.display = "block";
     confirmButton.style.display = "block";
-  } else {
-    educationList.style.display = "none";
   }
 
   newEducationDiv.innerHTML = `
@@ -272,6 +264,7 @@ function addEducation() {
       </select>
       <input type="date" placeholder="입학 년월" />
       <input type="date" placeholder="졸업 년월" />
+      <button id = "education_delete_button" onclick="deleteEducation(this)">Remove</button>
     </div>
   `;
 
@@ -279,33 +272,72 @@ function addEducation() {
   educationList.style.display = "block";
 }
 
-function removeEducation(educationId) {
-  const educationDiv = document.querySelector(".education-list");
-  const confirmButton = document.getElementById("confirm-button");
-  const deleteButton = document.getElementById("delete-button");
-  const plusButton = document.getElementById("plus-button");
-  const editButton = document.getElementById("edit-button");
+function addAwards() {
+  const AwardsList = document.getElementById("awardsList");
+  const confirmButton = document.getElementById("awards_confirm_button");
+  const plusButton = document.getElementById("awards_plus_button");
 
-  educationDiv.style.display = "none";
+  if (AwardsList.style.display === "none") {
+    AwardsList.style.display = "block";
+  }
+  confirmButton.style.display = "block";
+  plusButton.style.display = "block";
+
+  const newAwardDiv = document.createElement("div");
+  newAwardDiv.innerHTML = `
+        <input type="text" placeholder="수상 내역" />
+        <input type="date" placeholder="수상 날짜" />
+        <input type="text" placeholder="부가 설명" />
+        <button id = "awards_delete_button" onclick="deleteAward(this)">Remove</button>
+    `;
+
+  // awardsList에 생성된 필드 추가
+  AwardsList.appendChild(newAwardDiv);
+}
+
+function addProject() {
+  const projectList = document.getElementById("projectList");
+  const confirmButton = document.getElementById("project_confirm_button");
+  const plusButton = document.getElementById("project_plus_button");
+
+  if (projectList.style.display === "none") {
+    projectList.style.display = "block";
+  }
+  confirmButton.style.display = "block";
+  plusButton.style.display = "block";
+
+  const newProjectDiv = document.createElement("div");
+  newProjectDiv.innerHTML = `
+        <input type="text" placeholder="프로젝트 이름" />
+        <input type="date" placeholder="프로젝트 진행 날짜" />
+        <input type="text" placeholder="프로젝트 설명" />
+        <button id = "project_delete_button" onclick="deleteProject(this)">Remove</button>
+    `;
+
+  // awardsList에 생성된 필드 추가
+  projectList.appendChild(newProjectDiv);
+}
+
+function deleteEducation(button, educationId) {
+  const plusButton = document.getElementById("education_plus_button");
+
+  button.parentElement.remove();
 
   plusButton.style.display = "block";
-  editButton.style.display = "none";
-  deleteButton.style.display = "none";
-  confirmButton.style.display = "none";
-  fetch(`http://localhost:8080/education/${educationId}`, {
+
+  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
     method: "DELETE",
   })
     .then((response) => {
       // 상태 코드 확인
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`에러!! status: ${response.status}`);
       }
       return response.json();
     })
     .then((data) => {
-      console.log(data.message); // 성공 메시지 출력
+      console.log(data);
       alert("학력 정보가 삭제되었습니다.");
-      // 추가적인 UI 업데이트 로직
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -313,18 +345,131 @@ function removeEducation(educationId) {
     });
 }
 
+function deleteAward(button, awardId) {
+  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
+  button.parentElement.remove();
+
+  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "...", // 인증이 필요하다면 추가
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("수상 내역이 삭제되었습니다.:", data))
+    .catch((error) => console.error("Error:", error));
+}
+
+function deleteProject(button, projectId) {
+  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
+  button.parentElement.remove();
+
+  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "...", // 인증이 필요하다면 추가
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("프로젝트 내역이 삭제되었습니다.:", data))
+    .catch((error) => console.error("Error:", error));
+}
 // 학력 편집 기능
-function editEducation(educationItem) {
-  // contentEditable 상태 토글
-  const isEditable = educationItem.contentEditable === "true";
-  educationItem.contentEditable = isEditable ? "false" : "true";
-  if (!isEditable) {
-    educationItem.focus(); // 편집 가능 상태가 되면 포커스
-  }
+// function editEducation(educationItem) {
+//   // contentEditable 상태 토글
+//   const isEditable = educationItem.contentEditable === "true";
+//   educationItem.contentEditable = isEditable ? "false" : "true";
+//   if (!isEditable) {
+//     educationItem.focus(); // 편집 가능 상태가 되면 포커스
+//   }
+// }
+
+function editEducation(educationId, updateEducation) {
+  const selectElements = document.querySelectorAll(".education-list select");
+  const inputElements = document.querySelectorAll(".education-list input");
+  const confirmButton = document.getElementById("education_confirm_button");
+  const editButton = document.getElementById("education_edit_button");
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(updateEducation),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(" 학력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
+}
+
+function editAwards(awardId, updateAward) {
+  const selectElements = document.querySelectorAll(".awards-list select");
+  const inputElements = document.querySelectorAll(".awards-list input");
+  const confirmButton = document.getElementById("awards_confirm_button");
+  const editButton = document.getElementById("awards_edit_button");
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(updateAward),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("수상 이력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
+}
+
+function editProject(projectId, updateProject) {
+  const selectElements = document.querySelectorAll(".project-list select");
+  const inputElements = document.querySelectorAll(".project-list input");
+  const confirmButton = document.getElementById("project_confirm_button");
+  const editButton = document.getElementById("project_edit_button");
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(updateProject),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("프로젝트 이력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
 }
 
 function confirmEducation() {
   // 각 정보를 가져옵니다.
+  const editButton = document.getElementById("education_edit_button");
+  const confirmButton = document.getElementById("education_confirm_button");
+
+  confirmButton.style.display = "none";
+  editButton.style.display = "block";
+
   // 각 select 요소를 선택합니다.
   const selectElements = document.querySelectorAll(".education-list select");
   const inputElements = document.querySelectorAll(".education-list input");
@@ -350,16 +495,17 @@ function confirmEducation() {
   // 필요에 따라 가져온 정보를 활용하여 추가적인 작업을 수행합니다.
 
   const postData = {
+    educationId: userid,
     schoolName: schoolName,
     major: major,
     schoolState: degree,
   };
 
-  fetch("http://localhost:8080/education", {
+  fetch(`http://localhost:8080/mypage/education`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
-      Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+      // Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
     },
     body: JSON.stringify(postData), // JSON 문자열로 변환하여 데이터 전송
   })
@@ -386,42 +532,122 @@ function confirmEducation() {
   inputElements.forEach((element) => (element.disabled = true));
 
   // 확인 버튼 숨기기, 수정 버튼 보이기
+}
+
+function confirmAwards() {
+  const editButton = document.getElementById("awards_edit_button");
+  const confirmButton = document.getElementById("awards_confirm_button");
+
   confirmButton.style.display = "none";
   editButton.style.display = "block";
+
+  // 각 select 요소를 선택합니다.
+  const inputElements = document.querySelectorAll(".awards-list input");
+  const selectElements = document.querySelectorAll(".awards-list select");
+
+  // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
+  const awardDate = selectElements.value;
+  const awardName = inputElements[0].value;
+  const awardDetail = inputElements[1].value;
+
+  // 가져온 정보를 화면에 출력합니다.
+  console.log("수상 내용:", awardName);
+  console.log("수상 날짜:", awardDate);
+  console.log("부가 설명:", awardDetail);
+
+  const awardsData = {
+    title: awardName,
+    acqdate: awardDate,
+    details: awardDetail,
+  };
+
+  fetch("http://localhost:8080/mypage/award", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(awardsData),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      const confirmedInfo = `수상 이름: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
+      alert("수상 정보가 성공적으로 등록되었습니다.");
+      alert(confirmedInfo);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("수상 정보 등록에 실패하였습니다.");
+    });
+
+  const confirmedInfo = `수상 내용: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
+  alert(confirmedInfo);
+
+  selectElements.forEach((element) => (element.disabled = true));
+  inputElements.forEach((element) => (element.disabled = true));
 }
 
-function editEducation() {
-  // 입력 필드 및 선택 필드 활성화
-  selectElements.forEach((element) => (element.disabled = false));
-  inputElements.forEach((element) => (element.disabled = false));
+function confirmProject() {
+  const editButton = document.getElementById("project_edit_button");
+  const confirmButton = document.getElementById("project_confirm_button");
 
-  // 수정 버튼 숨기기, 확인 버튼 보이기
-  confirmButton.style.display = "block";
-  editButton.style.display = "none";
-}
+  confirmButton.style.display = "none";
+  editButton.style.display = "block";
 
-function addAwards() {
-  const AwardsList = document.getElementById("awardsList");
-  const deleteButton = document.getElementById("awards_delete_button");
-  const confirmButton = document.getElementById("awards_confirm_button");
-  const plusButton = document.getElementById("awards_plus_button");
+  // 각 select 요소를 선택합니다.
+  const inputElements = document.querySelectorAll(".project-list input");
+  const selectElements = document.querySelectorAll(".project-list select");
 
-  if (AwardsList.style.display === "none") {
-    AwardsList.style.display = "block";
-  }
+  // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
+  const projectDate = selectElements.value;
+  const projectName = inputElements[0].value;
+  const projectDetail = inputElements[1].value;
 
-  const newAwardDiv = document.createElement("div");
-  newAwardDiv.innerHTML = `
-        <input type="text" placeholder="수상 내역" />
-        <input type="date" placeholder="수상 날짜" />
-        <button onclick="removeAward(this)">Remove</button>
-    `;
+  // 가져온 정보를 화면에 출력합니다.
+  console.log("프로젝트 내용:", projectName);
+  console.log("프로젝트 진행 날짜:", projectDate);
+  console.log("프로젝트 설명:", projectDetail);
 
-  // awardsList에 생성된 필드 추가
-  AwardsList.appendChild(newAwardDiv);
-}
+  const projectData = {
+    title: projectName,
+    acqdate: projectDate,
+    details: projectDetail,
+  };
 
-function removeAward(button) {
-  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
-  button.parentElement.remove();
+  fetch("http://localhost:8080/mypage/project", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(projectData),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
+      alert("프로젝트 정보가 성공적으로 등록되었습니다.");
+      alert(confirmedInfo);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("프로젝트 정보 등록에 실패하였습니다.");
+    });
+
+  const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
+  alert(confirmedInfo);
+
+  selectElements.forEach((element) => (element.disabled = true));
+  inputElements.forEach((element) => (element.disabled = true));
 }
