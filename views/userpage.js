@@ -318,6 +318,28 @@ function addProject() {
   projectList.appendChild(newProjectDiv);
 }
 
+function addCertificate() {
+  const certificateList = document.getElementById("certificateList");
+  const confirmButton = document.getElementById("certificate_confirm_button");
+  const plusButton = document.getElementById("certificate_plus_button");
+
+  if (certificateList.style.display === "none") {
+    certificateList.style.display = "block";
+  }
+  confirmButton.style.display = "block";
+  plusButton.style.display = "block";
+
+  const newCertificateDiv = document.createElement("div");
+  newCertificateDiv.innerHTML = `
+        <input type="text" placeholder="자격증 이름" />
+        <input type="date" placeholder="자격증 취득 날짜" />
+        <button id = "certificate_delete_button" onclick="deleteCertificate(this)">Remove</button>
+    `;
+
+  // awardsList에 생성된 필드 추가
+  certificateList.appendChild(newCertificateDiv);
+}
+
 function deleteEducation(button, educationId) {
   const plusButton = document.getElementById("education_plus_button");
 
@@ -372,6 +394,21 @@ function deleteProject(button, projectId) {
   })
     .then((response) => response.json())
     .then((data) => console.log("프로젝트 내역이 삭제되었습니다.:", data))
+    .catch((error) => console.error("Error:", error));
+}
+
+function deleteCertificate(button, certificateId) {
+  // 버튼의 부모 요소(입력 필드 컨테이너)를 찾아 제거
+  button.parentElement.remove();
+
+  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "...", // 인증이 필요하다면 추가
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("자격증 내역이 삭제되었습니다.:", data))
     .catch((error) => console.error("Error:", error));
 }
 // 학력 편집 기능
@@ -459,6 +496,32 @@ function editProject(projectId, updateProject) {
   })
     .then((response) => response.json())
     .then((data) => console.log("프로젝트 이력이 업데이트 되었습니다:", data))
+    .catch((error) => console.error("에러:", error));
+}
+
+function editCertificate(certificateId, updateCertificate) {
+  const selectElements = document.querySelectorAll(".certificate-list select");
+  const inputElements = document.querySelectorAll(".certificate-list input");
+  const confirmButton = document.getElementById("certificate_confirm_button");
+  const editButton = document.getElementById("certificate_edit_button");
+  // 입력 필드 및 선택 필드 활성화
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  // 수정 버튼 숨기기, 확인 버튼 보이기
+  confirmButton.style.display = "block";
+  editButton.style.display = "none";
+
+  fetch(`http://localhost:8080/mypage/certificate /${certificateId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(updateCertificate),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log("자격증 이력이 업데이트 되었습니다:", data))
     .catch((error) => console.error("에러:", error));
 }
 
@@ -646,6 +709,62 @@ function confirmProject() {
     });
 
   const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
+  alert(confirmedInfo);
+
+  selectElements.forEach((element) => (element.disabled = true));
+  inputElements.forEach((element) => (element.disabled = true));
+}
+
+function confirmCertificate() {
+  const editButton = document.getElementById("certificate_edit_button");
+  const confirmButton = document.getElementById("certificate_confirm_button");
+
+  confirmButton.style.display = "none";
+  editButton.style.display = "block";
+
+  // 각 select 요소를 선택합니다.
+  const inputElements = document.querySelectorAll(".certificate-list input");
+  const selectElements = document.querySelectorAll(".certificate-list select");
+
+  // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
+  const certificateDate = selectElements.value;
+  const certificateName = inputElements[0].value;
+
+  // 가져온 정보를 화면에 출력합니다.
+  console.log("자격증 이름:", certificateName);
+  console.log("자격증 취득 날짜:", certificateDate);
+
+  const certificateData = {
+    title: certificateName,
+    acqdate: certificateDate,
+  };
+
+  fetch("http://localhost:8080/mypage/certificate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "...",
+    },
+    body: JSON.stringify(certificateData),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      const confirmedInfo = `자격증 이름: ${certificateName}\n자격증 취득 날짜: ${certificateDate}`;
+      alert("certificate 정보가 성공적으로 등록되었습니다.");
+      alert(confirmedInfo);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("자격증 정보 등록에 실패하였습니다.");
+    });
+
+  const confirmedInfo = `자격증 이름: ${certificateName}\n자격증 취득 날짜: ${certificateDate}`;
   alert(confirmedInfo);
 
   selectElements.forEach((element) => (element.disabled = true));

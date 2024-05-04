@@ -35,7 +35,8 @@ body {
 .profile,
 .education,
 .awards,
-.project {
+.project,
+.certificate {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -51,7 +52,8 @@ body {
 }
 
 .awards-list,
-.project-list {
+.project-list,
+.certificate-list {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
@@ -72,6 +74,11 @@ body {
 }
 
 .project-list > div {
+  display: flex;
+  margin-bottom: 10px; /* 하단 여백 */
+}
+
+.certificate-list > div {
   display: flex;
   margin-bottom: 10px; /* 하단 여백 */
 }
@@ -99,6 +106,11 @@ body {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
+.certificate-list input:last-child,
+.certificate-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
 .profile-image {
   width: 100px;
   height: 100px;
@@ -116,7 +128,8 @@ button {
 
 #education_delete_button,
 #awards_delete_button,
-#project_delete_button {
+#project_delete_button,
+#certificate_delete_button {
   margin-right: 10px;
   background-color: #d67d86;
   color: white;
@@ -127,7 +140,8 @@ button {
 
 #education_confirm_button,
 #awards_confirm_button,
-#project_confirm_button {
+#project_confirm_button,
+#certificate_confirm_button {
   margin-right: 10px;
   background-color: #6d78d4;
   color: white;
