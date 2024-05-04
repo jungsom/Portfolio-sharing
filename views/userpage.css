@@ -34,7 +34,8 @@ body {
 
 .profile,
 .education,
-.awards {
+.awards,
+.project {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -65,7 +66,11 @@ body {
   margin-bottom: 10px; /*하단 여백 */
 }
 
-.awards-list,
+.awards-list > div {
+  display: flex;
+  margin-bottom: 10px; /* 하단 여백 */
+}
+
 .project-list > div {
   display: flex;
   margin-bottom: 10px; /* 하단 여백 */
