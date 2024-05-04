@@ -350,16 +350,17 @@ function confirmEducation() {
   // 필요에 따라 가져온 정보를 활용하여 추가적인 작업을 수행합니다.
 
   const postData = {
+    educationId: userid,
     schoolName: schoolName,
     major: major,
     schoolState: degree,
   };
 
-  fetch("http://localhost:8080/education", {
+  fetch("http://localhost:8080/mypage/education/{educationId}", {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
-      Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+      // Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
     },
     body: JSON.stringify(postData), // JSON 문자열로 변환하여 데이터 전송
   })
