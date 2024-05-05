@@ -19,16 +19,18 @@
           alt="프로필 이미지"
           style="width: 150px; height: 150px"
         />
-        <div class="nameContainer">
+        <div class="name-Container">
           <h3 class="Name">데브카르트</h3>
         </div>
-        <div class="emailContainer">
+        <div class="email-Container">
           <h4 class="Email">Email@email.com</h4>
         </div>
-        <div class="descriptionContainer">
+        <div class="description-Container">
           <p class="Description">---설명---</p>
         </div>
-        <button class="profileEditButton" onclick="editProfile()">Edit</button>
+        <button class="profileEditButton editBtns" onclick="editProfile()">
+          Edit
+        </button>
       </div>
       <div class="education">
         <!-- 학력 정보 -->
@@ -38,7 +40,7 @@
           id="educationList"
           style="display: none"
         ></div>
-        <div id="buttons-container">
+        <div class="editBtns" id="buttons-container">
           <button
             id="education_delete_button"
             onclick="deleteEducation()"
@@ -69,7 +71,7 @@
         <div class="awards-list" id="awardsList" style="display: none">
           <div></div>
         </div>
-        <div id="buttons-container">
+        <div class="editBtns" id="buttons-container">
           <button
             id="awards_confirm_button"
             onclick="confirmAwards()"
@@ -100,7 +102,7 @@
         <div class="project-list" id="projectList" style="display: none">
           <div></div>
         </div>
-        <div id="buttons-container">
+        <div class="editBtns" id="buttons-container">
           <button
             id="project_confirm_button"
             onclick="confirmProject()"
@@ -135,7 +137,7 @@
         >
           <div></div>
         </div>
-        <div id="buttons-container">
+        <div class="editBtns" id="buttons-container">
           <button
             id="certificate_confirm_button"
             onclick="confirmCertificate()"
