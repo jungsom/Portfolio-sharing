@@ -24,7 +24,7 @@ var nameContainer,
 // massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
 // 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
 
-const massId = "ydiatvo560";
+let massId = localStorage.getItem("tempId");
 
 //현재 내가 로그인 한 계정이랑 userpage이동시 받아온 id값이랑 같으면 true 아니면 false 반환하는 함수
 function isMyPage() {
@@ -793,3 +793,8 @@ function confirmCertificate() {
 }
 
 getUserData();
+
+window.addEventListener("popstate", function (event) {
+  delete massId; // 사용자 id 값 삭제
+  localStorage.removeItem("tempId"); // 로컬 스토리지 삭제
+});
