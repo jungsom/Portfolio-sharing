@@ -22,20 +22,16 @@ const modal = document.querySelector(".modal");
 const modalOpenbtn = document.querySelector(".modal_btn");
 const modalClosebtn = document.querySelector(".close_btn");
 
-// modalOpen()에 인자로 변경
-let modaltextflag;
-
-function modalOpen() {
-  changeModalText();
+function modalOpen(txtNum) {
+  changeModalText(txtNum);
   document.getElementById("modal").style.display = "block";
 }
 
 function modalClose() {
-  changeModalText();
   document.getElementById("modal").style.display = "none";
-  if (modaltextflag == 2) {
-    window.location.href = "/network";
-  }
+  // if (txtNum == 2) {
+  //   window.location.href = "/network";
+  // }
 }
 
 // 팝업창 텍스트 설정
@@ -47,24 +43,24 @@ function modalClose() {
 //6. 이미 가입되어있는 ID 입니다.
 //7. 올바른 형태의 email 을 입력해주세요.
 
-function changeModalText() {
-  if (modaltextflag == 1) {
+function changeModalText(txtNum) {
+  if (txtNum == 1) {
     document.getElementById("modaltext").innerHTML =
       "등록되어있지 않은 ID 혹은 비밀번호를 입력하였습니다.";
-  } else if (modaltextflag == 2) {
+  } else if (txtNum == 2) {
     document.getElementById("modaltext").innerHTML = "로그인 성공";
-  } else if (modaltextflag == 3) {
+  } else if (txtNum == 3) {
     document.getElementById("modaltext").innerHTML =
       "비밀번호를 다시 확인해주세요.";
-  } else if (modaltextflag == 4) {
+  } else if (txtNum == 4) {
     document.getElementById("modaltext").innerHTML = "가입완료!";
-  } else if (modaltextflag == 5) {
+  } else if (txtNum == 5) {
     document.getElementById("modaltext").innerHTML =
       "입력되지않은 내용이 있습니다.";
-  } else if (modaltextflag == 6) {
+  } else if (txtNum == 6) {
     document.getElementById("modaltext").innerHTML =
       "이미 가입되어있는 ID 입니다.";
-  } else if (modaltextflag == 7) {
+  } else if (txtNum == 7) {
     document.getElementById("modaltext").innerHTML =
       "올바른 형태의 email 을 입력해주세요.";
   }
@@ -100,11 +96,9 @@ function login() {
   })
     .then((response) => {
       if (response.status == 401) {
-        modaltextflag = 1;
-        modalOpen();
+        modalOpen(1);
       } else if (response.status == 200) {
-        modaltextflag = 2;
-        modalOpen();
+        modalOpen(2);
         clear();
         console.log(response);
       }
@@ -121,31 +115,39 @@ function setAccounttoServer() {
   const pwchk = document.getElementById("setpwchk").value;
   const name = document.getElementById("setname").value;
   const email = document.getElementById("setemail").value;
-  var setaccountflag = 0;
   const emailpattern =
     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
   //email 정규식 확인
   function emailCheck(email) {
     if (emailpattern.test(email)) {
+      console.log(emailpattern.test(email));
       return true;
     } else {
       return false;
     }
   }
 
-  if (pw != pwchk) {
-    modaltextflag = 3;
-    setaccountflag = 1;
-    modalOpen();
-  }
-  if (emailCheck(email) == false) {
-    modaltextflag = 7;
-    setaccountflag = 1;
-    modalOpen();
+  //pw / pwchk 비교
+  function passwordCheck() {
+    if (pw == pwchk) {
+      console.log(pw == pwchk);
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  if (setaccountflag == 0) {
+  // console.log("회원가입 가능? ", passwordCheck() && emailCheck(email));
+
+  if (!passwordCheck()) {
+    modalOpen(3);
+  }
+  if (!emailCheck(email)) {
+    modalOpen(7);
+  }
+
+  if (passwordCheck() && emailCheck(email)) {
     fetch("http://localhost:8080/auth/join", {
       method: "POST",
       headers: {
@@ -158,15 +160,12 @@ function setAccounttoServer() {
       }),
     }).then((response) => {
       if (response.status == 201) {
-        modaltextflag = 4;
-        modalOpen();
+        modalOpen(4);
         outCreateAccount();
       } else if (response.status == 400) {
-        modaltextflag = 5;
-        modalOpen();
+        modalOpen(5);
       } else if (response.status == 409) {
-        modaltextflag = 6;
-        modalOpen();
+        modalOpen(6);
       }
     });
   }
