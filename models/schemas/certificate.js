@@ -1,9 +1,14 @@
 const { Schema } = require("mongoose");
 
 const CertificateSchema = new Schema({
-  id: {
+  userId: {
     type: String,
     required: true,
+  },
+  certificateId: {
+    type: Number,
+    required: true,
+    default: 1,
   },
   title: {
     type: String,
