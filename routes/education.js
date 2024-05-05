@@ -17,22 +17,17 @@ router.get("/", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const id = req.params.id;
+    const userId = req.session.passport.user.id;
+    const education = await Education.findOne({ user: userId }).lean();
 
-    if (!id) {
-      throw new BadRequest("유효하지 않은 ID입니다.");
+    if (!education) {
+      throw new NotFound("학력 정보가 없습니다.");
     }
 
     const educationId = req.params.educationId;
 
     if (!educationId) {
       throw new BadRequest("유효하지 않은 학력입니다.");
-    }
-
-    const education = await Education.findOne({ user: id });
-
-    if (!education) {
-      throw new NotFound("데이터를 찾을 수 없습니다.");
     }
 
     const educationData = {
@@ -55,28 +50,13 @@ router.post("/", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const id = req.params.id;
+    const userId = req.session.passport.user.id;
+    // const education = await Education.find({ userId }).lean();
+    // const education = await Education.findOne({ userId }).lean();
 
-    if (!id) {
-      throw new BadRequest("유효하지 않은 ID입니다.");
-    }
-
-    const education = await Education.find({ id });
-
-    if (!education) {
-      throw new NotFound("데이터를 찾을 수 없습니다.");
-    }
-
-    let ids = [];
-    let educationId = 1;
-
-    for (const data of education) {
-      ids.push(parseInt(data.id));
-    }
-
-    if (ids.length !== 0) {
-      educationId += Math.max.apply(null, ids);
-    }
+    // if (!education) {
+    //   throw new NotFound("데이터를 찾을 수 없습니다.");
+    // }
 
     const { schoolName, major, schoolStatus } = req.body;
 
@@ -84,9 +64,14 @@ router.post("/", async (req, res, next) => {
       throw new BadRequest("학력 정보를 모두 입력해주세요.");
     }
 
+    // const identification = Identification(req.session, userId);
+    // if (!identification) {
+    //   throw new Forbidden("접근할 수 없습니다.");
+    // }
+
     const addEducation = await Education.create({
-      id,
-      educationId,
+      // userId: userId,
+      userId,
       schoolName,
       major,
       schoolStatus,
@@ -112,13 +97,9 @@ router.put("/:educationId", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const id = req.params.id;
-
-    if (!id) {
-      throw new BadRequest("유효하지 않은 ID입니다.");
-    }
-
+    const userId = req.session.passport.user.userId;
     const educationId = req.params.educationId;
+    // const educationId = Number(req.params.educationId);
 
     if (!educationId) {
       throw new BadRequest("유효하지 않은 학력입니다.");
@@ -136,10 +117,10 @@ router.put("/:educationId", async (req, res, next) => {
       throw new BadRequest("유효하지 않은 학력 상태입니다.");
     }
 
-    const updateEducation = await Education.findOneAndUpdate(
-      { user: id, educationId: educationId },
+    const updateEducation = await Education.findOneAndUpdate.lean()(
+      { userId, educationId },
       { schoolName, major, schoolStatus },
-      { new: true }
+      { runValidators: true, new: true }
     );
 
     if (!updateEducation) {
@@ -166,20 +147,15 @@ router.delete("/:educationId", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const id = req.params.id;
-
-    if (!id) {
-      throw new BadRequest("유효하지 않은 ID입니다.");
-    }
-
+    const userId = req.session.passport.user.userId;
     const educationId = req.params.educationId;
 
     if (!educationId) {
       throw new BadRequest("유효하지 않은 학력입니다.");
     }
 
-    const deleteEducation = await Education.findOneAndDelete({
-      user: id,
+    const deleteEducation = await Education.findOneAndDelete.lean()({
+      userId: userId,
       educationId: educationId,
     });
 
