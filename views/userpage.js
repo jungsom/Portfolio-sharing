@@ -22,7 +22,8 @@ var nameContainer,
 // massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
 // 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
 
-let massId = localStorage.getItem("tempId");
+// let massId = localStorage.getItem("tempId");
+const massId = "f0eec3d6-6899-49c3-856d-b2d7db3fced1";
 
 // mypage/project post 테스트
 // fetch("http://localhost:8080/mypage/project", {
@@ -278,6 +279,7 @@ function addEducation() {
   const educationList = document.getElementById("educationList");
   const confirmButton = document.getElementById("education_confirm_button");
   const newEducationDiv = document.createElement("div"); // 새로운 div 생성
+  const plusButton = document.getElementById("education_plus_button");
 
   if (educationList.style.display === "none") {
     educationList.style.display = "block";
@@ -320,6 +322,7 @@ function addEducation() {
 
   educationList.appendChild(newEducationDiv);
   educationList.style.display = "block";
+  plusButton.style.display = "none";
 }
 
 function addAwards() {
@@ -359,7 +362,8 @@ function addProject() {
   const newProjectDiv = document.createElement("div");
   newProjectDiv.innerHTML = `
         <input type="text" placeholder="프로젝트 이름" />
-        <input type="date" placeholder="프로젝트 진행 날짜" />
+        <input type="date" placeholder="프로젝트 시작 날짜" />
+        <input type="date" placeholder="프로젝트 종료 날짜" />
         <input type="text" placeholder="프로젝트 설명" />
         <button id = "project_delete_button" onclick="deleteProject(this)">Remove</button>
     `;
@@ -481,7 +485,6 @@ function editEducation(educationId, updateEducation) {
   inputElements.forEach((element) => (element.disabled = false));
 
   // 수정 버튼 숨기기, 확인 버튼 보이기
-  confirmButton.style.display = "block";
   editButton.style.display = "none";
 
   fetch(`http://localhost:8080/mypage/education/${educationId}`, {
@@ -495,6 +498,9 @@ function editEducation(educationId, updateEducation) {
     .then((response) => response.json())
     .then((data) => console.log(" 학력이 업데이트 되었습니다:", data))
     .catch((error) => console.error("에러:", error));
+
+  selectElements.forEach((element) => (element.disabled = true));
+  inputElements.forEach((element) => (element.disabled = true));
 }
 
 function editAwards(awardId, updateAward) {
@@ -577,11 +583,9 @@ function editCertificate(certificateId, updateCertificate) {
 
 function confirmEducation() {
   // 각 정보를 가져옵니다.
-  const editButton = document.getElementById("education_edit_button");
   const confirmButton = document.getElementById("education_confirm_button");
-
-  confirmButton.style.display = "none";
-  editButton.style.display = "block";
+  const displayButton = document.getElementById("education_display_button");
+  const plusButton = document.getElementById("education_plus_button");
 
   // 각 select 요소를 선택합니다.
   const selectElements = document.querySelectorAll(".education-list select");
@@ -610,7 +614,7 @@ function confirmEducation() {
   const postData = {
     schoolName: schoolName,
     major: major,
-    schoolState: degree,
+    schoolStatus: degree,
   };
 
   fetch(`http://localhost:8080/mypage/education`, {
@@ -643,7 +647,9 @@ function confirmEducation() {
   selectElements.forEach((element) => (element.disabled = true));
   inputElements.forEach((element) => (element.disabled = true));
 
-  // 확인 버튼 숨기기, 수정 버튼 보이기
+  displayButton.style.display = "block";
+  confirmButton.style.display = "none";
+  plusButton.style.display = "block";
 }
 
 function confirmAwards() {
@@ -713,18 +719,21 @@ function confirmProject() {
   const selectElements = document.querySelectorAll(".project-list select");
 
   // 각 요소에서 선택된 값을 저장할 변수를 선언합니다.
-  const projectDate = selectElements.value;
+  const projectStartDate = inputElements[1].value;
+  const projectEndDate = inputElements[2].value;
   const projectName = inputElements[0].value;
-  const projectDetail = inputElements[1].value;
+  const projectDetail = inputElements[3].value;
 
   // 가져온 정보를 화면에 출력합니다.
   console.log("프로젝트 내용:", projectName);
-  console.log("프로젝트 진행 날짜:", projectDate);
+  console.log("프로젝트 시작 날짜:", projectStartDate);
+  console.log("프로젝트 종료 날짜:", projectEndDate);
   console.log("프로젝트 설명:", projectDetail);
 
   const projectData = {
     title: projectName,
-    acqdate: projectDate,
+    startDate: projectStartDate,
+    endDate: projectEndDate,
     details: projectDetail,
   };
 
@@ -744,7 +753,7 @@ function confirmProject() {
     })
     .then((data) => {
       console.log("Success:", data);
-      const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
+      const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 시작 날짜: ${projectStartDate}\n프로젝트 종료 날짜: ${projectEndDate}\n프로젝트 설명: ${projectDetail}`;
       alert("프로젝트 정보가 성공적으로 등록되었습니다.");
       alert(confirmedInfo);
     })
@@ -753,7 +762,7 @@ function confirmProject() {
       alert("프로젝트 정보 등록에 실패하였습니다.");
     });
 
-  const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectDate}\n프로젝트 설명: ${projectDetail}`;
+  const confirmedInfo = `프로젝트 이름: ${projectName}\n프로젝트 진행 날짜: ${projectStartDate}\n프로젝트 종료 날짜: ${projectEndDate}프로젝트 설명: ${projectDetail}`;
   alert(confirmedInfo);
 
   selectElements.forEach((element) => (element.disabled = true));
@@ -814,6 +823,19 @@ function confirmCertificate() {
 
   selectElements.forEach((element) => (element.disabled = true));
   inputElements.forEach((element) => (element.disabled = true));
+}
+
+function changeEducationDisplay() {
+  const selectElements = document.querySelectorAll(".education-list select");
+  const inputElements = document.querySelectorAll(".education-list input");
+  const displayButton = document.getElementById("education_display_button");
+  const editButton = document.getElementById("education_edit_button");
+
+  selectElements.forEach((element) => (element.disabled = false));
+  inputElements.forEach((element) => (element.disabled = false));
+
+  displayButton.style.display = "none";
+  editButton.style.display = "block";
 }
 
 getUserData();

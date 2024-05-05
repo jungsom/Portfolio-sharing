@@ -35,7 +35,8 @@ body {
 .profile,
 .education,
 .awards,
-.project{
+.project,
+.certificate {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -149,10 +150,12 @@ button {
   cursor: pointer;
 }
 
-#buttons-container {
+.editBtns {
   display: flex;
   justify-content: start; /* 버튼을 컨테이너 시작 부분에 정렬 */
 }
-#buttons-container button {
-  margin-right: 10px; /* 오른쪽 여백 추가 */
+
+.editBtns button {
+  margin-right: 10px;
+  margin-bottom: 10px; /* 오른쪽 여백 추가 */
 }

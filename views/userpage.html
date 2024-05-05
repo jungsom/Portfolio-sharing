@@ -40,7 +40,7 @@
           id="educationList"
           style="display: none"
         ></div>
-        <div class="editBtns" id="buttons-container">
+        <div class="editBtns">
           <button
             id="education_delete_button"
             onclick="deleteEducation()"
@@ -62,6 +62,13 @@
           >
             edit
           </button>
+          <button
+            id="education_display_button"
+            onclick="changeEducationDisplay()"
+            style="display: none"
+          >
+            수정 하기
+          </button>
           <button id="education_plus_button" onclick="addEducation()">+</button>
         </div>
       </div>
@@ -71,7 +78,7 @@
         <div class="awards-list" id="awardsList" style="display: none">
           <div></div>
         </div>
-        <div class="editBtns" id="buttons-container">
+        <div class="editBtns">
           <button
             id="awards_confirm_button"
             onclick="confirmAwards()"
@@ -102,7 +109,7 @@
         <div class="project-list" id="projectList" style="display: none">
           <div></div>
         </div>
-        <div class="editBtns" id="buttons-container">
+        <div class="editBtns">
           <button
             id="project_confirm_button"
             onclick="confirmProject()"
@@ -134,10 +141,8 @@
           class="certificate-list"
           id="certificateList"
           style="display: none"
-        >
-          <div></div>
-        </div>
-        <div class="editBtns" id="buttons-container">
+        ></div>
+        <div class="editBtns">
           <button
             id="certificate_confirm_button"
             onclick="confirmCertificate()"
