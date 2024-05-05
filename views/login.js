@@ -1,11 +1,6 @@
-//공용 테스트 ID
-//id : elice@test.com / pw : helloelice
-//id : elice1@test.com / pw : helloelice
-
-//API get test
-// fetch("http://localhost:8080/users")
-//      .then(res => res.json())
-//     .then(data => console.log(data));
+//해야할거
+//1. 전역변수 modalOpen()에 인자로 변경
+//2. 비밀번호, 이메일 확인 부분 flag 대신 return으로
 
 //Nav 페이지이동
 function gotoNetworkpage() {
@@ -14,7 +9,6 @@ function gotoNetworkpage() {
 
 //Email,Pw 입력 값 초기화
 function clear() {
-  // console.log("clear");
   document.getElementById("email").value = "";
   document.getElementById("pw").value = "";
   document.getElementById("setemail").value = "";
@@ -25,21 +19,20 @@ function clear() {
 
 //팝업창
 const modal = document.querySelector(".modal");
-const modalOpen = document.querySelector(".modal_btn");
-const modalClose = document.querySelector(".close_btn");
-// 해쉬형태로 수정 필요
-let modaltextflag = "";
+const modalOpenbtn = document.querySelector(".modal_btn");
+const modalClosebtn = document.querySelector(".close_btn");
 
-function openModal() {
+// modalOpen()에 인자로 변경
+let modaltextflag;
+
+function modalOpen() {
   changeModalText();
   document.getElementById("modal").style.display = "block";
-  // modal.classList.add("on");
 }
 
-function closeModal() {
+function modalClose() {
   changeModalText();
   document.getElementById("modal").style.display = "none";
-  // modal.classList.remove("on");
   if (modaltextflag == 2) {
     window.location.href = "/network";
   }
@@ -79,14 +72,12 @@ function changeModalText() {
 
 //회원가입 진입
 function goCreateAccount() {
-  // console.log("createAccount Test");
   clear();
   document.getElementById("LoginContainer").style.display = "none";
   document.getElementById("createAccountContainer").style.display = "block";
 }
 //회원가입 취소
 function outCreateAccount() {
-  // console.log("Cancel Test");
   clear();
   document.getElementById("LoginContainer").style.display = "block";
   document.getElementById("createAccountContainer").style.display = "none";
@@ -96,7 +87,6 @@ function outCreateAccount() {
 function login() {
   const email = document.getElementById("email").value;
   const pw = document.getElementById("pw").value;
-  // console.log(email, pw);
 
   fetch("http://localhost:8080/auth/login", {
     method: "POST",
@@ -111,12 +101,10 @@ function login() {
     .then((response) => {
       if (response.status == 401) {
         modaltextflag = 1;
-        // confirm("등록되어있지 않은 ID 혹은 비밀번호를 입력하였습니다.");
-        openModal();
+        modalOpen();
       } else if (response.status == 200) {
-        // confirm("로그인 성공!");
         modaltextflag = 2;
-        openModal();
+        modalOpen();
         clear();
         console.log(response);
       }
@@ -124,8 +112,8 @@ function login() {
     })
     .then((data) => {
       console.log(data);
-      localStorage.setItem("login", "test"); //로그아웃 테스트
-    }); // data로 구분하는것 수정해야함
+      localStorage.setItem("login", "test");
+    });
 }
 
 function setAccounttoServer() {
@@ -139,7 +127,6 @@ function setAccounttoServer() {
 
   //email 정규식 확인
   function emailCheck(email) {
-    // console.log(emailpattern.test(email));
     if (emailpattern.test(email)) {
       return true;
     } else {
@@ -149,15 +136,13 @@ function setAccounttoServer() {
 
   if (pw != pwchk) {
     modaltextflag = 3;
-    // confirm("비밀번호를 다시 확인해주세요.");
     setaccountflag = 1;
-    openModal();
+    modalOpen();
   }
   if (emailCheck(email) == false) {
     modaltextflag = 7;
-    // confirm("올바른 형태의 email 을 입력해주세요.");
     setaccountflag = 1;
-    openModal();
+    modalOpen();
   }
 
   if (setaccountflag == 0) {
@@ -174,17 +159,14 @@ function setAccounttoServer() {
     }).then((response) => {
       if (response.status == 201) {
         modaltextflag = 4;
-        openModal();
-        // confirm("가입완료!");
+        modalOpen();
         outCreateAccount();
       } else if (response.status == 400) {
         modaltextflag = 5;
-        openModal();
-        // confirm("입력되지않은 내용이 있습니다.");
+        modalOpen();
       } else if (response.status == 409) {
         modaltextflag = 6;
-        openModal();
-        // confirm("이미 가입되어있는 ID 입니다.");
+        modalOpen();
       }
     });
   }
