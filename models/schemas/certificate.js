@@ -2,16 +2,12 @@ const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 
-const AwardSchema = new Schema({
+const CertificateSchema = new Schema({
   userId: {
     type: String,
     required: true,
   },
   title: {
-    type: String,
-    required: true,
-  },
-  details: {
     type: String,
     required: true,
   },
@@ -21,10 +17,10 @@ const AwardSchema = new Schema({
   },
 });
 
-AwardSchema.plugin(AutoIncrement, {
-  id: "award_sequence",
+CertificateSchema.plugin(AutoIncrement, {
+  id: "certificate_sequence",
   reference_fields: "userId",
-  inc_field: "awardId",
+  inc_field: "certificateId",
 });
 
-module.exports = AwardSchema;
+module.exports = CertificateSchema;

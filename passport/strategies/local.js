@@ -11,7 +11,7 @@ const config = {
 const local = new LocalStrategy(config, async (email, password, done) => {
   try {
     //입력된 유저의 email이 DB에 있는지 찾고 없으면 에러 처리
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).lean();
     if (!user) {
       throw new Unauthorized("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
@@ -25,7 +25,7 @@ const local = new LocalStrategy(config, async (email, password, done) => {
     }
 
     done(null, {
-      id: user.id,
+      userId: user.userId,
       email: user.email,
       name: user.name,
     });
