@@ -1,4 +1,4 @@
-# ✨Dev.cartes! backend Page (임시 페이지) - Merge 문제 수정 전까지 Back_auth 브랜치를 이용해 주세요.
+# ✨Dev.cartes! backend Page (임시 페이지) - Merge 문제 해결. Backend Branch를 이용해주세요.
 
 ## 🪄 API 수정 사항
 
