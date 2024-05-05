@@ -69,6 +69,7 @@ async function menuClickHandler() {
     const login = localStorage.getItem("login");
 
     if (loginTrue.status === true && login) {
+      localStorage.setItem("tempId", loginTrue.data.id);
       window.location.href = `/userpage`; //개인 페이지 이동
     } else {
       alert("로그인 창으로 이동합니다.");
