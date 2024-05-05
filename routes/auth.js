@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
 const passport = require("passport");
 const { Unauthorized, BadRequest, Conflict } = require("../middlewares");
-const { ReturnDocument } = require("mongodb");
 
 const router = Router();
 
@@ -77,7 +76,7 @@ router.post("/logout", (req, res, next) => {
   });
 });
 
-//로그인이 되어있는지 확인
+// 로그인이 되어있는지 확인
 router.get("/status", async (req, res) => {
   if (!req.isAuthenticated()) {
     res.json({
@@ -90,7 +89,7 @@ router.get("/status", async (req, res) => {
   const user = await User.findOne({ email }).lean();
   res.json({
     status: true,
-    message: "로그인이 된 상태입니다.", // 유저 정보 안넘겨주는게 좋을 것 같다는데, 이건 프론트 분들이랑도 얘기해 봐야 할듯
+    message: "로그인이 된 상태입니다.",
     data: {
       userId: user.userId,
       email: user.email,

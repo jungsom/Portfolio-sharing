@@ -56,7 +56,7 @@ router.post("/", async (req, res, next) => {
       acqDate,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       error: null,
       message: "수상 내역이 추가되었습니다.",
       data: {
