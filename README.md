@@ -4,6 +4,10 @@
 
 자세한 내용은 [API 문서](https://docs.google.com/spreadsheets/d/1xZFiT2gpMSSY5c2hOz8VhJL_gC7Prh9ZJ5Q6wfp4Itk/edit?usp=sharing)를 참고해 주세요.
 
+- 2024년 5월 6일 월요일
+
+  - 5월 5일 MVP 업데이트에 맞게 Response schema, Sample Reponse 항목을 수정했습니다.
+
 - 2024년 5월 5일 일요일
   **- !BREAKING CHANGE: Users 항목 id -> userId 로 변경.**
 
@@ -49,6 +53,10 @@
     - 학력 정보 삭제
 
 ## 💻 백엔드 Changelog
+
+- 2024년 5월 6일 월요일
+
+  - MVP 항목 추가 시 status code가 잘못 표시되었던 것을 수정함
 
 - 2024년 5월 5일 일요일
 
