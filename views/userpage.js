@@ -1,5 +1,3 @@
-const selectElements = document.querySelectorAll(".education-list select");
-const inputElements = document.querySelectorAll(".education-list input");
 var Editcount = 0;
 
 var nameEdit,
@@ -24,7 +22,7 @@ var nameContainer,
 // massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
 // 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
 
-const massId = "ydiatvo560";
+const massId = "f0eec3d6-6899-49c3-856d-b2d7db3fced1";
 
 // mypage/project post 테스트
 // fetch("http://localhost:8080/mypage/project", {
@@ -48,7 +46,7 @@ const massId = "ydiatvo560";
 //   });
 
 // mypage/project get 테스트
-fetch("http://localhost:8080/mypage/project")
+fetch("http://localhost:8080/auth/status")
   .then((res) => res.json())
   .then((data) => {
     console.log(data);
@@ -395,10 +393,6 @@ function addCertificate() {
 function deleteEducation(button, educationId) {
   const plusButton = document.getElementById("education_plus_button");
 
-  button.parentElement.remove();
-
-  plusButton.style.display = "block";
-
   fetch(`http://localhost:8080/mypage/education/${educationId}`, {
     method: "DELETE",
   })
@@ -417,6 +411,10 @@ function deleteEducation(button, educationId) {
       console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
+
+  button.parentElement.remove();
+
+  plusButton.style.display = "block";
 }
 
 function deleteAward(button, awardId) {
@@ -610,7 +608,6 @@ function confirmEducation() {
   // 필요에 따라 가져온 정보를 활용하여 추가적인 작업을 수행합니다.
 
   const postData = {
-    educationId: userid,
     schoolName: schoolName,
     major: major,
     schoolState: degree,
@@ -692,7 +689,6 @@ function confirmAwards() {
     })
     .then((data) => {
       console.log("Success:", data);
-      const confirmedInfo = `수상 이름: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
       alert("수상 정보가 성공적으로 등록되었습니다.");
       alert(confirmedInfo);
     })
@@ -700,9 +696,6 @@ function confirmAwards() {
       console.error("Error:", error);
       alert("수상 정보 등록에 실패하였습니다.");
     });
-
-  const confirmedInfo = `수상 내용: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
-  alert(confirmedInfo);
 
   selectElements.forEach((element) => (element.disabled = true));
   inputElements.forEach((element) => (element.disabled = true));
