@@ -57,7 +57,7 @@ router.post("/", async (req, res, next) => {
       details,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       error: null,
       message: "프로젝트가 추가되었습니다.",
       data: {
