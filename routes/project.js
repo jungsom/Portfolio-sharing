@@ -17,22 +17,16 @@ router.get("/", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const { id, name } = req.session.passport.user; // id를 session에 있는 id 값으로
-
-    // id 확인(404 error)
-    const user = await User.findOne({ id });
-
-    if (!user) {
-      throw new NotFound("존재하지 않는 id입니다."); // 404 에러
-    }
+    const { userId, name } = req.session.passport.user; // userId를 session에 있는 userId 값으로
 
     // 본인 확인
+    const user = await User.findOne({ userId }).lean();
     const identification = Identification(req.session, user);
     if (!identification) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
     }
 
-    const project = await Project.find({ id });
+    const project = await Project.find({ userId }).lean();
 
     if (project.length < 1) {
       throw new NotFound("프로젝트 데이터를 찾을 수 없습니다."); // 404 에러
@@ -56,24 +50,23 @@ router.post("/", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const { id } = req.session.passport.user; // id를 session에 있는 id 값으로
-
-    // id 확인(404 error)
-    const user = await User.findOne({ id });
-
-    if (!user) {
-      throw new NotFound("존재하지 않는 id입니다.");
-    }
+    const { userId } = req.session.passport.user; // id를 session에 있는 id 값으로
 
     // 본인 확인
+    const user = await User.findOne({ userId }).lean();
     const identification = Identification(req.session, user);
     if (!identification) {
       throw new Forbidden("접근할 수 없습니다.");
     }
 
     const { title, startDate, endDate, details } = req.body;
+
+    if (!title || !startDate || !endDate || !details) {
+      throw new BadRequest("프로젝트 정보를 모두 입력해주세요.");
+    }
+
     const project = await Project.create({
-      id,
+      userId,
       title,
       startDate,
       endDate,
@@ -83,7 +76,13 @@ router.post("/", async (req, res, next) => {
     res.status(200).json({
       error: null,
       message: "프로젝트가 추가되었습니다.",
-      data: project,
+      data: {
+        userId: project.userId,
+        title: project.title,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        details: project.details,
+      },
     });
   } catch (err) {
     next(err);
@@ -97,16 +96,10 @@ router.put("/:projectId", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const { id } = req.session.passport.user; // id를 session에 있는 id 값으로
-
-    // id 확인(404 error)
-    const user = await User.findOne({ id });
-
-    if (!user) {
-      throw new NotFound("존재하지 않는 id입니다."); // 404 에러
-    }
+    const { userId } = req.session.passport.user; // id를 session에 있는 id 값으로
 
     // 본인 확인
+    const user = await User.findOne({ userId }).lean();
     const identification = Identification(req.session, user);
     if (!identification) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
@@ -114,7 +107,7 @@ router.put("/:projectId", async (req, res, next) => {
 
     // 프로젝트 정보가 DB에 있는지 확인
     const { projectId } = req.params;
-    const exists = await Project.findOne({ id, projectId });
+    const exists = await Project.findOne({ userId, projectId }).lean();
 
     if (!exists) {
       throw new NotFound(
@@ -129,26 +122,25 @@ router.put("/:projectId", async (req, res, next) => {
     }
 
     const project = await Project.findOneAndUpdate(
-      { id, projectId },
+      { userId, projectId },
       { title, startDate, endDate, details },
-      { new: true }
-    );
+      { runValidators: true, new: true }
+    ).lean();
 
-    // if (!updateEducation) {
-    //   throw new NotFound("데이터를 찾을 수 없습니다.");
-    // }
-
-    // const sanitizedEducation = {
-    //   educationId: updateEducation.educationId,
-    //   schoolName: updateEducation.schoolName,
-    //   major: updateEducation.major,
-    //   schoolStatus: updateEducation.schoolStatus,
-    // };
+    if (!project) {
+      throw new NotFound("데이터를 찾을 수 없습니다.");
+    }
 
     res.status(200).json({
       error: null,
       message: "프로젝트 정보를 수정했습니다.",
-      data: project,
+      data: {
+        userId: project.userId,
+        title: project.title,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        details: project.details,
+      },
     });
   } catch (e) {
     next(e);
@@ -162,16 +154,10 @@ router.delete("/:projectId", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const { id, name } = req.session.passport.user; // id를 session에 있는 id 값으로
-
-    // id 확인(404 error)
-    const user = await User.findOne({ id });
-
-    if (!user) {
-      throw new NotFound("존재하지 않는 id입니다."); // 404 에러
-    }
+    const { userId, name } = req.session.passport.user; // userId를 session에 있는 userId 값으로
 
     // 본인 확인
+    const user = await User.findOne({ userId }).lean();
     const identification = Identification(req.session, user);
     if (!identification) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
@@ -179,7 +165,7 @@ router.delete("/:projectId", async (req, res, next) => {
 
     // 프로젝트 정보가 DB에 있는지 확인
     const { projectId } = req.params;
-    const exists = await Project.findOne({ id, projectId });
+    const exists = await Project.findOne({ userId, projectId }).lean();
 
     if (!exists) {
       throw new NotFound(
@@ -188,13 +174,13 @@ router.delete("/:projectId", async (req, res, next) => {
     }
 
     const project = await Project.findOneAndDelete({
-      id,
+      userId,
       projectId,
-    });
+    }).lean();
 
-    // if (!deleteEducation) {
-    //   throw new NotFound("데이터를 찾을 수 없습니다.");
-    // }
+    if (!project) {
+      throw new NotFound("데이터를 찾을 수 없습니다.");
+    }
 
     res.status(200).json({
       error: null,
