@@ -94,40 +94,42 @@ function login() {
       email: email,
       password: pw,
     }),
-  })
-    .then((response) => {
-      if (response.status == 401) {
-        modalOpen(1);
-      } else if (response.status == 200) {
-        modalOpen(2);
-        clear();
-        localStorage.setItem("login", "test");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    });
+  }).then((response) => {
+    if (response.status == 401) {
+      modalOpen(1);
+    } else if (response.status == 200) {
+      modalOpen(2);
+      clear();
+    }
+  });
+}
+
+//비밀번호, 비밀번호 확인 같은지 다른지 판단
+function passwordCheck(pw, pwchk) {
+  if (pw == pwchk) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function passwordCompare() {
   const pw = document.getElementById("setpw").value;
   const pwchk = document.getElementById("setpwchk").value;
+  const pwChange = document.getElementById("change-setpw").value;
+  const pwChangechk = document.getElementById("change-setpwchk").value;
 
-  function passwordCheck() {
-    if (pw == pwchk) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  passwordCheck(pw, pwchk);
 
   if (pw == "") {
     document.getElementById("alert-text").style.display = "none";
-  } else if (passwordCheck()) {
+    document.getElementById("alert-text2").style.display = "none";
+  } else if (passwordCheck(pw, pwchk)) {
     document.getElementById("alert-text").style.display = "none";
+    document.getElementById("alert-text2").style.display = "none";
   } else {
     document.getElementById("alert-text").style.display = "block";
+    document.getElementById("alert-text2").style.display = "block";
   }
 }
 
@@ -149,26 +151,14 @@ function setAccounttoServer() {
     }
   }
 
-  //pw / pwchk 비교
-  function passwordCheck() {
-    if (pw == pwchk) {
-      console.log(pw == pwchk);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // console.log("회원가입 가능? ", passwordCheck() && emailCheck(email));
-
-  if (!passwordCheck()) {
+  if (!passwordCheck(pw, pwchk)) {
     modalOpen(3);
   }
   if (!emailCheck(email)) {
     modalOpen(7);
   }
 
-  if (passwordCheck() && emailCheck(email)) {
+  if (passwordCheck(pw, pwchk) && emailCheck(email)) {
     fetch("http://localhost:8080/auth/join", {
       method: "POST",
       headers: {

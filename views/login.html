@@ -120,6 +120,59 @@
           <span>회원가입</span>
         </button>
       </div>
+
+      <!-- 개인정보 변경 (회원탈퇴&비밀번호변경)-->
+      <div
+        class="privacy-modify"
+        id="privacy-modify-container"
+        style="display: none"
+      >
+        <div class="change-password-container">
+          <span>이메일 주소</span>
+          <div class="btnbox">
+            <span id="current-id"></span>
+          </div>
+
+          <span>비밀번호</span>
+          <div class="btnbox">
+            <input
+              type="password"
+              id="change-setpw"
+              class="InputBox"
+              placeholder="변경하실 비밀번호를 입력해주세요."
+            />
+          </div>
+
+          <span>비밀번호 재확인</span>
+          <div class="btnbox">
+            <input
+              type="password"
+              id="change-setpwchk"
+              class="InputBox"
+              placeholder="변경하실 비밀번호를 다시 입력해주세요."
+              onkeyup="passwordCompare()"
+            />
+            <span class="alert-text2" id="alert-text2"
+              >비밀번호가 일치하지 않습니다.</span
+            >
+          </div>
+
+          <span>이름</span>
+          <div class="btnbox">
+            <span id="current-name"></span>
+          </div>
+
+          <button class="change-password-btn" onclick="deleteAccount()">
+            비밀번호 변경
+          </button>
+        </div>
+
+        <div class="delete-account-container">
+          <button class="delete-account-btn" onclick="deleteAccount()">
+            회원 탈퇴
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </body>

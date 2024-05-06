@@ -9,6 +9,10 @@
   display: none;
 }
 
+.btnbox {
+  border-color: gray;
+}
+
 .body {
   width: 100%;
   height: 100%;
