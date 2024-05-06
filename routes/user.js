@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User, Education } = require("../models");
+const { User, Education, Project, Certificate, Award } = require("../models");
 const {
   BadRequest,
   Unauthorized,
@@ -23,6 +23,7 @@ router.get("/", async (req, res, next) => {
 
     // 페이지네이션
     const users = await User.find({})
+      .lean()
       .sort({ createAt: -1 }) // 최근 순으로 정렬
       .skip(perPage * (page - 1))
       .limit(perPage);
@@ -38,7 +39,7 @@ router.get("/", async (req, res, next) => {
     let usersData = [];
     for (const user of users) {
       usersData.push({
-        id: user.id,
+        userId: user.userId,
         email: user.email,
         name: user.name,
         description: user.description,
@@ -56,8 +57,8 @@ router.get("/", async (req, res, next) => {
 });
 
 // 사용자 한 명의 정보 조회
-router.get("/:id", async (req, res, next) => {
-  const id = req.params.id;
+router.get("/:userId", async (req, res, next) => {
+  const userId = req.params.userId;
 
   try {
     // 세션 확인(401 error)
@@ -65,22 +66,26 @@ router.get("/:id", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const user = await User.findOne({ id });
-    const education = await Education.find({ id });
+    const user = await User.findOne({ userId }).lean();
+    const education = await Education.find({ userId }).lean();
+    const project = await Project.find({ userId }).lean();
+    const certificate = await Certificate.find({ userId }).lean();
+    const award = await Award.find({ userId }).lean();
 
     // id 확인(404 error)
     if (!user) {
       throw new NotFound("존재하지 않는 id입니다.");
     }
 
-    if (Identification(req.session, user) === true) {
+    const isIdentical = Identification(req.session, user);
+    if (isIdentical) {
       // res.redirect("/mypage"); // 본인 id 검색하면 /mypage라는 곳으로 가기
       console.log("내 페이지로 이동");
     }
 
     // password는 빼고 보내기
     const userData = {
-      id: user.id,
+      userId: user.userId,
       email: user.email,
       name: user.name,
       description: user.description,
@@ -90,9 +95,9 @@ router.get("/:id", async (req, res, next) => {
       error: null,
       user: userData,
       education: education,
-      certificates: null,
-      projects: null,
-      awards: null,
+      certificates: certificate,
+      projects: project,
+      awards: award,
     });
   } catch (e) {
     next(e);
@@ -101,7 +106,6 @@ router.get("/:id", async (req, res, next) => {
 
 // 사용자 정보 수정
 router.put("/mypage", async (req, res, next) => {
-  // const id = req.params.id;
   const { name, description } = req.body;
 
   try {
@@ -121,36 +125,30 @@ router.put("/mypage", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const id = req.session.passport.user.id; // id를 session에 있는 id 값으로
-
-    // id 확인(404 error)
-    const user = await User.findOne({ id });
-    if (!user) {
-      throw new NotFound("존재하지 않는 id입니다.");
-    }
+    const userId = req.session.passport.user.userId; // id를 session에 있는 id 값으로
 
     // 본인 확인
-    const identification = Identification(req.session, user);
-    if (!identification) {
+    const user = await User.findOne({ userId }).lean();
+    const isIdentical = Identification(req.session, user);
+    if (!isIdentical) {
       throw new Forbidden("접근할 수 없습니다.");
     }
 
-    await User.updateOne(
-      { id },
+    const updateUser = await User.findOneAndUpdate(
+      { userId },
       {
         name: name,
         description: description.trim(),
-      }
-    );
-
-    const newUser = await User.findOne({ id });
+      },
+      { runValidators: true, new: true }
+    ).lean();
 
     // password는 빼고 보내기
     const userData = {
-      id: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
-      description: newUser.description,
+      userId: updateUser.userId,
+      email: updateUser.email,
+      name: updateUser.name,
+      description: updateUser.description,
     };
 
     res.status(200).json({
@@ -163,7 +161,7 @@ router.put("/mypage", async (req, res, next) => {
 });
 
 router.get("/identification/:id", async (req, res, next) => {
-  const id = req.params.id;
+  const userId = req.params.userId;
 
   try {
     // 세션 확인(401 error)
@@ -171,23 +169,18 @@ router.get("/identification/:id", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const user = await User.findOne({ id });
-
-    // id 확인(404 error)
-    if (!user) {
-      throw new NotFound("존재하지 않는 id입니다.");
-    }
+    const user = await User.findOne({ userId }).lean();
 
     // 본인 확인
-    const identification = Identification(req.session, user);
-    if (identification === true) {
+    const isIdentical = Identification(req.session, user);
+    if (isIdentical) {
       res.status(200).json({
-        status: identification,
+        status: isIdentical,
         message: "본인입니다.",
       });
     } else {
       res.status(200).json({
-        status: identification,
+        status: isIdentical,
         message: "본인이 아닙니다.",
       });
     }
