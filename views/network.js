@@ -76,15 +76,16 @@ async function menuClickHandler() {
     const login = localStorage.getItem("login");
 
     if (logintrue.status === true && login) {
-      localStorage.setItem("tempId", logintrue.data.id);
-      window.location.href = `/userpage`; //개인 페이지 이동
+      //유저가 로그인 상태이면 개인페이지 이동
+      localStorage.setItem("tempId", logintrue.data.userId); //유저 id 로컬스토리지에 저장(개인 페이지용)
+      window.location.href = `/userpage`;
     } else {
       alert("로그인 창으로 이동합니다.");
       window.location.href = `/login`;
     }
   } catch (error) {
-    console.error("401 error");
-    alert(error.message); //팝업창으로 수정 예정
+    console.error(error);
+    alert("로그인 창으로 이동합니다."); //팝업창으로 수정 예정
     window.location.href = `/login`;
   }
 }
@@ -95,7 +96,7 @@ async function getAllUserData() {
     // 첫 번째 페이지의 데이터를 가져옴
     let allData = [];
     let data = await getUsers(currentPage);
-    let totalPages = data.totalPage;
+    const totalPages = data.totalPage;
     allData = allData.concat(data.data);
 
     // 다음 페이지가 있을 경우 반복적으로 데이터를 가져옴
@@ -108,30 +109,28 @@ async function getAllUserData() {
     return allData;
   } catch (error) {
     console.error(error);
-    throw new Error(
-      "모든 페이지의 데이터를 가져오는 중에 문제가 발생했습니다."
-    );
+    alert("데이터를 가져오는 중에 오류가 생겼습니다.");
   }
 }
 
 /** 다른 사용자 목록 이벤트 핸들러 */
 async function ImgClickHandler(email) {
   try {
-    const allUserData = await getAllUserData();
+    let allUserData = await getAllUserData();
     const user = allUserData.find((user) => user.email === email);
     const login = localStorage.getItem("login");
 
     if (user && login) {
-      // 유저의 데이터가 일치하고, 로그인이 되어있으면 유저 페이지로 이동
-      localStorage.setItem("tempId", user.id);
-      window.location.href = "/userpage"; // 유저 페이지로 이동
+      // 유저의 데이터가 이미지의 데이터와 일치하고, 로그인이 되어있으면 유저 페이지로 이동
+      localStorage.setItem("tempId", user.userId); //유저 id 로컬스토리지에 저장(다른 사용자 페이지용)
+      window.location.href = "/userpage";
     } else {
       alert("로그인 창으로 이동합니다.");
       window.location.href = `/login`;
     }
   } catch (error) {
     console.error(error);
-    alert(error.message);
+    alert("로그인 창으로 이동합니다.");
     window.location.href = `/login`;
   }
 }
@@ -163,7 +162,7 @@ async function prevPage() {
   if (currentPage > 1) {
     currentPage--;
     renderPage(currentPage);
-    updatePaginationUI();
+    updateButton();
   }
 }
 
@@ -174,7 +173,7 @@ async function nextPage() {
   if (currentPage < totalPages) {
     currentPage++;
     renderPage(currentPage);
-    updatePaginationUI();
+    updateButton();
   }
 }
 
@@ -212,14 +211,10 @@ async function renderPage(page) {
 
         imageElem.addEventListener("mouseleave", () => {
           textElem.style.display = "none";
+        });
 
-          imageElem.addEventListener("click", () => {
-            ImgClickHandler(user.email);
-
-            textElem.addEventListener("click", () => {
-              ImgClickHandler(user.email);
-            });
-          });
+        imageElem.addEventListener("click", () => {
+          ImgClickHandler(user.email);
         });
       }
     });
@@ -228,15 +223,29 @@ async function renderPage(page) {
   }
 }
 
-/** 페이지네이션 UI를 업데이트하는 함수 */
-async function updatePaginationUI() {
+/** 페이지에 따라 버튼을 업데이트하는 함수 */
+async function updateButton() {
   let data = await getUsers(currentPage);
   let totalPages = data.totalPage;
   const prevButton = document.getElementById("prevButton");
   const nextButton = document.getElementById("nextButton");
 
-  prevButton.disabled = currentPage === 1;
-  nextButton.disabled = currentPage === totalPages;
+  if (currentPage === 1) {
+    prevButton.disabled = true;
+    nextButton.disabled = false;
+    prevButton.style.backgroundColor = "rgb(255, 213, 233)";
+    nextButton.style.backgroundColor = "rgb(255, 255, 255)";
+  } else if (currentPage === totalPages) {
+    prevButton.disabled = false;
+    nextButton.disabled = true;
+    prevButton.style.backgroundColor = "rgb(255, 255, 255)";
+    nextButton.style.backgroundColor = "rgb(255, 213, 233)";
+  } else {
+    prevButton.disabled = false;
+    nextButton.disabled = false;
+    prevButton.style.backgroundColor = "rgb(255, 255, 255)";
+    nextButton.style.backgroundColor = "rgb(255, 255, 255)";
+  }
 }
 
 //로그아웃
