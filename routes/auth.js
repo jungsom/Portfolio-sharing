@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
 const passport = require("passport");
 const { Unauthorized, BadRequest, Conflict } = require("../middlewares");
-const { ReturnDocument } = require("mongodb");
 
 const router = Router();
 
@@ -18,7 +17,7 @@ router.post("/join", async (req, res, next) => {
     }
 
     // 같은 이메일로 이미 가입이 되어 있는지 확인
-    const exists = await User.findOne({ email });
+    const exists = await User.findOne({ email }).lean();
 
     // 이미 가입된 이메일이 있으면 상태코드 409, 에러 메시지를 보냄
     if (exists) {
@@ -30,7 +29,7 @@ router.post("/join", async (req, res, next) => {
 
     // User를 create하고 결과값을 user에 저장
     const user = await User.create({
-      id: nanoid(10),
+      userId: nanoid(10),
       email,
       name,
       password: hashedPassword,
@@ -39,7 +38,12 @@ router.post("/join", async (req, res, next) => {
 
     res.status(201).json({
       error: null,
-      data: user,
+      data: {
+        userId: user.userId,
+        email: user.email,
+        name: user.name,
+        description: user.description,
+      },
     });
   } catch (err) {
     next(err);
@@ -60,22 +64,19 @@ router.post("/logout", (req, res, next) => {
   if (!req.isAuthenticated()) {
     throw new Unauthorized("로그인이 되어있지 않습니다.");
   }
-  const { user } = req.session.passport;
-  if (req.isAuthenticated()) {
-    req.logout((err) => {
-      if (err) {
-        next(err);
-      }
-      res.status(200).json({
-        error: null,
-        message: "로그아웃 성공",
-        data: user,
-      });
+
+  req.logout((err) => {
+    if (err) {
+      next(err);
+    }
+    res.status(200).json({
+      error: null,
+      message: "로그아웃 성공",
     });
-  }
+  });
 });
 
-//로그인이 되어있는지 확인
+// 로그인이 되어있는지 확인
 router.get("/status", async (req, res) => {
   if (!req.isAuthenticated()) {
     res.json({
@@ -85,12 +86,12 @@ router.get("/status", async (req, res) => {
     return;
   }
   const { email } = req.session.passport.user;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).lean();
   res.json({
     status: true,
     message: "로그인이 된 상태입니다.",
     data: {
-      id: user.id,
+      userId: user.userId,
       email: user.email,
       name: user.name,
     },

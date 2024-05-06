@@ -610,7 +610,7 @@ function confirmEducation() {
   const postData = {
     schoolName: schoolName,
     major: major,
-    schoolState: degree,
+    schoolStatus: degree,
   };
 
   fetch(`http://localhost:8080/mypage/education`, {

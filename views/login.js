@@ -29,9 +29,10 @@ function modalOpen(txtNum) {
 
 function modalClose() {
   document.getElementById("modal").style.display = "none";
-  // if (txtNum == 2) {
-  //   window.location.href = "/network";
-  // }
+  const islogined = localStorage.getItem("login");
+  if (islogined == "test") {
+    window.location.href = "/Network";
+  }
 }
 
 // 팝업창 텍스트 설정
@@ -100,13 +101,12 @@ function login() {
       } else if (response.status == 200) {
         modalOpen(2);
         clear();
-        console.log(response);
+        localStorage.setItem("login", "test");
       }
       return response.json();
     })
     .then((data) => {
       console.log(data);
-      localStorage.setItem("login", "test");
     });
 }
 

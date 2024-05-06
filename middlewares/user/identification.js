@@ -1,5 +1,5 @@
-function Identification(session, user) {
-  return session.passport.user.email === user.email;
+function identification(session, user) {
+  return session.passport.user.id === user.id;
 }
 
-module.exports = Identification;
+module.exports = identification;
