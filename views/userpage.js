@@ -1,5 +1,3 @@
-const selectElements = document.querySelectorAll(".education-list select");
-const inputElements = document.querySelectorAll(".education-list input");
 var Editcount = 0;
 
 var nameEdit,
@@ -26,16 +24,47 @@ var nameContainer,
 
 let massId = localStorage.getItem("tempId");
 
-//현재 내가 로그인 한 계정이랑 userpage이동시 받아온 id값이랑 같으면 true 아니면 false 반환하는 함수
-function isMyPage() {
+// mypage/project post 테스트
+// fetch("http://localhost:8080/mypage/project", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify({
+//     title: "테스트프로젝트타이틀",
+//     startDate: "2024-04-29",
+//     endDate: "2024-05-12",
+//     details: "프로젝트 post 테스트입니다.",
+//   }),
+// })
+//   .then((res) => {
+//     console.log("res ", res);
+//     res.json();
+//   })
+//   .then((data) => {
+//     console.log("data ", data);
+//   });
+
+// mypage/project get 테스트
+fetch("http://localhost:8080/auth/status")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log(data);
+  });
+
+// edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 editBtns이라는 class 할당해서 일괄 display 설정
+function isVisibleBtns() {
   fetch("http://localhost:8080/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      if (data.data.id == massId) {
-        return true;
-      } else {
-        return false;
-      }
+      targets = document.querySelectorAll(".editBtns");
+      targets.forEach((target) => {
+        if (data.data.id == massId) {
+          target.style.display = "block";
+        } else {
+          target.style.display = "none";
+        }
+      });
     });
 }
 
@@ -364,10 +393,6 @@ function addCertificate() {
 function deleteEducation(button, educationId) {
   const plusButton = document.getElementById("education_plus_button");
 
-  button.parentElement.remove();
-
-  plusButton.style.display = "block";
-
   fetch(`http://localhost:8080/mypage/education/${educationId}`, {
     method: "DELETE",
   })
@@ -386,6 +411,10 @@ function deleteEducation(button, educationId) {
       console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
+
+  button.parentElement.remove();
+
+  plusButton.style.display = "block";
 }
 
 function deleteAward(button, awardId) {
@@ -579,7 +608,6 @@ function confirmEducation() {
   // 필요에 따라 가져온 정보를 활용하여 추가적인 작업을 수행합니다.
 
   const postData = {
-    educationId: userid,
     schoolName: schoolName,
     major: major,
     schoolStatus: degree,
@@ -661,7 +689,6 @@ function confirmAwards() {
     })
     .then((data) => {
       console.log("Success:", data);
-      const confirmedInfo = `수상 이름: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
       alert("수상 정보가 성공적으로 등록되었습니다.");
       alert(confirmedInfo);
     })
@@ -669,9 +696,6 @@ function confirmAwards() {
       console.error("Error:", error);
       alert("수상 정보 등록에 실패하였습니다.");
     });
-
-  const confirmedInfo = `수상 내용: ${awardName}\n수상 날짜: ${awardDate}\n부가 설명: ${awardDetail}`;
-  alert(confirmedInfo);
 
   selectElements.forEach((element) => (element.disabled = true));
   inputElements.forEach((element) => (element.disabled = true));
@@ -793,6 +817,7 @@ function confirmCertificate() {
 }
 
 getUserData();
+isVisibleBtns();
 
 window.addEventListener("popstate", function (event) {
   delete massId; // 사용자 id 값 삭제
