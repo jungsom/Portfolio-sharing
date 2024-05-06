@@ -582,7 +582,7 @@ function confirmEducation() {
     educationId: userid,
     schoolName: schoolName,
     major: major,
-    schoolState: degree,
+    schoolStatus: degree,
   };
 
   fetch(`http://localhost:8080/mypage/education`, {
