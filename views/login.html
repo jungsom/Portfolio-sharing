@@ -96,7 +96,11 @@
             id="setpwchk"
             class="InputBox"
             placeholder="비밀번호를 다시 입력해주세요."
+            onkeyup="passwordCompare()"
           />
+          <span class="alert-text" id="alert-text"
+            >비밀번호가 일치하지 않습니다.</span
+          >
         </div>
 
         <span>이름</span>

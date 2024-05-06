@@ -110,6 +110,27 @@ function login() {
     });
 }
 
+function passwordCompare() {
+  const pw = document.getElementById("setpw").value;
+  const pwchk = document.getElementById("setpwchk").value;
+
+  function passwordCheck() {
+    if (pw == pwchk) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  if (pw == "") {
+    document.getElementById("alert-text").style.display = "none";
+  } else if (passwordCheck()) {
+    document.getElementById("alert-text").style.display = "none";
+  } else {
+    document.getElementById("alert-text").style.display = "block";
+  }
+}
+
 function setAccounttoServer() {
   const pw = document.getElementById("setpw").value;
   const pwchk = document.getElementById("setpwchk").value;
