@@ -14,6 +14,8 @@ const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const mypageRouter = require("./routes/mypage");
 
+const { NotFound } = require("./middlewares");
+
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
 
@@ -59,7 +61,6 @@ app.get("/network", (req, res) => {
 
 // 서버 설정
 app.use(express.json());
-app.use(bodyParser.json());
 
 // 세션 설정
 app.use(cookieParser());
@@ -82,11 +83,24 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/mypage", mypageRouter);
 
+app.use((req, res, next) => {
+  next(new NotFound("잘못된 path 입력"));
+});
+
 // 오류 처리
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).send({
-    error: err.message || "서버 내부에서 오류가 발생했습니다.",
-    data: err.data,
+app.use((error, req, res, next) => {
+  const { name, message, status, data } = error;
+  if (status >= 500) {
+    console.error(name, message);
+    res.status(status).json({
+      error: "서버에서 오류가 발생하였습니다. 잠시후에 다시 시도해주세요.",
+      data,
+    });
+    return;
+  }
+  res.status(status).json({
+    error: message,
+    data,
   });
 });
 
