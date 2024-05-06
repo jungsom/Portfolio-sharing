@@ -202,7 +202,19 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage });
+// 파일 형식 검사
+const fileFilter = (req, file, cb) => {
+  if (!file.mimetype.startsWith('image/')) {
+    return cb(new BadRequest("이미지 파일만 업로드할 수 있습니다."), false);
+  }
+
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+});
 
 // 프로필 이미지 업로드
 router.put("/profileImg", upload.single("profileImg"), async (req, res, next) => {
@@ -213,14 +225,12 @@ router.put("/profileImg", upload.single("profileImg"), async (req, res, next) =>
     }
 
     const userId = req.session.passport.user.userId;
-    const profileImg = `/${req.file.path}`;
 
-    console.log(userId);
-    console.log(profileImg);
-
-    if (!profileImg) {
-      throw new  BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
+    if (!req.file) {
+      throw new  BadRequest("프로필 이미지가 등록되지 않았습니다."); // 400 에러
     }
+
+    const profileImg = `/${req.file.path}`;
 
     const user = await User.findOneAndUpdate(
       { userId },
