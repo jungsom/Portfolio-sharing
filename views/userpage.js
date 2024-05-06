@@ -22,8 +22,8 @@ var nameContainer,
 // massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
 // 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
 
-let massId = localStorage.getItem("tempId");
-// const massId = "f0eec3d6-6899-49c3-856d-b2d7db3fced1";
+// let massId = localStorage.getItem("tempId");
+const massId = "f0eec3d6-6899-49c3-856d-b2d7db3fced1";
 
 // mypage/project post 테스트
 // fetch("http://localhost:8080/mypage/project", {
@@ -60,7 +60,7 @@ function isVisibleBtns() {
     .then((data) => {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
-        if (data.data.userid == massId) {
+        if (data.data.id == massId) {
           target.style.display = "block";
         } else {
           target.style.display = "none";
@@ -289,7 +289,7 @@ function confirmEducation(event) {
 
   event.preventDefault();
 
-  const university = document.getElementById("university").value; // 대학교 이름
+  const schoolName = document.getElementById("university").value; // 대학교 이름
   const major = document.getElementById("major").value; // 전공
   const schoolStatus = document.getElementById("schoolStatus").value; // 전공
 
@@ -299,7 +299,7 @@ function confirmEducation(event) {
 
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
-    schoolName: university,
+    schoolName: schoolName,
     major: major,
     schoolStatus: schoolStatus,
   };
