@@ -1,7 +1,3 @@
-//해야할거
-//1. 전역변수 modalOpen()에 인자로 변경
-//2. 비밀번호, 이메일 확인 부분 flag 대신 return으로
-
 //Nav 페이지이동
 function gotoNetworkpage() {
   window.location.href = "/network";
@@ -29,10 +25,13 @@ function modalOpen(txtNum) {
 
 function modalClose() {
   document.getElementById("modal").style.display = "none";
-  const islogined = localStorage.getItem("login");
-  if (islogined == "test") {
+  const goTo = localStorage.getItem("goTo");
+  if (goTo == "network") {
     window.location.href = "/Network";
+  } else if (goTo == "login") {
+    window.location.href = "/login";
   }
+  localStorage.removeItem("goTo");
 }
 
 // 팝업창 텍스트 설정
@@ -64,6 +63,21 @@ function changeModalText(txtNum) {
   } else if (txtNum == 7) {
     document.getElementById("modaltext").innerHTML =
       "올바른 형태의 email 을 입력해주세요.";
+  } else if (txtNum == 8) {
+    document.getElementById("modaltext").innerHTML =
+      "비밀번호가 일치하지 않습니다.";
+  } else if (txtNum == 9) {
+    document.getElementById("modaltext").innerHTML =
+      "회원탈퇴가 정상적으로 완료되었습니다.";
+  } else if (txtNum == 10) {
+    document.getElementById("modaltext").innerHTML =
+      "비밀번호 변경 성공! 다시 로그인 해주세요.";
+  } else if (txtNum == 11) {
+    document.getElementById("modaltext").innerHTML =
+      "기존 비밀번호가 일치하지 않습니다.";
+  } else if (txtNum == 12) {
+    document.getElementById("modaltext").innerHTML =
+      "변경하려는 비밀번호가 지금 사용하고 있는 비밀번호와 같습니다.";
   }
 }
 
@@ -94,23 +108,48 @@ function login() {
       email: email,
       password: pw,
     }),
-  })
-    .then((response) => {
-      if (response.status == 401) {
-        modalOpen(1);
-      } else if (response.status == 200) {
-        modalOpen(2);
-        clear();
-        localStorage.setItem("login", "test");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    });
+  }).then((response) => {
+    if (response.status == 401) {
+      modalOpen(1);
+    } else if (response.status == 200) {
+      modalOpen(2);
+      clear();
+      localStorage.setItem("goTo", "network");
+    }
+  });
 }
 
-function setAccounttoServer() {
+//비밀번호, 비밀번호 확인 같은지 다른지 판단
+function passwordCheck(pw, pwchk) {
+  if (pw == pwchk) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function passwordCompare() {
+  const pw = document.getElementById("setpw").value;
+  const pwchk = document.getElementById("setpwchk").value;
+  const pwChange = document.getElementById("change-setpw").value;
+  const pwChangechk = document.getElementById("change-setpwchk").value;
+
+  passwordCheck(pw, pwchk);
+
+  if (pw == "") {
+    document.getElementById("alert-text").style.display = "none";
+    document.getElementById("alert-text2").style.display = "none";
+  } else if (passwordCheck(pw, pwchk)) {
+    document.getElementById("alert-text").style.display = "none";
+    document.getElementById("alert-text2").style.display = "none";
+  } else {
+    document.getElementById("alert-text").style.display = "block";
+    document.getElementById("alert-text2").style.display = "block";
+  }
+}
+
+//회원가입 버튼 동작
+function setAccount() {
   const pw = document.getElementById("setpw").value;
   const pwchk = document.getElementById("setpwchk").value;
   const name = document.getElementById("setname").value;
@@ -128,26 +167,14 @@ function setAccounttoServer() {
     }
   }
 
-  //pw / pwchk 비교
-  function passwordCheck() {
-    if (pw == pwchk) {
-      console.log(pw == pwchk);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // console.log("회원가입 가능? ", passwordCheck() && emailCheck(email));
-
-  if (!passwordCheck()) {
+  if (!passwordCheck(pw, pwchk)) {
     modalOpen(3);
   }
   if (!emailCheck(email)) {
     modalOpen(7);
   }
 
-  if (passwordCheck() && emailCheck(email)) {
+  if (passwordCheck(pw, pwchk) && emailCheck(email)) {
     fetch("http://localhost:8080/auth/join", {
       method: "POST",
       headers: {
@@ -169,4 +196,65 @@ function setAccounttoServer() {
       }
     });
   }
+}
+
+//회원탈퇴
+function accountDelete() {
+  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
+    const pw = document.getElementById("delete-account-pwchk").value;
+    fetch("http://localhost:8080/auth", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 401) {
+        modalOpen(8);
+      } else if (response.status == 200) {
+        localStorage.setItem("goTo", "login");
+        modalOpen(9);
+        clear();
+      }
+    });
+  }
+}
+
+//비밀번호 변경
+function passwordChange() {
+  const prevPw = document.getElementById("existed-pw").value;
+  const pw = document.getElementById("change-setpw").value;
+  console.log(prevPw, pw);
+  fetch("http://localhost:8080/auth", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      password: prevPw,
+      newPassword: pw,
+    }),
+  }).then((response) => {
+    console.log("res : ", response);
+    if (response.status == 200) {
+      modalOpen(10);
+      localStorage.setItem("goTo", "login");
+      //변경된 비밀번호로 다시 로그인하게 유도
+      fetch("http://localhost:8080/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+    } else if (response.status == 400) {
+      modalOpen(5);
+    } else if (response.status == 401) {
+      modalOpen(11);
+    } else if (response.status == 409) {
+      modalOpen(12);
+    }
+  });
 }
