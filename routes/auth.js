@@ -114,6 +114,10 @@ router.get("/false", async (req, res) => {
   res.json({
     status: false,
     message: "로그인이 되지 않았습니다.",
+    data: {
+      name: user.name,
+      description: user.description,
+    },
   });
 });
 
