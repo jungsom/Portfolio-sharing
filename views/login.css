@@ -54,6 +54,14 @@
   position: absolute;
 }
 
+.privacy-modify {
+  padding-top: 5%;
+}
+
+.delete-account-container {
+  padding-top: 5%;
+}
+
 /* 팝업모달 */
 h2 {
   text-align: center;
