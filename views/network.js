@@ -8,10 +8,11 @@
 // }
 
 // 가상 데이터 베이스
+// ** userId 변경사항으로 현재 userpage랑 이미지 안맞음 **
 userProfileImage = {
   data: [
     { email: "test5555@test.com", url: "./userdata/img1.jpg" },
-    { email: "test12525@test.com", url: "./userdata/img2.jpg" },
+    { email: "12341234@test.com", url: "./userdata/img2.jpg" }, // 비번 12341234
     { email: "youmin@naver.com", url: "./userdata/img3.jpg" },
     { email: "test@test.com", url: "./userdata/img4.jpg" },
     { email: "test1234@test.com", url: "./userdata/img5.jpg" },
@@ -39,7 +40,7 @@ async function getUsers(page) {
 }
 
 /** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
-async function getLoginTrue() {
+async function getLoginStatus() {
   try {
     const response = await fetch(`http://localhost:8080/auth/status`);
     if (!response.ok) {
@@ -54,24 +55,24 @@ async function getLoginTrue() {
 }
 
 /** 현재 사용자가 로그인이 되어있지 않을 경우 유저 정보 api 요청*/
-async function getLoginFalse() {
-  try {
-    const response = await fetch(`http://localhost:8080/auth/false`);
-    if (!response.ok) {
-      throw new Errow("데이터를 가져오는데 문제가 있습니다.");
-    }
-    const data = await response.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("error:", error);
-  }
-}
+// async function getLoginFalse() {
+//   try {
+//     const response = await fetch(`http://localhost:8080/auth/false`);
+//     if (!response.ok) {
+//       throw new Errow("데이터를 가져오는데 문제가 있습니다.");
+//     }
+//     const data = await response.json();
+//     console.log(data);
+//     return data;
+//   } catch (error) {
+//     console.error("error:", error);
+//   }
+// }
 
 /** 메뉴바 이벤트 핸들러 */
 async function menuClickHandler() {
   try {
-    const logintrue = await getLoginTrue();
+    const logintrue = await getLoginStatus();
 
     if (logintrue.status === true) {
       //유저가 로그인 상태이면 개인페이지 이동
@@ -115,7 +116,7 @@ async function getAllUserData() {
 async function ImgClickHandler(email) {
   try {
     let allUserData = await getAllUserData();
-    const logintrue = await getLoginTrue();
+    const logintrue = await getLoginStatus();
     const user = allUserData.find((user) => user.email === email);
 
     if (user && logintrue.status === true) {
@@ -181,15 +182,19 @@ async function renderPage(page) {
                   이름: ${user.name} <br>
                   자기소개: ${user.description}`;
 
-        imageElem.addEventListener("mouseenter", () => {
+        container.addEventListener("mouseenter", () => {
           textElem.style.display = "block";
+          imageElem.style.filter = "blur(5px)";
+          textElem.style.opacity = "1";
         });
 
-        imageElem.addEventListener("mouseleave", () => {
+        container.addEventListener("mouseleave", () => {
           textElem.style.display = "none";
+          imageElem.style.filter = "blur(0px)";
+          textElem.style.opacity = "0";
         });
 
-        imageElem.addEventListener("click", () => {
+        container.addEventListener("click", () => {
           ImgClickHandler(user.email);
         });
       }
@@ -229,7 +234,7 @@ async function updateMenu() {
   const userpageElem = document.querySelector(".userpage");
   const loginElem = document.querySelector(".login");
   const logoutElem = document.querySelector(".logout");
-  const logintrue = await getLoginTrue();
+  const logintrue = await getLoginStatus();
 
   if (logintrue.status === true) {
     logoutElem.style.display = "block";
@@ -269,18 +274,19 @@ async function init() {
   // const userElem = document.getElementById("userContent");
 
   // userElem.addEventListener("click", ImgClickHandler);
+
   userpageElem.addEventListener("click", menuClickHandler);
   loginElem.addEventListener("click", menuClickHandler);
-  // 이전 페이지 버튼에 이벤트 리스너 추가
-  document.getElementById("prevButton").addEventListener("click", prevPage);
 
-  // 다음 페이지 버튼에 이벤트 리스너 추가
-  document.getElementById("nextButton").addEventListener("click", nextPage);
-
+  //로그아웃 이벤트리스너 추기
   logoutElem.addEventListener("click", () => {
     getLogOut();
     window.location.href = "/";
   });
+
+  //페이지네이션 관련 이벤트리스너 추가
+  document.getElementById("prevButton").addEventListener("click", prevPage);
+  document.getElementById("nextButton").addEventListener("click", nextPage);
 }
 
 init();

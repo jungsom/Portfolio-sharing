@@ -101,7 +101,6 @@ function login() {
       } else if (response.status == 200) {
         modalOpen(2);
         clear();
-        localStorage.setItem("login", "test");
       }
       return response.json();
     })
