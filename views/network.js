@@ -73,9 +73,7 @@ async function menuClickHandler() {
   try {
     const logintrue = await getLoginTrue();
 
-    const login = localStorage.getItem("login");
-
-    if (logintrue.status === true && login) {
+    if (logintrue.status === true) {
       //유저가 로그인 상태이면 개인페이지 이동
       localStorage.setItem("tempId", logintrue.data.userId); //유저 id 로컬스토리지에 저장(개인 페이지용)
       window.location.href = `/userpage`;
@@ -117,16 +115,16 @@ async function getAllUserData() {
 async function ImgClickHandler(email) {
   try {
     let allUserData = await getAllUserData();
+    const logintrue = await getLoginTrue();
     const user = allUserData.find((user) => user.email === email);
-    const login = localStorage.getItem("login");
 
-    if (user && login) {
+    if (user && logintrue.status === true) {
       // 유저의 데이터가 이미지의 데이터와 일치하고, 로그인이 되어있으면 유저 페이지로 이동
       localStorage.setItem("tempId", user.userId); //유저 id 로컬스토리지에 저장(다른 사용자 페이지용)
       window.location.href = "/userpage";
     } else {
-      alert("로그인 창으로 이동합니다.");
-      window.location.href = `/login`;
+      alert("데이터를 불러오는데 오류가 생겼습니다.");
+      window.location.href = "/login";
     }
   } catch (error) {
     console.error(error);
@@ -134,28 +132,6 @@ async function ImgClickHandler(email) {
     window.location.href = `/login`;
   }
 }
-
-/** 로그인(유저 가입) 상태에 따라 메뉴 변경 */
-// async function updateMenu() {
-//   try {
-//     const loginTrue = await fetchTrue();
-//     const logoutTest = localStorage.getItem("logout");
-
-//     const userpageElem = document.querySelector(".userpage");
-//     const loginElem = document.querySelector(".login");
-
-//     //로그아웃 구현 시 login 작동 버튼 예정 // 테스트 o
-//     if (logoutTest) {
-//       userpageElem.style.display = "block";
-//       loginElem.style.display = "none"; //none;
-//     } else {
-//       userpageElem.style.display = "none"; //none;
-//       loginElem.style.display = "block";
-//     }
-//   } catch (error) {
-//     console.error("메뉴가 업데이트 되지 않았습니다.");
-//   }
-// }
 
 /** 이전 페이지로 이동하는 함수 */
 async function prevPage() {
@@ -255,39 +231,41 @@ async function updateMenu() {
   const logoutElem = document.querySelector(".logout");
   const logintrue = await getLoginTrue();
 
-  const login = localStorage.getItem("login");
-
-  if (logintrue.status === true && login) {
+  if (logintrue.status === true) {
     logoutElem.style.display = "block";
     userpageElem.style.display = "block";
     loginElem.style.display = "none"; //none;
   } else {
-    localStorage.removeItem("login");
     userpageElem.style.display = "none"; //none;
     loginElem.style.display = "block";
     logoutElem.style.display = "none";
   }
-  // 서버한테 로그아웃 post 요청 (status를 false로)
-  // or 로컬 스토리지로 데이터 임시 서장 형태
-  //로그아웃 테스트
 }
 
-function logOut() {
-  const logoutElem = document.querySelector(".logout");
-
-  logoutElem.addEventListener("click", () => {
-    localStorage.removeItem("login");
-    window.location.href = "/";
+function getLogOut() {
+  fetch("http://localhost:8080/auth/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  }).then((response) => {
+    if (response.status == 401) {
+      alert("로그인 후 이용 가능합니다.");
+    } else if (response.status == 200) {
+      alert("로그아웃 성공");
+      window.location.href = "/board";
+    }
   });
 }
 
 async function init() {
   updateMenu();
   renderPage(currentPage);
-  logOut();
 
   const userpageElem = document.querySelector(".userpage");
   const loginElem = document.querySelector(".login");
+  const logoutElem = document.querySelector(".logout");
   // const userElem = document.getElementById("userContent");
 
   // userElem.addEventListener("click", ImgClickHandler);
@@ -298,6 +276,11 @@ async function init() {
 
   // 다음 페이지 버튼에 이벤트 리스너 추가
   document.getElementById("nextButton").addEventListener("click", nextPage);
+
+  logoutElem.addEventListener("click", () => {
+    getLogOut();
+    window.location.href = "/";
+  });
 }
 
 init();

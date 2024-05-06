@@ -17,9 +17,9 @@ router.get("/", async (req, res, next) => {
 
   try {
     // 세션 확인
-    if (!req.session.passport) {
-      throw new Unauthorized("로그인 후 이용 가능합니다.");
-    }
+    // if (!req.session.passport) {
+    //   throw new Unauthorized("로그인 후 이용 가능합니다.");
+    // }
 
     // 페이지네이션
     const users = await User.find({})
