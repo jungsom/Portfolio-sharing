@@ -44,19 +44,19 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 app.get("/", (req, res) => {
-  res.render("network.html");
+  res.render("network/network.html");
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.html");
+  res.render("login/login.html");
 });
 
 app.get("/userpage", (req, res) => {
-  res.render("userpage.html");
+  res.render("userpage/userpage.html");
 });
 
 app.get("/network", (req, res) => {
-  res.render("network.html");
+  res.render("network/network.html");
 });
 
 // 서버 설정

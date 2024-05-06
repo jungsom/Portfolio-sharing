@@ -10,17 +10,17 @@
 // 가상 데이터 베이스
 userProfileImage = {
   data: [
-    { email: "test5555@test.com", url: "./userdata/img1.jpg" },
-    { email: "test12525@test.com", url: "./userdata/img2.jpg" },
-    { email: "youmin@naver.com", url: "./userdata/img3.jpg" },
-    { email: "test@test.com", url: "./userdata/img4.jpg" },
-    { email: "test1234@test.com", url: "./userdata/img5.jpg" },
-    { email: "wdwd@arr.com", url: "./userdata/img6.jpg" },
-    { email: "wewe@wewe.com", url: "./userdata/img7.jpg" },
-    { email: "elice10@test.com", url: "./userdata/img8.jpg" },
-    { email: "test1234@test.com", url: "./userdata/img9.jpg" },
-    { email: "elice1@test.com", url: "./userdata/img10.jpg" },
-    { email: "elice@test.com", url: "./userdata/img11.jpg" },
+    { email: "test5555@test.com", url: "/userdata/img1.jpg" },
+    { email: "test12525@test.com", url: "/userdata/img2.jpg" },
+    { email: "youmin@naver.com", url: "/userdata/img3.jpg" },
+    { email: "test@test.com", url: "/userdata/img4.jpg" },
+    { email: "test1234@test.com", url: "/userdata/img5.jpg" },
+    { email: "wdwd@arr.com", url: "/userdata/img6.jpg" },
+    { email: "wewe@wewe.com", url: "/userdata/img7.jpg" },
+    { email: "elice10@test.com", url: "/userdata/img8.jpg" },
+    { email: "test1234@test.com", url: "/userdata/img9.jpg" },
+    { email: "elice1@test.com", url: "/userdata/img10.jpg" },
+    { email: "elice@test.com", url: "/userdata/img11.jpg" },
   ],
 };
 
