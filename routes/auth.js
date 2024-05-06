@@ -90,7 +90,7 @@ router.get("/status", async (req, res) => {
     status: true,
     message: "로그인이 된 상태입니다.",
     data: {
-      id: user.id,
+      id: user.userid,
       email: user.email,
       name: user.name,
     },

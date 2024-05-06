@@ -22,8 +22,8 @@ var nameContainer,
 // massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
 // 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
 
-// let massId = localStorage.getItem("tempId");
-const massId = "f0eec3d6-6899-49c3-856d-b2d7db3fced1";
+let massId = localStorage.getItem("tempId");
+// const massId = "f0eec3d6-6899-49c3-856d-b2d7db3fced1";
 
 // mypage/project post 테스트
 // fetch("http://localhost:8080/mypage/project", {
@@ -60,7 +60,7 @@ function isVisibleBtns() {
     .then((data) => {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
-        if (data.data.id == massId) {
+        if (data.data.userid == massId) {
           target.style.display = "block";
         } else {
           target.style.display = "none";
@@ -293,6 +293,10 @@ function confirmEducation(event) {
   const major = document.getElementById("major").value; // 전공
   const schoolStatus = document.getElementById("schoolStatus").value; // 전공
 
+  console.log(typeof university);
+  console.log(typeof major);
+  console.log(typeof schoolStatus);
+
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
     schoolName: university,
@@ -319,11 +323,28 @@ function confirmEducation(event) {
     .then((data) => {
       console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("학력 정보가 성공적으로 등록되었습니다.");
+      // updateEducationList(postData);
     })
     .catch((error) => {
       console.error("Error:", error); // 에러 처리
       alert("학력 정보 등록에 실패하였습니다.");
     });
+}
+
+function updateEducationList(data) {
+  const educationList = document.getElementById("educationList");
+
+  // 새로운 학력 정보를 표시할 HTML 요소를 생성
+  const entry = document.createElement("div");
+  entry.classList.add("education-entry");
+  entry.innerHTML = `
+    <p>학교 이름: ${data.schoolName}</p>
+    <p>전공: ${data.major}</p>
+    <p>학위: ${data.schoolStatus}</p>
+  `;
+
+  // 생성된 요소를 페이지에 추가
+  educationList.appendChild(entry);
 }
 
 // function confirmEducation() {
