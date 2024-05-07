@@ -1,4 +1,8 @@
 //Nav 페이지이동
+function init() {
+  clear();
+}
+
 function gotoNetworkpage() {
   window.location.href = "/network";
 }
@@ -270,3 +274,5 @@ function passwordChange() {
     }
   });
 }
+
+init();
