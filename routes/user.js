@@ -7,6 +7,9 @@ const {
   NotFound,
   Identification,
 } = require("../middlewares");
+const multer = require('multer');
+const path = require('path');
+const { nanoid } = require("nanoid");
 
 const router = Router();
 
@@ -184,6 +187,65 @@ router.get("/identification/:id", async (req, res, next) => {
         message: "본인이 아닙니다.",
       });
     }
+  } catch (e) {
+    next(e);
+  }
+});
+
+// 프로필 이미지 업로드 설정
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/profileImg/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, nanoid() + path.extname(file.originalname));
+  }
+});
+
+// 파일 형식 검사
+const fileFilter = (req, file, cb) => {
+  if (!file.mimetype.startsWith('image/')) {
+    return cb(new BadRequest("이미지 파일만 업로드할 수 있습니다."), false);
+  }
+
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+});
+
+// 프로필 이미지 업로드
+router.put("/profileImg", upload.single("profileImg"), async (req, res, next) => {
+  try {
+    // 세션 확인(401 error)
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
+    const userId = req.session.passport.user.userId;
+
+    if (!req.file) {
+      throw new  BadRequest("프로필 이미지가 등록되지 않았습니다."); // 400 에러
+    }
+
+    const profileImg = `/${req.file.path}`;
+
+    const user = await User.findOneAndUpdate(
+      { userId },
+      { profileImg },
+      { runValidators: true, new: true }
+    ).lean();
+
+    res.status(200).json({
+      error: null,
+      message: "프로필 이미지가 업로드되었습니다.",
+      data: {
+        userId: user.userId,
+        profileImg: user.profileImg,
+      }
+    });
   } catch (e) {
     next(e);
   }

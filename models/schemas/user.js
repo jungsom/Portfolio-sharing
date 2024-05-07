@@ -29,7 +29,7 @@ const UserSchema = new Schema({
   profileImg: {
     type: String,
     required: true,
-    default: "default 프로필 이미지 url 추후 추가 예정",
+    default: "defaultImg.jpg",
   },
 });
 
