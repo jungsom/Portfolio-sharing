@@ -1,7 +1,7 @@
 const { Schema } = require("mongoose");
 
 const UserSchema = new Schema({
-  id: {
+  userId: {
     type: String,
     required: true,
   },
@@ -20,6 +20,16 @@ const UserSchema = new Schema({
   description: {
     type: String,
     default: "설명이 아직 없습니다. 설명을 추가해주세요.",
+  },
+  createAt: {
+    type: Date,
+    required: true,
+    default: () => new Date(),
+  },
+  profileImg: {
+    type: String,
+    required: true,
+    default: "default 프로필 이미지 url 추후 추가 예정",
   },
 });
 

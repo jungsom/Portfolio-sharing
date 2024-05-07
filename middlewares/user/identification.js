@@ -1,9 +1,5 @@
-function Identification(session, user) {
-  if (session.passport.user.email === user.email) {
-    return true; // 본인
-  } else {
-    return false; // 타인
-  }
+function identification(session, user) {
+  return session.passport.user.id === user.id;
 }
 
-module.exports = Identification;
+module.exports = identification;
