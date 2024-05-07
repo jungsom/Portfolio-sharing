@@ -13,6 +13,7 @@ const path = require("path");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const mypageRouter = require("./routes/mypage");
+const boardRouter = require("./routes/board");
 
 const { NotFound } = require("./middlewares");
 
@@ -82,6 +83,7 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/mypage", mypageRouter);
+app.use("/board", boardRouter);
 
 app.use((req, res, next) => {
   next(new NotFound("잘못된 path 입력"));
