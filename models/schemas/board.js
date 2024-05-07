@@ -22,5 +22,7 @@ const BoardSchema = new Schema({
   },
 });
 
-BoardSchema.plugin(AutoIncrement, { inc_field: "boardId" });
+BoardSchema.plugin(AutoIncrement, {
+  inc_field: "boardId"
+});
 module.exports = BoardSchema;
