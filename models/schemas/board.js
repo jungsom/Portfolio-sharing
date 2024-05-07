@@ -15,7 +15,7 @@ const BoardSchema = new Schema({
     type: String,
     required: true,
   },
-  createAt: {
+  createdAt: {
     type: Date,
     required: true,
     default: () => new Date(),
