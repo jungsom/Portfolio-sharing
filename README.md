@@ -3,6 +3,11 @@
 ## 🪄 API 수정 사항
 
 자세한 내용은 [API 문서](https://docs.google.com/spreadsheets/d/1xZFiT2gpMSSY5c2hOz8VhJL_gC7Prh9ZJ5Q6wfp4Itk/edit?usp=sharing)를 참고해 주세요.
+현재 진행 상황은 [Notion 페이지](https://www.notion.so/Devcartes-14aa0f1e311d4c3a9bcb09dd15122bc6)에서 확인하실 수 있습니다.
+
+- 2024년 5월 7일 화요일
+
+  - Board API를 추가했습니다.
 
 - 2024년 5월 6일 월요일
 
@@ -36,6 +41,10 @@
 
 ## 💻 백엔드 Changelog
 
+- 2024년 5월 7일 화요일
+
+  - Board API 구현
+
 - 2024년 5월 6일 월요일
 
   - MVP 항목 추가 시 status code가 잘못 표시되었던 것을 수정함
@@ -55,7 +64,8 @@
 
 ## 🔧 개발 중
 
-- 추가 기능 구현 중 🤐
+- 추가 기능 구현 중
+  - 📝 게시판 API (박수정, 이유민, 채명희)
 
 ## ✏️ 개발 완료
 
@@ -65,3 +75,8 @@
 - 🎓 Education MVP (박수정)
 - 🗂️ Project MVP (채명희)
 - ️🪪 Certificate MVP (박수정)
+
+- 추가 기능
+  - 🖼️ Multer를 이용한 프로필 이미지 업로드 기능 (박수정)
+  - 📄 페이지네이션 (이유민)
+  - 🗝️ 비밀번호 변경, 회원 탈퇴 (채명희)

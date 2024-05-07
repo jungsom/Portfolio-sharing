@@ -9,13 +9,10 @@ const {
 
 const router = Router();
 
+// 게시글 전체 조회
 router.get("/", async (req, res, next) => {
   try {
     const board = await Board.find({}).lean();
-
-    if (!board) {
-      throw new NotFound("등록된 게시글을 찾을 수 없습니다."); // 404 에러
-    }
 
     res.status(200).json({
       error: null,
@@ -26,6 +23,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// 게시글 조회
 router.get("/:boardId", async (req, res) => {
   try {
     const { boardId } = req.params;
@@ -47,7 +45,6 @@ router.get("/:boardId", async (req, res) => {
 // 게시글 작성
 router.post("/", async (req, res, next) => {
   try {
-    
     // 세션 확인(401 error)
     if (!req.session.passport) {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
@@ -56,7 +53,7 @@ router.post("/", async (req, res, next) => {
     const nickname = req.session.passport.user.nickname;
     const { title, contents } = req.body;
 
-    if (!title || !contents ) {
+    if (!title || !contents) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
     if (title.replace(/ /g, "") == "") {
@@ -83,12 +80,10 @@ router.post("/", async (req, res, next) => {
         createdAt: board.createdAt,
       },
     });
-
   } catch (e) {
-      next(e);
+    next(e);
   }
 });
-
 
 // 게시판 수정
 router.put("/:boardId", async (req, res, next) => {

@@ -109,7 +109,6 @@ router.get("/status", async (req, res) => {
       email: user.email,
       nickname: user.nickname,
       name: user.name,
-      nickname: user.nickname,
     },
   });
 });
