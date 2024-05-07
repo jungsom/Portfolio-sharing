@@ -5,12 +5,10 @@ function gotoNetworkpage() {
 
 //Email,Pw 입력 값 초기화
 function clear() {
-  document.getElementById("email").value = "";
-  document.getElementById("pw").value = "";
-  document.getElementById("setemail").value = "";
-  document.getElementById("setpw").value = "";
-  document.getElementById("setpwchk").value = "";
-  document.getElementById("setname").value = "";
+  const target = document.querySelectorAll(".InputBox");
+  target.forEach((target) => {
+    target.value = "";
+  });
 }
 
 //팝업창
@@ -87,6 +85,7 @@ function changeModalText(txtNum) {
 //회원가입 진입
 function goCreateAccount() {
   clear();
+  document.getElementById("alert-text").style.display = "none";
   document.getElementById("LoginContainer").style.display = "none";
   document.getElementById("createAccountContainer").style.display = "block";
 }
@@ -164,7 +163,7 @@ function setAccount() {
   //email 정규식 확인
   function emailCheck(email) {
     if (emailpattern.test(email)) {
-      console.log(emailpattern.test(email));
+      // console.log(emailpattern.test(email));
       return true;
     } else {
       return false;
@@ -188,6 +187,7 @@ function setAccount() {
         email: email,
         password: pw,
         name: name,
+        nickname: nickname,
       }),
     }).then((response) => {
       if (response.status == 201) {
@@ -196,11 +196,12 @@ function setAccount() {
       } else if (response.status == 400) {
         modalOpen(5);
       } else if (response.status == 409) {
-        res.json()
-        .then((data) => {
-          if(data.error ==""){
+        response.json().then((data) => {
+          // console.log(data.error);
+          if (data.error == "이미 가입된 이메일입니다.") {
             modalOpen(6);
-          }else if(data.error ==""){
+          }
+          if (data.error == "다른 사용자가 닉네임을 사용중입니다.") {
             modalOpen(13);
           }
         });
@@ -237,7 +238,7 @@ function accountDelete() {
 function passwordChange() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
-  console.log(prevPw, pw);
+  // console.log(prevPw, pw);
   fetch("http://localhost:8080/auth", {
     method: "PUT",
     headers: {
@@ -248,7 +249,7 @@ function passwordChange() {
       newPassword: pw,
     }),
   }).then((response) => {
-    console.log("res : ", response);
+    // console.log("res : ", response);
     if (response.status == 200) {
       modalOpen(10);
       localStorage.setItem("goTo", "login");
