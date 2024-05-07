@@ -5,10 +5,11 @@ const {
   Unauthorized,
   Forbidden,
   NotFound,
+  Conflict,
   Identification,
 } = require("../middlewares");
-const multer = require('multer');
-const path = require('path');
+const multer = require("multer");
+const path = require("path");
 const { nanoid } = require("nanoid");
 
 const router = Router();
@@ -27,7 +28,7 @@ router.get("/", async (req, res, next) => {
     // 페이지네이션
     const users = await User.find({})
       .lean()
-      .sort({ createAt: -1 }) // 최근 순으로 정렬
+      .sort({ nickname: 1 }) // 최근 순으로 정렬
       .skip(perPage * (page - 1))
       .limit(perPage);
     const total = await User.countDocuments({}); // 총 User 수 세기
@@ -43,9 +44,11 @@ router.get("/", async (req, res, next) => {
     for (const user of users) {
       usersData.push({
         userId: user.userId,
+        nickname: user.nickname,
         email: user.email,
         name: user.name,
         description: user.description,
+        profileImg: user.profileImg,
       });
     }
 
@@ -89,9 +92,11 @@ router.get("/:userId", async (req, res, next) => {
     // password는 빼고 보내기
     const userData = {
       userId: user.userId,
+      nickname: user.nickname,
       email: user.email,
       name: user.name,
       description: user.description,
+      profileImg: user.profileImg,
     };
 
     res.status(200).json({
@@ -109,11 +114,16 @@ router.get("/:userId", async (req, res, next) => {
 
 // 사용자 정보 수정
 router.put("/mypage", async (req, res, next) => {
-  const { name, description } = req.body;
+  const { name, nickname, description } = req.body;
 
   try {
+    // 세션 확인(401 error)
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
     // body validation
-    if (!name || !description) {
+    if (!name || !nickname || !description) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
     if (name.replace(/ /g, "") == "") {
@@ -122,10 +132,19 @@ router.put("/mypage", async (req, res, next) => {
     if (name.trim() !== name) {
       throw new BadRequest("이름 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
     }
+    if (nickname.replace(/ /g, "") == "") {
+      throw new BadRequest("공백은 닉네임으로 사용 불가능합니다."); // 400 에러
+    }
+    if (nickname.split(" ").join("") !== nickname) {
+      throw new BadRequest("닉네임에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
+    }
 
-    // 세션 확인(401 error)
-    if (!req.session.passport) {
-      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    const existsNickname = await User.findOne({ nickname }).lean();
+    if (
+      existsNickname &&
+      existsNickname.userId !== req.session.passport.user.userId
+    ) {
+      throw new Conflict("다른 사용자가 닉네임을 사용중입니다.");
     }
 
     const userId = req.session.passport.user.userId; // id를 session에 있는 id 값으로
@@ -142,6 +161,7 @@ router.put("/mypage", async (req, res, next) => {
       {
         name: name,
         description: description.trim(),
+        nickname: nickname,
       },
       { runValidators: true, new: true }
     ).lean();
@@ -149,9 +169,11 @@ router.put("/mypage", async (req, res, next) => {
     // password는 빼고 보내기
     const userData = {
       userId: updateUser.userId,
+      nickname: updateUser.nickname,
       email: updateUser.email,
       name: updateUser.name,
       description: updateUser.description,
+      profileImg: user.profileImg,
     };
 
     res.status(200).json({
@@ -199,12 +221,12 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     cb(null, nanoid() + path.extname(file.originalname));
-  }
+  },
 });
 
 // 파일 형식 검사
 const fileFilter = (req, file, cb) => {
-  if (!file.mimetype.startsWith('image/')) {
+  if (!file.mimetype.startsWith("image/")) {
     return cb(new BadRequest("이미지 파일만 업로드할 수 있습니다."), false);
   }
 
@@ -217,38 +239,42 @@ const upload = multer({
 });
 
 // 프로필 이미지 업로드
-router.put("/profileImg", upload.single("profileImg"), async (req, res, next) => {
-  try {
-    // 세션 확인(401 error)
-    if (!req.session.passport) {
-      throw new Unauthorized("로그인 후 이용 가능합니다.");
-    }
-
-    const userId = req.session.passport.user.userId;
-
-    if (!req.file) {
-      throw new  BadRequest("프로필 이미지가 등록되지 않았습니다."); // 400 에러
-    }
-
-    const profileImg = `/${req.file.path}`;
-
-    const user = await User.findOneAndUpdate(
-      { userId },
-      { profileImg },
-      { runValidators: true, new: true }
-    ).lean();
-
-    res.status(200).json({
-      error: null,
-      message: "프로필 이미지가 업로드되었습니다.",
-      data: {
-        userId: user.userId,
-        profileImg: user.profileImg,
+router.put(
+  "/profileImg",
+  upload.single("profileImg"),
+  async (req, res, next) => {
+    try {
+      // 세션 확인(401 error)
+      if (!req.session.passport) {
+        throw new Unauthorized("로그인 후 이용 가능합니다.");
       }
-    });
-  } catch (e) {
-    next(e);
+
+      const userId = req.session.passport.user.userId;
+
+      if (!req.file) {
+        throw new BadRequest("프로필 이미지가 등록되지 않았습니다."); // 400 에러
+      }
+
+      const profileImg = `/${req.file.path}`;
+
+      const user = await User.findOneAndUpdate(
+        { userId },
+        { profileImg },
+        { runValidators: true, new: true }
+      ).lean();
+
+      res.status(200).json({
+        error: null,
+        message: "프로필 이미지가 업로드되었습니다.",
+        data: {
+          userId: user.userId,
+          profileImg: user.profileImg,
+        },
+      });
+    } catch (e) {
+      next(e);
+    }
   }
-});
+);
 
 module.exports = router;

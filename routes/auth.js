@@ -17,18 +17,23 @@ const router = Router();
 // 회원 가입
 router.post("/join", async (req, res, next) => {
   try {
-    const { email, name, password, description } = req.body;
+    const { email, nickname, name, password, description } = req.body;
 
-    if (!email || !name || !password) {
+    if (!email || !nickname || !name || !password) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
 
     // 같은 이메일로 이미 가입이 되어 있는지 확인
-    const exists = await User.findOne({ email }).lean();
+    const existsEmail = await User.findOne({ email }).lean();
+    const existsNickname = await User.findOne({ nickname }).lean();
 
-    // 이미 가입된 이메일이 있으면 상태코드 409, 에러 메시지를 보냄
-    if (exists) {
+    // 이미 가입된 이메일이나 닉네임이 있으면 상태코드 409, 에러 메시지를 보냄
+    if (existsEmail) {
       throw new Conflict("이미 가입된 이메일입니다.");
+    }
+
+    if (existsNickname) {
+      throw new Conflict("다른 사용자가 닉네임을 사용중입니다.");
     }
 
     // bcrypt를 사용해서 salting
@@ -38,6 +43,7 @@ router.post("/join", async (req, res, next) => {
     const user = await User.create({
       userId: nanoid(10),
       email,
+      nickname,
       name,
       password: hashedPassword,
       description,
@@ -48,6 +54,7 @@ router.post("/join", async (req, res, next) => {
       data: {
         userId: user.userId,
         email: user.email,
+        nickname: user.nickname,
         name: user.name,
         description: user.description,
       },
@@ -100,7 +107,9 @@ router.get("/status", async (req, res) => {
     data: {
       userId: user.userId,
       email: user.email,
+      nickname: user.nickname,
       name: user.name,
+      nickname: user.nickname,
     },
   });
 });
