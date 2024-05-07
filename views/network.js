@@ -1,30 +1,3 @@
-//open api로 테스트
-// async function fetchUsers() {
-//   const res = await fetch(
-//     "https://api.thecatapi.com/v1/images/search?limit=30&api_key=live_OFhz6Cq9zKqH8FTbc7H2SIbYETbvWoV1155zqmiwZEFX5B0fB0k12tnENikJsxC4"
-//   );
-//   const imageData = await res.json();
-//   return imageData;
-// }
-
-// 가상 데이터 베이스
-// ** userId 변경사항으로 현재 userpage랑 이미지 안맞음 **
-userProfileImage = {
-  data: [
-    { email: "test5555@test.com", url: "./userdata/img1.jpg" },
-    { email: "12341234@test.com", url: "./userdata/img2.jpg" }, // 비번 12341234
-    { email: "youmin@naver.com", url: "./userdata/img3.jpg" },
-    { email: "test@test.com", url: "./userdata/img4.jpg" },
-    { email: "test1234@test.com", url: "./userdata/img5.jpg" },
-    { email: "wdwd@arr.com", url: "./userdata/img6.jpg" },
-    { email: "wewe@wewe.com", url: "./userdata/img7.jpg" },
-    { email: "elice10@test.com", url: "./userdata/img8.jpg" },
-    { email: "test1234@test.com", url: "./userdata/img9.jpg" },
-    { email: "elice1@test.com", url: "./userdata/img10.jpg" },
-    { email: "elice@test.com", url: "./userdata/img11.jpg" },
-  ],
-};
-
 let currentPage = 1;
 
 /** 유저 정보 api 요청 */
@@ -39,12 +12,31 @@ async function getUsers(page) {
   }
 }
 
+// async function getUserImages(url) {
+//   try {
+//     const res = await fetch(url);
+//     const blob = await res.blob(); // 이미지 데이터를 Blob으로 변환
+//     const reader = new FileReader();
+//     reader.readAsDataURL(blob); // Blob을 Base64로 읽기
+//     return new Promise((resolve, reject) => {
+//       reader.onload = () => {
+//         const base64data = reader.result;
+//         resolve(base64data); // Base64 데이터 반환
+//       };
+//       reader.onerror = reject;
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     throw new Error("이미지를 불러오는 중에 문제가 발생했습니다.");
+//   }
+// }
+
 /** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
 async function getLoginStatus() {
   try {
     const response = await fetch(`http://localhost:8080/auth/status`);
     if (!response.ok) {
-      throw new Errow("데이터를 가져오는데 문제가 있습니다.");
+      throw new Errow("데이터를 불러오는 중에 문제가 발생했습니다.");
     }
     const data = await response.json();
     console.log(data);
@@ -53,21 +45,6 @@ async function getLoginStatus() {
     console.error("error:", error);
   }
 }
-
-/** 현재 사용자가 로그인이 되어있지 않을 경우 유저 정보 api 요청*/
-// async function getLoginFalse() {
-//   try {
-//     const response = await fetch(`http://localhost:8080/auth/false`);
-//     if (!response.ok) {
-//       throw new Errow("데이터를 가져오는데 문제가 있습니다.");
-//     }
-//     const data = await response.json();
-//     console.log(data);
-//     return data;
-//   } catch (error) {
-//     console.error("error:", error);
-//   }
-// }
 
 /** 메뉴바 이벤트 핸들러 */
 async function menuClickHandler() {
@@ -113,26 +90,30 @@ async function getAllUserData() {
 }
 
 /** 다른 사용자 목록 이벤트 핸들러 */
-async function ImgClickHandler(email) {
-  try {
-    let allUserData = await getAllUserData();
-    const logintrue = await getLoginStatus();
-    const user = allUserData.find((user) => user.email === email);
+// function ImgClickHandler() {
+//   try {
+//     const logintrue = getLoginStatus();
+//     const container = document.querySelector("div div");
+//     let allUserData = getAllUserData();
 
-    if (user && logintrue.status === true) {
-      // 유저의 데이터가 이미지의 데이터와 일치하고, 로그인이 되어있으면 유저 페이지로 이동
-      localStorage.setItem("tempId", user.userId); //유저 id 로컬스토리지에 저장(다른 사용자 페이지용)
-      window.location.href = "/userpage";
-    } else {
-      alert("데이터를 불러오는데 오류가 생겼습니다.");
-      window.location.href = "/login";
-    }
-  } catch (error) {
-    console.error(error);
-    alert("로그인 창으로 이동합니다.");
-    window.location.href = `/login`;
-  }
-}
+//     container.addEventListener("click", (event) => {
+//       const clickedindex = event.target.dataset.index;
+//       const clickedUser = allUserData[clickedindex];
+//       if (clickedUser && logintrue.status === true) {
+//         const userId = clickedUser.userId;
+//         localStorage.setItem("tempId", userId);
+//         window.location.href = "/userpage";
+//       } else {
+//         alert("데이터를 불러오는데 오류가 생겼습니다.");
+//         window.location.href = "/login";
+//       }
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     alert("로그인 창으로 이동합니다.");
+//     window.location.href = `/login`;
+//   }
+// }
 
 /** 이전 페이지로 이동하는 함수 */
 async function prevPage() {
@@ -153,51 +134,54 @@ async function nextPage() {
     updateButton();
   }
 }
-
-/** 페이지에 데이터를 표시하는 함수 */
 async function renderPage(page) {
   try {
     const userData = await getUsers(page);
     const userElem = document.getElementById("userContent");
-    const imageData = userProfileImage.data;
-
     userElem.innerHTML = "";
-    imageData.forEach((image, index) => {
-      const user = userData.data[index];
-      if (user) {
-        const container = document.createElement("div");
-        const imageElem = document.createElement("img");
-        const textElem = document.createElement("p");
 
-        imageElem.src = image.url;
-        imageElem.alt = "등록된 사진이 없습니다.";
-        container.appendChild(imageElem);
-        container.appendChild(textElem);
-        userElem.appendChild(container);
-        textElem.className = "userText";
+    const logintrue = await getLoginStatus();
 
+    userData.data.forEach(async (user) => {
+      const container = document.createElement("div");
+      const imageElem = document.createElement("img");
+      const textElem = document.createElement("p");
+
+      imageElem.src = user.profileImg;
+      imageElem.alt = user.profileImg;
+
+      container.appendChild(imageElem);
+      container.appendChild(textElem);
+      userElem.appendChild(container);
+      textElem.className = "userText";
+
+      textElem.style.display = "none";
+
+      textElem.innerHTML = `안녕하세요! <br>
+                    이름: ${user.name} <br>
+                    자기소개: ${user.description}`;
+
+      container.addEventListener("mouseenter", () => {
+        textElem.style.display = "block";
+        imageElem.style.filter = "blur(5px)";
+        textElem.style.opacity = "1";
+      });
+
+      container.addEventListener("mouseleave", () => {
         textElem.style.display = "none";
+        imageElem.style.filter = "blur(0px)";
+        textElem.style.opacity = "0";
+      });
 
-        textElem.innerHTML = `안녕하세요! <br>
-                  이름: ${user.name} <br>
-                  자기소개: ${user.description}`;
-
-        container.addEventListener("mouseenter", () => {
-          textElem.style.display = "block";
-          imageElem.style.filter = "blur(5px)";
-          textElem.style.opacity = "1";
-        });
-
-        container.addEventListener("mouseleave", () => {
-          textElem.style.display = "none";
-          imageElem.style.filter = "blur(0px)";
-          textElem.style.opacity = "0";
-        });
-
-        container.addEventListener("click", () => {
-          ImgClickHandler(user.email);
-        });
-      }
+      container.addEventListener("click", () => {
+        if (user.profileimg && logintrue.status === true) {
+          localStorage.setItem("tempId", user.userId);
+          window.location.href = "/userpage";
+        } else {
+          alert("데이터를 불러오는데 오류가 생겼습니다.");
+          window.location.href = "/login";
+        }
+      });
     });
   } catch (error) {
     console.error(error);
@@ -214,13 +198,13 @@ async function updateButton() {
   if (currentPage === 1) {
     prevButton.disabled = true;
     nextButton.disabled = false;
-    prevButton.style.backgroundColor = "rgb(255, 213, 233)";
+    prevButton.style.backgroundColor = "#eeeae0";
     nextButton.style.backgroundColor = "rgb(255, 255, 255)";
   } else if (currentPage === totalPages) {
     prevButton.disabled = false;
     nextButton.disabled = true;
     prevButton.style.backgroundColor = "rgb(255, 255, 255)";
-    nextButton.style.backgroundColor = "rgb(255, 213, 233)";
+    nextButton.style.backgroundColor = "#eeeae0";
   } else {
     prevButton.disabled = false;
     nextButton.disabled = false;

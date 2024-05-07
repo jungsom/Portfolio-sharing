@@ -5,14 +5,21 @@
 }
 
 body {
-  background-color: white;
+  background-color: #eeeae0;
   display: grid;
   grid-template-columns: 400px 1fr; /* 1:2 비율로 나누기 */
 }
 
-@font-face {
-  font-family: "continuous";
-  src: url("./continuous.ttf") format("truetype");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  background-color: #eeeae0;
 }
 
 header {
@@ -26,9 +33,13 @@ header {
 }
 
 header .logo {
-  color: rgb(88, 75, 35);
-  font-family: "continuous";
+  color: black;
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   margin: 200px 0 0 80px;
+  font-weight: 300;
   font-size: 30px;
   text-decoration: none;
   font-weight: bold;
@@ -47,18 +58,18 @@ header ul li {
 header ul li a {
   display: flex;
   align-items: center;
-  color: rgb(88, 75, 35);
+  color: black;
   background-color: white;
   text-decoration: none;
   display: inline-block;
-  margin: 50px 30px 0 80px;
+  margin: 50px 30px 0 85px;
   padding: 20px 33px;
-  border: 5px solid rgb(186, 175, 145);
+  border: 4px solid rgb(173, 173, 173);
   font-size: 18px;
   cursor: pointer;
   font-family: "continuous";
-  font-weight: bold;
-  border-radius: 100px;
+  font-weight: solid;
+  border-radius: 20px;
 }
 
 .login {
@@ -77,13 +88,16 @@ header ul li a {
 }
 
 #userContent img {
+  background-color: white;
   max-width: 100%;
   max-height: 100%;
-  width: 300px;
+  width: 100%;
   height: 300px;
   transition: filter 0.3s ease;
-  border: 7px solid rgb(186, 175, 145);
+  border: 2px solid rgb(78, 77, 77);
   cursor: pointer;
+  border-radius: 10px;
+  margin-top: 10px;
 }
 
 #userContent img:hover {
@@ -108,7 +122,7 @@ header ul li a {
   left: 50%;
   text-align: center;
   transform: translate(-50%, -50%);
-  background-color: #eeeae0;
+  background-color: white;
   padding: 5px;
   border: 3px solid rgb(117, 92, 36);
   color: rgb(88, 75, 35);
@@ -123,39 +137,33 @@ header ul li a {
 }
 
 #prevButton {
-  display: grid;
-  grid-column: 2;
-  grid-row: 2;
+  position: fixed;
+  bottom: 20px; /* 화면 하단으로부터의 거리 조절 */
+  left: 700px;
   justify-self: start;
   align-items: center;
   color: rgb(88, 75, 35);
   padding: 5px 30px;
-  font-weight: 600;
-  font-size: 25px;
+  font-size: 20px;
   border-radius: 100px;
   font-family: "continuous";
   background-color: white;
-  border-color: rgb(186, 175, 145);
-  margin-left: 350px;
-  margin-top: 10px;
+  border: 2px solid rgb(173, 173, 173);
   cursor: pointer;
 }
 
 #nextButton {
-  display: grid;
-  grid-column: 2;
-  grid-row: 2;
+  color: black;
+  position: fixed;
+  bottom: 20px; /* 화면 하단으로부터의 거리 조절 */
+  right: 550px;
   justify-self: end;
   align-items: center;
-  color: rgb(88, 75, 35);
   padding: 5px 30px;
-  font-weight: 600;
-  font-size: 25px;
+  font-size: 20px;
   border-radius: 100px;
   font-family: "continuous";
   background-color: white;
-  border-color: rgb(186, 175, 145);
-  margin-right: 550px;
-  margin-top: 10px;
+  border: 2px solid rgb(173, 173, 173);
   cursor: pointer;
 }
