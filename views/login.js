@@ -78,6 +78,9 @@ function changeModalText(txtNum) {
   } else if (txtNum == 12) {
     document.getElementById("modaltext").innerHTML =
       "변경하려는 비밀번호가 지금 사용하고 있는 비밀번호와 같습니다.";
+  } else if (txtNum == 13) {
+    document.getElementById("modaltext").innerHTML =
+      "이미 사용중인 닉네임 입니다.";
   }
 }
 
@@ -154,6 +157,7 @@ function setAccount() {
   const pwchk = document.getElementById("setpwchk").value;
   const name = document.getElementById("setname").value;
   const email = document.getElementById("setemail").value;
+  const nickname = document.getElementById("setNickname").value;
   const emailpattern =
     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
@@ -192,7 +196,14 @@ function setAccount() {
       } else if (response.status == 400) {
         modalOpen(5);
       } else if (response.status == 409) {
-        modalOpen(6);
+        res.json()
+        .then((data) => {
+          if(data.error ==""){
+            modalOpen(6);
+          }else if(data.error ==""){
+            modalOpen(13);
+          }
+        });
       }
     });
   }
