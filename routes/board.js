@@ -80,6 +80,7 @@ router.post("/", async (req, res, next) => {
         boardId: board.boardId,
         title: board.title,
         contents: board.contents,
+        createdAt: board.createdAt,
       },
     });
 
@@ -130,7 +131,7 @@ router.put("/:boardId", async (req, res, next) => {
         boardId: board.boardId,
         title: board.title,
         contents: board.contents,
-        createAt: board.createAt,
+        createdAt: board.createdAt,
       },
     });
   } catch (e) {
