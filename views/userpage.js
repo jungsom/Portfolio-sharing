@@ -1,6 +1,6 @@
-var Editcount = 0;
+let Editcount = 0;
 
-var nameEdit,
+let nameEdit,
   nameValue,
   Name,
   emailEdit,
@@ -9,7 +9,7 @@ var nameEdit,
   descriptionEdit,
   descriptionValue,
   description;
-var nameContainer,
+let nameContainer,
   emailContainer,
   descriptionContainer,
   submitEditButton,
@@ -59,7 +59,7 @@ function isVisibleBtns() {
     .then((data) => {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
-        if (data.data.id == massId) {
+        if (data.data.userId == massId) {
           target.style.display = "block";
         } else {
           target.style.display = "none";
