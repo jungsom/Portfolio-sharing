@@ -17,7 +17,7 @@ const EducationSchema = new Schema({
   },
   schoolStatus: {
     type: String,
-    // enum: ["재학중", "학사졸업", "석사졸업", "박사졸업"],
+    enum: ["재학중", "학사졸업", "석사졸업", "박사졸업"],
     required: true,
   },
 });
