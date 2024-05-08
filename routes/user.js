@@ -15,8 +15,8 @@ const {
   Forbidden,
   NotFound,
   Conflict,
-  Identification,
-} = require("../middlewares");
+} = require("../errors");
+const { identification } = require("../utils/identification");
 const multer = require("multer");
 const path = require("path");
 const { nanoid } = require("nanoid");
@@ -97,7 +97,7 @@ router.get("/:userId", async (req, res, next) => {
       throw new NotFound("존재하지 않는 id입니다.");
     }
 
-    const isIdentical = Identification(req.session, user);
+    const isIdentical = identification(req.session, user);
     if (isIdentical) {
       // res.redirect("/mypage"); // 본인 id 검색하면 /mypage라는 곳으로 가기
       console.log("내 페이지로 이동");
@@ -167,7 +167,7 @@ router.put("/mypage", async (req, res, next) => {
 
     // 본인 확인
     const user = await User.findOne({ userId }).lean();
-    const isIdentical = Identification(req.session, user);
+    const isIdentical = identification(req.session, user);
     if (!isIdentical) {
       throw new Forbidden("접근할 수 없습니다.");
     }
@@ -234,7 +234,7 @@ router.put("/mypage", async (req, res, next) => {
   }
 });
 
-router.get("/identification/:id", async (req, res, next) => {
+router.get("/identification/:userId", async (req, res, next) => {
   const userId = req.params.userId;
 
   try {
@@ -246,7 +246,7 @@ router.get("/identification/:id", async (req, res, next) => {
     const user = await User.findOne({ userId }).lean();
 
     // 본인 확인
-    const isIdentical = Identification(req.session, user);
+    const isIdentical = identification(req.session, user);
     if (isIdentical) {
       res.status(200).json({
         status: isIdentical,

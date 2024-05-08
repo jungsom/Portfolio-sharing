@@ -17,7 +17,7 @@ const mypageRouter = require("./routes/mypage");
 const boardRouter = require("./routes/board");
 const commentRouter = require("./routes/comment");
 
-const { NotFound } = require("./middlewares");
+const { NotFound } = require("./errors");
 
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
