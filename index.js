@@ -91,7 +91,7 @@ app.use("/mypage", mypageRouter);
 app.use("/board", boardRouter);
 
 app.use((req, res, next) => {
-  next(new NotFound("잘못된 path 입력"));
+  res.redirect("/404");
 });
 
 // 오류 처리
