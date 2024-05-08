@@ -1,92 +1,58 @@
 //이름, 닉네임, 설명 입력창 및 타이틀 생성
-function createNameInputElement() {
-  const nameEdit = document.createElement("input");
-  nameEdit.type = "text";
-  nameEdit.className = "input";
-  // nameEdit.Id = "nameinput";
+function createInputElement(str_class) {
+  const inputElem = document.createElement("input");
+  inputElem.type = "text";
+  inputElem.className = "input";
+  const inputValue = document.querySelector(str_class);
+  inputElem.placeholder = `${inputValue.innerText}`;
+  return inputElem;
+}
+function createh4Element(str_text) {
+  const h4Elem = document.createElement("h4");
+  h4Elem.className = "_h4";
+  h4Elem.innerText = str_text;
+  return h4Elem;
+}
+function inputValueDefine() {
   const nameValue = document.querySelector(".Name");
-  nameEdit.placeholder = `${nameValue.innerText}`;
-  return { nameEdit, nameValue };
-}
-function createNicknameInputElement() {
-  const nicknameEdit = document.createElement("input");
-  nicknameEdit.type = "text";
-  nicknameEdit.className = "input";
-  // nicknamenameEdit.Id = " nicknameinput";
   const nicknameValue = document.querySelector(".Nickname");
-  nicknameEdit.placeholder = `${nicknameValue.innerText}`;
-  return { nicknameEdit, nicknameValue };
-}
-function createDescriptionInputElement() {
-  const descriptionEdit = document.createElement("input");
-  descriptionEdit.type = "text";
-  descriptionEdit.className = "input";
-  // descriptionEdit.Id = "nameinput";
   const descriptionValue = document.querySelector(".Description");
-  descriptionEdit.placeholder = `${descriptionValue.innerText}`;
-  return { descriptionEdit, descriptionValue };
+  return { nameValue, nicknameValue, descriptionValue };
 }
-function createNameh4Element() {
-  const Name = document.createElement("h4");
-  Name.className = "_h4";
-  // Name.Id = "nameh4";
-  Name.innerText = "이름";
-  return { Name };
+function inputValueDisplaySet(str_text) {
+  const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
+  nameValue.style.display = str_text;
+  nicknameValue.style.display = str_text;
+  descriptionValue.style.display = str_text;
 }
-function createNicknameh4Element() {
-  const nickname = document.createElement("h4");
-  nickname.className = "_h4";
-  // Name.Id = "nameh4";
-  nickname.innerText = "닉네임";
-  return { nickname };
+function inputContainerDefine() {
+  const nameContainer = document.querySelector(".name-container");
+  const nicknameContainer = document.querySelector(".nickname-container");
+  const descriptionContainer = document.querySelector(".description-container");
+  return { nameContainer, nicknameContainer, descriptionContainer };
 }
-function createDescriptionh4Element() {
-  const description = document.createElement("h4");
-  description.className = "_h4";
-  // description.Id = "descriptionh4";
-  description.innerText = "설명";
-  return { description };
+function removeInputElement() {
+  const { nameContainer, nicknameContainer, descriptionContainer } =
+    inputContainerDefine();
+  nameContainer.childNodes[4].remove();
+  nicknameContainer.childNodes[4].remove();
+  descriptionContainer.childNodes[4].remove();
+  nameContainer.childNodes[3].remove();
+  nicknameContainer.childNodes[3].remove();
+  descriptionContainer.childNodes[3].remove();
 }
 //submit 클릭 시 함수
-function submitEditProfile(
-  nameEdit,
-  nicknameEdit,
-  descriptionEdit,
-  nameValue,
-  nicknameValue,
-  descriptionValue,
-  Name,
-  nickname,
-  description,
-  submitEditButton,
-  cancelEditButton,
-  profileEditButton
-) {
+function submitEditProfile() {
   // 편집 값 저장 & 공백시 "없음" 출력
-  nameValue.innerText = nameEdit.value;
+  const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
+  const { nameContainer, nicknameContainer, descriptionContainer } =
+    inputContainerDefine();
+  nameValue.innerText = nameContainer.childNodes[4].value;
   if (!nameValue.innerText) nameValue.innerText = "없음";
-  nicknameValue.innerText = nicknameEdit.value;
+  nicknameValue.innerText = nicknameContainer.childNodes[4].value;
   if (!nicknameValue.innerText) nicknameValue.innerText = "없음";
-  descriptionValue.innerText = descriptionEdit.value;
+  descriptionValue.innerText = descriptionContainer.childNodes[4].value;
   if (!descriptionValue.innerText) descriptionValue.innerText = "없음";
-
-  //요소 보이기
-  nameValue.style.display = "block";
-  nicknameValue.style.display = "block";
-  descriptionValue.style.display = "block";
-
-  //요소 숨기기
-  nameEdit.style.display = "none";
-  nicknameEdit.style.display = "none";
-  descriptionEdit.style.display = "none";
-  Name.style.display = "none";
-  nickname.style.display = "none";
-  description.style.display = "none";
-
-  //Edit 버튼 보이기 , submit/cancel 버튼 숨기기
-  profileEditButton.style.display = "block";
-  submitEditButton.style.display = "none";
-  cancelEditButton.style.display = "none";
 
   //서버로 name, nickname, description 정보 업데이트하기
   fetch("http://localhost:8080/users/mypage", {
@@ -96,9 +62,9 @@ function submitEditProfile(
       Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
     },
     body: JSON.stringify({
-      name: nameEdit.value,
-      nickname: nicknameEdit.value,
-      description: descriptionEdit.value,
+      name: nameContainer.childNodes[4].value,
+      nickname: nicknameContainer.childNodes[4].value,
+      description: descriptionContainer.childNodes[4].value,
     }), // JSON 문자열로 변환하여 데이터 전송
   })
     .then((res) => {
@@ -115,40 +81,48 @@ function submitEditProfile(
       console.error("Error:", error); // 에러 처리
       alert("에러가 발생했습니다");
     });
+
+  //요소 보이기
+  inputValueDisplaySet("block");
+
+  //요소 삭제
+  removeInputElement();
+
+  //Edit 버튼 보이기 , submit/cancel 버튼 삭제
+  const profileEditButton = document.querySelector(".profile-edit-button");
+  const profile = document.querySelector(".profile");
+  profileEditButton.style.display = "block";
+  profile.childNodes[10].remove();
+  profile.childNodes[9].remove();
 }
 
 //cancel 클릭 시 함수
-function cancelEditProfile(
-  nameEdit,
-  nicknameEdit,
-  descriptionEdit,
-  nameValue,
-  nicknameValue,
-  descriptionValue,
-  Name,
-  nickname,
-  description,
-  submitEditButton,
-  cancelEditButton,
-  profileEditButton
-) {
+function cancelEditProfile() {
   //요소 보이기
-  nameValue.style.display = "block";
-  nicknameValue.style.display = "block";
-  descriptionValue.style.display = "block";
+  inputValueDisplaySet("block");
 
   //요소 숨기기
-  nameEdit.style.display = "none";
-  nicknameEdit.style.display = "none";
-  descriptionEdit.style.display = "none";
-  Name.style.display = "none";
-  nickname.style.display = "none";
-  description.style.display = "none";
+  // console.log(nameContainer.childNodes[4]) = nameEdit;
+  // console.log(nicknameContainer.childNodes[3]) = Name;
+
+  // nameContainer.childNodes[4].style.display = "none";
+  // nicknameContainer.childNodes[4].style.display = "none";
+  // descriptionContainer.childNodes[4].style.display = "none";
+  // nameContainer.childNodes[3].style.display = "none";
+  // nicknameContainer.childNodes[3].style.display = "none";
+  // descriptionContainer.childNodes[3].style.display = "none";
+  removeInputElement();
 
   //Edit 버튼 보이기 , submit/cancel 버튼 숨기기
+  const profileEditButton = document.querySelector(".profile-edit-button");
+  const profile = document.querySelector(".profile");
   profileEditButton.style.display = "block";
-  submitEditButton.style.display = "none";
-  cancelEditButton.style.display = "none";
+  // console.log(profile.childNodes[9]) = submitEditButton;
+  // console.log(profile.childNodes[10]) = cancelEditButton;
+  // profile.childNodes[9].style.display = "none";
+  // profile.childNodes[10].style.display = "none";
+  profile.childNodes[10].remove();
+  profile.childNodes[9].remove();
 }
 
 //네트워크 페이지에서 담아보낼값 아래 localStorage 처럼 사용하면됨
@@ -206,23 +180,26 @@ function getUserData() {
 
 // 프로필 편집 기능
 function editProfile() {
+  // console.log(nameContainer.childNodes[3]) = Name;
+  // console.log(nameContainer.childNodes[4]) = nameEdit;
+  //console.log(profile.childNodes[9]) = submitEditButon;
+  //console.log(profile.childNodes[10]) = cancelEditButon;
   // 프로필 편집 로직
   //입력창 및 타이틀 생성 함수로부터 변수 반환
-  const { nameEdit, nameValue } = createNameInputElement();
-  const { nicknameEdit, nicknameValue } = createNicknameInputElement();
-  const { descriptionEdit, descriptionValue } = createDescriptionInputElement();
-  const { Name } = createNameh4Element();
-  const { nickname } = createNicknameh4Element();
-  const { description } = createDescriptionh4Element();
+  const nameEdit = createInputElement(".Name");
+  const nicknameEdit = createInputElement(".Nickname");
+  const descriptionEdit = createInputElement(".Description");
+  const Name = createh4Element("이름");
+  const nickname = createh4Element("닉네임");
+  const description = createh4Element("설명");
+  const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
 
   //Edit 버튼 클릭 시 요소 무한생성 방지 조건문
   if (nameEdit.style.display != "none") {
     //div에 자식으로 등록
-    const nameContainer = document.querySelector(".name-container");
-    const nicknameContainer = document.querySelector(".nickname-container");
-    const descriptionContainer = document.querySelector(
-      ".description-container"
-    );
+    const { nameContainer, nicknameContainer, descriptionContainer } =
+      inputContainerDefine();
+
     nameContainer.append(Name);
     nameContainer.append(nameEdit);
     nicknameContainer.append(nickname);
@@ -231,9 +208,7 @@ function editProfile() {
     descriptionContainer.append(descriptionEdit);
 
     //요소 숨기기
-    nameValue.style.display = "none";
-    nicknameValue.style.display = "none";
-    descriptionValue.style.display = "none";
+    inputValueDisplaySet("none");
 
     //edit 버튼 숨기기
     const profileEditButton = document.querySelector(".profile-edit-button");
@@ -252,40 +227,10 @@ function editProfile() {
     profile.append(cancelEditButton);
 
     //submit버튼 클릭시 프로필 편집 정보 저장, 서버로 변경점 업데이트
-    submitEditButton.addEventListener("click", (e) =>
-      submitEditProfile(
-        nameEdit,
-        nicknameEdit,
-        descriptionEdit,
-        nameValue,
-        nicknameValue,
-        descriptionValue,
-        Name,
-        nickname,
-        description,
-        submitEditButton,
-        cancelEditButton,
-        profileEditButton
-      )
-    );
+    submitEditButton.addEventListener("click", (e) => submitEditProfile());
 
     //cancel버튼 클릭시 프로필 편집 취소, 정보 저장 x
-    cancelEditButton.addEventListener("click", (e) =>
-      cancelEditProfile(
-        nameEdit,
-        nicknameEdit,
-        descriptionEdit,
-        nameValue,
-        nicknameValue,
-        descriptionValue,
-        Name,
-        nickname,
-        description,
-        submitEditButton,
-        cancelEditButton,
-        profileEditButton
-      )
-    );
+    cancelEditButton.addEventListener("click", (e) => cancelEditProfile());
   }
   //프로필 이미지 편집 로직
   //   function createImageEditButton() {
@@ -316,21 +261,16 @@ function editProfile() {
     cancelEditButton.style.display = "";
 
     //요소 숨기기
-    nameValue.style.display = "none";
-    nicknameValue.style.display = "none";
-    descriptionValue.style.display = "none";
+    inputValueDisplaySet("none");
     profileEditButton.style.display = "none";
 
     //이전 입력값은 회색글씨로 남게하기
     nameEdit.value = "";
-    nameEdit.setAttribute("placeholder", `${nameValue.innerText}`);
+    nameEdit.placeholder = `${nameValue.innerText}`;
     nicknameEdit.value = "";
-    nicknameEdit.setAttribute("placeholder", `${nicknameValue.innerText}`);
+    nicknameEdit.placeholder = `${nicknameValue.innerText}`;
     descriptionEdit.value = "";
-    descriptionEdit.setAttribute(
-      "placeholder",
-      `${descriptionValue.innerText}`
-    );
+    descriptionEdit.placeholder = `${descriptionValue.innerText}`;
   }
 }
 
