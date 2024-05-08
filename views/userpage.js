@@ -221,7 +221,7 @@ function editProfile() {
     const nameContainer = document.querySelector(".name-container");
     const nicknameContainer = document.querySelector(".nickname-container");
     const descriptionContainer = document.querySelector(
-      ".description-Container"
+      ".description-container"
     );
     nameContainer.append(Name);
     nameContainer.append(nameEdit);
@@ -236,7 +236,7 @@ function editProfile() {
     descriptionValue.style.display = "none";
 
     //edit 버튼 숨기기
-    const profileEditButton = document.querySelector(".profile_edit_button");
+    const profileEditButton = document.querySelector(".profile-edit-button");
     profileEditButton.style.display = "none";
 
     //submit, cancel 버튼 생성
@@ -309,7 +309,7 @@ function editProfile() {
     description.style.display = "";
 
     const profile = document.querySelector(".profile");
-    const profileEditButton = document.querySelector(".profile_edit_button");
+    const profileEditButton = document.querySelector(".profile-edit-button");
     const cancelEditButton = profile.lastChild;
     const submitEditButton = cancelEditButton.previousSibling;
     submitEditButton.style.display = "";
