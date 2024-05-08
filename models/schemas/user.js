@@ -35,6 +35,11 @@ const UserSchema = new Schema({
     required: true,
     default: "defaultImg.jpg",
   },
+  position: {
+    type: String,
+    required: true,
+    default: "user",
+  },
 });
 
 module.exports = UserSchema;
