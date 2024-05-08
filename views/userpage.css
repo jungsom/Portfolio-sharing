@@ -12,7 +12,7 @@
 }
 
 .logo {
-  font-family: "continuous" /* font-face해결시 추가 */, Arial, sans-serif;
+  font-family: "continuous", Arial, sans-serif;
   font-size: 36px;
   padding-left: 20px;
   align-content: center;
@@ -34,7 +34,9 @@ body {
 
 .profile,
 .education,
-.awards {
+.awards,
+.project,
+.certificate {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -49,7 +51,9 @@ body {
   padding: 0;
 }
 
-.awards-list {
+.awards-list,
+.project-list,
+.certificate-list {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
@@ -65,6 +69,16 @@ body {
 }
 
 .awards-list > div {
+  display: flex;
+  margin-bottom: 10px; /* 하단 여백 */
+}
+
+.project-list > div {
+  display: flex;
+  margin-bottom: 10px; /* 하단 여백 */
+}
+
+.certificate-list > div {
   display: flex;
   margin-bottom: 10px; /* 하단 여백 */
 }
@@ -87,6 +101,16 @@ body {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
+.project-list input:last-child,
+.project-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
+.certificate-list input:last-child,
+.certificate-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
 .profile-image {
   width: 100px;
   height: 100px;
@@ -102,27 +126,70 @@ button {
   margin-right: 10px;
 }
 
-#delete-button {
+#education_delete_button,
+#awards_delete_button,
+#project_delete_button,
+#certificate_delete_button {
   margin-right: 10px;
-  background-color: #8f98eb; /* 삭제 버튼은 빨간색으로 표시 */
-  color: white;
-  padding: 0 15px;
-  border: none;
-  cursor: pointer;
-}
-#confirm-button {
-  margin-right: 10px;
-  background-color: #df6a81; /* 삭제 버튼은 빨간색으로 표시 */
+  background-color: #d67d86;
   color: white;
   padding: 0 15px;
   border: none;
   cursor: pointer;
 }
 
-#buttons-container {
+#education_confirm_button,
+#awards_confirm_button,
+#project_confirm_button,
+#certificate_confirm_button {
+  margin-right: 10px;
+  background-color: #6d78d4;
+  color: white;
+  padding: 0 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.editBtns {
   display: flex;
   justify-content: start; /* 버튼을 컨테이너 시작 부분에 정렬 */
 }
-#buttons-container button {
-  margin-right: 10px; /* 오른쪽 여백 추가 */
+
+.editBtns button {
+  margin-right: 10px;
+  margin-bottom: 10px; /* 오른쪽 여백 추가 */
+}
+
+.education-title h2 {
+  display: flex;
+  justify-content: space-between; /*내용을 양쪽 끝으로 밀어냄 */
+  align-items: center;
+  width: 100%;
+}
+
+.education_plus_button {
+  margin-left: auto;
+}
+
+/* 모달 창 기본 스타일 */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
 }

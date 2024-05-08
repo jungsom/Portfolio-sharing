@@ -55,7 +55,7 @@ router.post("/", async (req, res, next) => {
     const nickname = req.session.passport.user.nickname;
     const { title, contents } = req.body;
 
-    if (!title || !contents) {
+    if (!title || !contents ) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
     if (title.replace(/ /g, "") == "") {
@@ -129,7 +129,7 @@ router.put("/:boardId", async (req, res, next) => {
         boardId: board.boardId,
         title: board.title,
         contents: board.contents,
-        createAt: board.createAt,
+        createdAt: board.createdAt,
       },
     });
   } catch (e) {
