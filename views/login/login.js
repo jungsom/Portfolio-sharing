@@ -4,7 +4,7 @@ function init() {
 }
 
 function gotoNetworkpage() {
-  window.location.href = "/network";
+  window.location.href = "/?page=1";
 }
 
 //Email,Pw 입력 값 초기화
@@ -29,7 +29,7 @@ function modalClose() {
   document.getElementById("modal").style.display = "none";
   const goTo = localStorage.getItem("goTo");
   if (goTo == "network") {
-    window.location.href = "/Network";
+    window.location.href = "/?page=1";
   } else if (goTo == "login") {
     window.location.href = "/login";
   }
