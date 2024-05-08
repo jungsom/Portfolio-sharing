@@ -10,6 +10,8 @@
 
   - Board API 수정, 삭제 부분 수정
   - Board API 검색 추가
+  - Board API 좋아요 추가
+  - Board, User 정렬 추가
 
 - 2024년 5월 7일 화요일
 
