@@ -449,3 +449,64 @@ window.addEventListener("popstate", function (event) {
   delete massId; // 사용자 id 값 삭제
   localStorage.removeItem("tempId"); // 로컬 스토리지 삭제
 });
+
+//회원탈퇴
+function accountDelete() {
+  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
+    const pw = document.getElementById("delete-account-pwchk").value;
+    fetch("http://localhost:8080/auth", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 401) {
+        modalOpen(8);
+      } else if (response.status == 200) {
+        localStorage.setItem("goTo", "login");
+        modalOpen(9);
+        clear();
+      }
+    });
+  }
+}
+
+//비밀번호 변경
+function passwordChange() {
+  const prevPw = document.getElementById("existed-pw").value;
+  const pw = document.getElementById("change-setpw").value;
+  // console.log(prevPw, pw);
+  fetch("http://localhost:8080/auth", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      password: prevPw,
+      newPassword: pw,
+    }),
+  }).then((response) => {
+    // console.log("res : ", response);
+    if (response.status == 200) {
+      modalOpen(10);
+      localStorage.setItem("goTo", "login");
+      //변경된 비밀번호로 다시 로그인하게 유도
+      fetch("http://localhost:8080/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+    } else if (response.status == 400) {
+      modalOpen(5);
+    } else if (response.status == 401) {
+      modalOpen(11);
+    } else if (response.status == 409) {
+      modalOpen(12);
+    }
+  });
+}
