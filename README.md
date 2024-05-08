@@ -3,7 +3,13 @@
 ## 🪄 API 수정 사항
 
 자세한 내용은 [API 문서](https://docs.google.com/spreadsheets/d/1xZFiT2gpMSSY5c2hOz8VhJL_gC7Prh9ZJ5Q6wfp4Itk/edit?usp=sharing)를 참고해 주세요.
+
 현재 진행 상황은 [Notion 페이지](https://www.notion.so/Devcartes-14aa0f1e311d4c3a9bcb09dd15122bc6)에서 확인하실 수 있습니다.
+
+- 2024년 5월 8일 수요일
+
+  - Board API 수정, 삭제 부분 수정
+  - Board API 검색 추가
 
 - 2024년 5월 7일 화요일
 
@@ -41,6 +47,11 @@
 
 ## 💻 백엔드 Changelog
 
+- 2024년 5월 8일 수요일
+
+  - 404 페이지 추가
+  - Board API 기능 추가
+
 - 2024년 5월 7일 화요일
 
   - Board API 구현
@@ -77,6 +88,6 @@
 - ️🪪 Certificate MVP (박수정)
 
 - 추가 기능
-  - 🖼️ Multer를 이용한 프로필 이미지 업로드 기능 (박수정)
+  - 🖼️ Multer를 이용한 프로필 이미지 업로드 기능, 404 페이지 (박수정)
   - 📄 페이지네이션 (이유민)
   - 🗝️ 비밀번호 변경, 회원 탈퇴 (채명희)

@@ -24,7 +24,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // 게시글 조회
-router.get("/:boardId", async (req, res) => {
+router.get("/:boardId", async (req, res, next) => {
   try {
     const { boardId } = req.params;
     const board = await Board.findOne({ boardId }).lean();
@@ -155,6 +155,57 @@ router.delete("/:boardId", async (req, res, next) => {
     res.status(200).json({
       err: null,
       message: `${nickname}님의 ${boardId}번 게시글을 삭제했습니다.`,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// 게시글 검색
+router.get("/search/result", async (req, res, next) => {
+  try {
+    //
+    const { option, keyword } = req.query;
+    let board = [];
+
+    // 닉네임으로 검색
+    if (option === "nickname") {
+      board = await Board.find({
+        nickname: new RegExp(keyword, "i"),
+      }).lean();
+    }
+
+    // 제목으로 검색
+    if (option === "title") {
+      board = await Board.find({
+        title: new RegExp(keyword, "i"),
+      }).lean();
+    }
+
+    // 내용으로 검색
+    if (option === "contents") {
+      board = await Board.find({
+        contents: new RegExp(keyword, "i"),
+      }).lean();
+    }
+
+    // 제목 + 내용으로 검색
+    if (option === "titleContents") {
+      board = await Board.find({
+        $or: [
+          {
+            title: new RegExp(keyword, "i"),
+          },
+          {
+            contents: new RegExp(keyword, "i"),
+          },
+        ],
+      }).lean();
+    }
+
+    res.status(200).json({
+      error: null,
+      data: board,
     });
   } catch (e) {
     next(e);
