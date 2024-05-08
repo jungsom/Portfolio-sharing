@@ -12,6 +12,11 @@ const router = Router();
 // 게시글 전체 조회
 router.get("/", async (req, res, next) => {
   try {
+    // 세션 확인(401 error)
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
     const nickname = req.session.passport.user.nickname;
     const board = await Board.find({}).lean();
 
@@ -38,6 +43,7 @@ router.get("/", async (req, res, next) => {
         likes: likesCount,
         isLikes:
           likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 눌렀는지
+        listLikes: likes.length !== 0 ? likes[0].fromUser : [], // 좋아요 누른 리스트
       });
     }
 
@@ -74,6 +80,11 @@ router.get("/", async (req, res, next) => {
 // 게시글 조회
 router.get("/:boardId", async (req, res, next) => {
   try {
+    // 세션 확인(401 error)
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
     const { boardId } = req.params;
     const nickname = req.session.passport.user.nickname;
     const board = await Board.findOne({ boardId }).lean();
@@ -99,6 +110,7 @@ router.get("/:boardId", async (req, res, next) => {
       likes: likesCount,
       isLikes:
         likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 누른 게시글인지 true, false
+      listLikes: likes.length !== 0 ? likes[0].fromUser : [],
     });
 
     res.status(200).json({
@@ -289,7 +301,7 @@ router.post("/:boardId/likes", async (req, res, next) => {
         message: `${nickname}님이 ${boardId}번 게시글을 좋아합니다.`,
       });
     }
-} catch (e) {
+  } catch (e) {
     next(e);
   }
 });
@@ -297,7 +309,6 @@ router.post("/:boardId/likes", async (req, res, next) => {
 // 게시글 검색
 router.get("/search/result", async (req, res, next) => {
   try {
-    //
     const { option, keyword } = req.query;
     let board = [];
 
