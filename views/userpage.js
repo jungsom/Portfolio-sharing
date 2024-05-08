@@ -13,24 +13,28 @@ function createh4Element(str_text) {
   h4Elem.innerText = str_text;
   return h4Elem;
 }
+//inputValue 선언함수
 function inputValueDefine() {
   const nameValue = document.querySelector(".Name");
   const nicknameValue = document.querySelector(".Nickname");
   const descriptionValue = document.querySelector(".Description");
   return { nameValue, nicknameValue, descriptionValue };
 }
+//inputValue 요소 display on/off함수
 function inputValueDisplaySet(str_text) {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   nameValue.style.display = str_text;
   nicknameValue.style.display = str_text;
   descriptionValue.style.display = str_text;
 }
+//inputContainer 선언함수
 function inputContainerDefine() {
   const nameContainer = document.querySelector(".name-container");
   const nicknameContainer = document.querySelector(".nickname-container");
   const descriptionContainer = document.querySelector(".description-container");
   return { nameContainer, nicknameContainer, descriptionContainer };
 }
+//요소 삭제 함수
 function removeInputElement() {
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
@@ -41,6 +45,7 @@ function removeInputElement() {
   nicknameContainer.childNodes[3].remove();
   descriptionContainer.childNodes[3].remove();
 }
+
 //submit 클릭 시 함수
 function submitEditProfile() {
   // 편집 값 저장 & 공백시 "없음" 출력
@@ -101,26 +106,15 @@ function cancelEditProfile() {
   //요소 보이기
   inputValueDisplaySet("block");
 
-  //요소 숨기기
-  // console.log(nameContainer.childNodes[4]) = nameEdit;
-  // console.log(nicknameContainer.childNodes[3]) = Name;
-
-  // nameContainer.childNodes[4].style.display = "none";
-  // nicknameContainer.childNodes[4].style.display = "none";
-  // descriptionContainer.childNodes[4].style.display = "none";
-  // nameContainer.childNodes[3].style.display = "none";
-  // nicknameContainer.childNodes[3].style.display = "none";
-  // descriptionContainer.childNodes[3].style.display = "none";
+  //요소 삭제
   removeInputElement();
 
-  //Edit 버튼 보이기 , submit/cancel 버튼 숨기기
+  //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
   const profile = document.querySelector(".profile");
   profileEditButton.style.display = "block";
   // console.log(profile.childNodes[9]) = submitEditButton;
   // console.log(profile.childNodes[10]) = cancelEditButton;
-  // profile.childNodes[9].style.display = "none";
-  // profile.childNodes[10].style.display = "none";
   profile.childNodes[10].remove();
   profile.childNodes[9].remove();
 }
@@ -184,6 +178,7 @@ function editProfile() {
   // console.log(nameContainer.childNodes[4]) = nameEdit;
   //console.log(profile.childNodes[9]) = submitEditButon;
   //console.log(profile.childNodes[10]) = cancelEditButon;
+
   // 프로필 편집 로직
   //입력창 및 타이틀 생성 함수로부터 변수 반환
   const nameEdit = createInputElement(".Name");
