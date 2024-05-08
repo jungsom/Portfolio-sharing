@@ -276,8 +276,3 @@ function passwordChange() {
 }
 
 init();
-
-function importTest() {
-  console.log("import test!");
-}
-export { importTest };
