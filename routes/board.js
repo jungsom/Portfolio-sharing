@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { Board, User } = require("../models");
+const { Board, User, Like } = require("../models");
 const {
   BadRequest,
   Unauthorized,
@@ -11,33 +11,97 @@ const router = Router();
 
 router.get("/", async (req, res, next) => {
   try {
+    const nickname = req.session.passport.user.nickname;
     const board = await Board.find({}).lean();
 
     if (!board) {
       throw new NotFound("등록된 게시글을 찾을 수 없습니다."); // 404 에러
     }
 
+    // 게시글 좋아요 관련 및 res 관련
+    let boardData = [];
+    for (const data of board) {
+      let likes = await Like.find({ boardId: data.boardId }).lean();
+      // 좋아요수
+      const likesCount = likes.reduce(
+        (total, like) => total + like.fromUser.length,
+        0
+      );
+
+      boardData.push({
+        nickname: data.nickname,
+        title: data.title,
+        contents: data.contents,
+        createAt: data.createAt,
+        boardId: data.boardId,
+        likes: likesCount,
+        isLikes:
+          likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 눌렀는지
+      });
+    }
+
+    // 페이지네이션
+    const page = Number(req.query.page || 1); // 현재 페이지
+    const perPage = Number(req.query.perPage || 10); // 페이지 당 게시글 수
+    const total = await Board.countDocuments({}); // 총 Board 수 세기
+    const totalPage = Math.ceil(total / perPage);
+
+    const { sortName } = req.body;
+
+    // 기본은 최신순
+    let resultBoard = boardData
+      .sort((a, b) => b.boardId - a.boardId)
+      .slice(perPage * (page - 1), perPage * (page - 1) + perPage);
+
+    // body에 좋아요순 입력 시
+    if (sortName === "좋아요순") {
+      resultBoard = boardData
+        .sort((a, b) => b.likes - a.likes)
+        .slice(perPage * (page - 1), perPage * (page - 1) + perPage);
+    }
+
     res.status(200).json({
       error: null,
-      data: board,
+      totalPage,
+      data: resultBoard,
     });
   } catch (e) {
     next(e);
   }
 });
 
-router.get("/:boardId", async (req, res) => {
+router.get("/:boardId", async (req, res, next) => {
   try {
     const { boardId } = req.params;
+    const nickname = req.session.passport.user.nickname;
     const board = await Board.findOne({ boardId }).lean();
 
     if (!board) {
       throw new NotFound("해당 게시글이 존재하지 않습니다."); // 404 에러
     }
 
+    let boardData = [];
+    let likes = await Like.find({ boardId }).lean();
+    const likesCount = likes.reduce(
+      // 좋아요 수
+      (total, like) => total + like.fromUser.length,
+      0
+    );
+
+    boardData.push({
+      nickname: board.nickname,
+      title: board.title,
+      contents: board.contents,
+      createAt: board.createAt,
+      boardId: board.boardId,
+      likes: likesCount,
+      isLikes:
+        likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 누른 게시글인지 true, false
+    });
+
     res.status(200).json({
       error: null,
-      data: board,
+      data: boardData,
     });
   } catch (e) {
     next(e);
@@ -55,7 +119,7 @@ router.post("/", async (req, res, next) => {
     const nickname = req.session.passport.user.nickname;
     const { title, contents } = req.body;
 
-    if (!title || !contents ) {
+    if (!title || !contents) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
     if (title.replace(/ /g, "") == "") {
@@ -154,12 +218,75 @@ router.delete("/:boardId", async (req, res, next) => {
     if (nickname !== findBoard.nickname) {
       throw new Forbidden("접근할 수 없습니다.");
     }
-    const board = await Board.deleteOne({ boardId }).lean();
+    await Board.deleteOne({ boardId }).lean();
+    await Like.findOneAndDelete({ boardId }).lean(); // 게시글의 좋아요 데이터도 삭제
 
     res.status(200).json({
       err: null,
       message: `${nickname}님의 ${boardId}번 게시글을 삭제했습니다.`,
     });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// 좋아요
+router.post("/:boardId/likes", async (req, res, next) => {
+  try {
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
+    const nickname = req.session.passport.user.nickname; // 누르는 사람(세션의 닉네임으로 넣음)
+    const boardId = req.params.boardId; // 게시글 번호
+
+    const exists = await Board.findOne({ boardId }).lean();
+    if (!exists) {
+      throw new NotFound("해당 게시글이 존재하지 않습니다."); // 404 에러
+    }
+
+    const likes = await Like.findOne({ boardId }).lean();
+
+    // Like에 해당 게시글 정보가 없을 경우에는 데이터를 새로 넣어야 함
+    if (!likes) {
+      await Like.create({ fromUser: nickname, boardId });
+
+      res.status(200).json({
+        error: null,
+        message: `${nickname}님이 ${boardId}번 게시글을 좋아합니다.`,
+      });
+      return;
+    }
+
+    const existsLike = await Like.findOne({
+      fromUser: nickname,
+      boardId,
+    }).lean();
+
+    if (existsLike) {
+      // 이미 좋아요를 누른 게시글일 때
+      const index = likes.fromUser.indexOf(nickname);
+      if (index === -1) {
+        throw new BadRequest("좋아요를 누르지 않았습니다.");
+      }
+
+      likes.fromUser.splice(index, 1);
+      await Like.updateOne({ boardId }, { fromUser: likes.fromUser });
+
+      return res.status(200).json({
+        error: null,
+        message: `${nickname}님이 ${boardId}번 게시글 좋아요를 취소했습니다.`,
+      });
+    } else {
+      // 좋아요를 누르지 않은 게시글일 때
+      likes.fromUser.push(nickname);
+      await Like.updateOne({ boardId }, { fromUser: likes.fromUser });
+
+      return res.status(200).json({
+        error: null,
+        message: `${nickname}님이 ${boardId}번 게시글을 좋아합니다.`,
+      });
+    }
   } catch (e) {
     next(e);
   }

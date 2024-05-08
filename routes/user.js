@@ -6,6 +6,7 @@ const {
   Certificate,
   Award,
   Board,
+  Like,
 } = require("../models");
 const {
   BadRequest,
@@ -26,13 +27,13 @@ router.get("/", async (req, res, next) => {
   const page = Number(req.query.page || 1); // 현재 페이지
   const perPage = Number(req.query.perPage || 10); // 페이지 당 게시글 수
   const { sortName } = req.body; // 정렬할 이름
-  let sortProcess = {};
+  let sortProcess = { createAt: -1 }; // 기본은 최신 순
 
   try {
-    if (!sortName) {
-      sortProcess = { createAt: -1 }; // 아무것도 안 줄 경우 기본값은 최신순 정렬로
-    } else {
-      sortProcess[sortName] = 1;
+    if (sortName === "이름순") {
+      sortProcess = { name: 1 };
+    } else if (sortName === "이메일순") {
+      sortProcess = { email: 1 };
     }
 
     // 페이지네이션
@@ -194,6 +195,18 @@ router.put("/mypage", async (req, res, next) => {
           { nickname }
         ).lean();
       }
+      // Like nickname 변경
+      const findLike = await Like.find({
+        fromUser: req.session.passport.user.nickname,
+      }).lean();
+      if (findLike.length !== 0) {
+        await Like.updateMany(
+          {
+            fromUser: req.session.passport.user.nickname,
+          },
+          { fromUser: nickname }
+        ).lean();
+      }
 
       req.session.passport.user.nickname = nickname; // session 변경
     }
@@ -272,7 +285,10 @@ const upload = multer({
 });
 
 // 프로필 이미지 업로드
-router.put("/mypage/profileImg", upload.single("profileImg"), async (req, res, next) => {
+router.put(
+  "/mypage/profileImg",
+  upload.single("profileImg"),
+  async (req, res, next) => {
     try {
       // 세션 확인(401 error)
       if (!req.session.passport) {

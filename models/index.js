@@ -6,6 +6,7 @@ const ProjectSchema = require("./schemas/project");
 const CertificateSchema = require("./schemas/certificate");
 const CounterSchema = require("./schemas/counter");
 const BoardSchema = require("./schemas/board");
+const LikeSchema = require("./schemas/like");
 
 exports.User = mongoose.model("User", UserSchema);
 exports.Education = mongoose.model("Education", EducationSchema);
@@ -14,3 +15,4 @@ exports.Project = mongoose.model("Project", ProjectSchema);
 exports.Certificate = mongoose.model("Certificate", CertificateSchema);
 exports.Counter = mongoose.model("Counter", CounterSchema);
 exports.Board = mongoose.model("Board", BoardSchema);
+exports.Like = mongoose.model("Like", LikeSchema);

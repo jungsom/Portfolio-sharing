@@ -6,6 +6,8 @@ const {
   Certificate,
   Award,
   Counter,
+  Board,
+  Like,
 } = require("../models");
 const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
@@ -171,7 +173,7 @@ router.delete("/", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    const { userId } = req.session.passport.user;
+    const { userId, nickname } = req.session.passport.user;
     const { password } = req.body;
 
     if (!password) {
@@ -198,6 +200,27 @@ router.delete("/", async (req, res, next) => {
     }).lean();
     const deleteUser = await User.deleteOne({ userId }).lean();
 
+    // 작성한 게시글의 좋아요 데이터 삭제
+    const findBoard = await Board.find({ nickname });
+    for (const data of findBoard) {
+      await Like.findOneAndDelete({ boardId: data.boardId });
+    }
+    // 작성한 게시글 삭제
+    const deleteBoard = await Board.deleteMany({ nickname });
+
+    // 누른 좋아요 삭제
+    const existLike = await Like.find({ fromUser: nickname }).lean();
+    if (existLike) {
+      for (const data of existLike) {
+        const index = data.fromUser.indexOf(nickname);
+        data.fromUser.splice(index, 1);
+        await Like.updateOne(
+          { boardId: data.boardId },
+          { fromUser: data.fromUser }
+        ).lean();
+      }
+    }
+
     // DB에서 모든 자료를 다 삭제한 후에 로그아웃해서 세션까지 삭제 완료
     req.logout((err) => {
       if (err) {
@@ -205,7 +228,7 @@ router.delete("/", async (req, res, next) => {
       }
       res.status(200).json({
         error: null,
-        message: `회원 탈퇴 성공. 총 ${deleteUser.deletedCount}개의 user, ${deleteEducation.deletedCount}개의 학력, ${deleteAward.deletedCount}개의 수상 이력, ${deleteProject.deletedCount}개의 프로젝트, ${deleteCertificate.deletedCount}개의 자격증, ${deleteCounter.deletedCount}개의 카운터 데이터가 삭제되었습니다.`,
+        message: `회원 탈퇴 성공. 총 ${deleteUser.deletedCount}개의 user, ${deleteEducation.deletedCount}개의 학력, ${deleteAward.deletedCount}개의 수상 이력, ${deleteProject.deletedCount}개의 프로젝트, ${deleteCertificate.deletedCount}개의 자격증, ${deleteBoard.deletedCount}개의 게시글, ${deleteCounter.deletedCount}개의 카운터 데이터가 삭제되었습니다.`,
       });
     });
   } catch (err) {
