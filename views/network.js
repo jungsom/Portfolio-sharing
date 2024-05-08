@@ -126,7 +126,7 @@ async function renderUserCard() {
 
       cardinner.addEventListener("click", () => {
         if (user.profileimg && logintrue.status === true) {
-          localStorage.setItem("tempId", user.userId);
+          // localStorage.setItem("tempId", user.userId);
           window.location.href = "/userpage";
         } else {
           alert("데이터를 불러오는데 오류가 생겼습니다.");
@@ -201,7 +201,7 @@ function getLogOut() {
       alert("로그인 후 이용 가능합니다.");
     } else if (response.status == 200) {
       alert("로그아웃 성공");
-      window.location.href = "/board";
+      window.location.href = "/";
     }
   });
 }
@@ -226,9 +226,13 @@ async function init() {
   const userpageElem = document.querySelector(".userpage");
   const loginElem = document.querySelector(".login");
   const logoutElem = document.querySelector(".logout");
+  const boardElem = document.querySelector(".board");
 
   userpageElem.addEventListener("click", menuClickHandler);
   loginElem.addEventListener("click", menuClickHandler);
+  boardElem.addEventListener("click", () => {
+    window.location.href = "/board";
+  });
 
   //로그아웃 이벤트리스너 추기
   logoutElem.addEventListener("click", () => {
