@@ -99,24 +99,25 @@ router.put("/:boardId", async (req, res, next) => {
     if (!title || !contents) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
-    if (title.replace(/ /g, "") == "") {
+    if (title.trim().length === 0) {
       throw new BadRequest("공백은 제목으로 사용 불가능합니다."); // 400 에러
     }
-    if (contents.replace(/ /g, "") == "") {
+    if (contents.trim().length === 0) {
       throw new BadRequest("공백은 내용으로 사용 불가능합니다."); // 400 에러
     }
 
+    const findBoard = await Board.findOne({ boardId }).lean();
+    if (!findBoard) {
+      throw new NotFound(`${boardId}번 게시글을 찾을 수 없습니다.`); // 404
+    }
+    if (nickname !== findBoard.nickname) {
+      throw new Forbidden("접근할 수 없습니다.");
+    }
     const board = await Board.findOneAndUpdate(
-      { nickname, boardId },
+      { boardId },
       { title, contents },
       { runValidators: true, new: true }
     ).lean();
-
-    if (board === null) {
-      throw new NotFound(
-        "요청하신 유저의 게시글 ID에 자료가 존재하지 않습니다."
-      );
-    }
 
     res.status(200).json({
       err: null,
@@ -144,13 +145,14 @@ router.delete("/:boardId", async (req, res, next) => {
     const boardId = req.params.boardId;
     const nickname = req.session.passport.user.nickname;
 
-    const board = await Board.findOneAndDelete({
-      nickname,
-      boardId,
-    }).lean();
-    if (board === null) {
-      throw new NotFound("요청하신 유저의 학력 ID에 자료가 존재하지 않습니다.");
+    const findBoard = await Board.findOne({ boardId }).lean();
+    if (!findBoard) {
+      throw new NotFound(`${boardId}번 게시글을 찾을 수 없습니다.`);
     }
+    if (nickname !== findBoard.nickname) {
+      throw new Forbidden("접근할 수 없습니다.");
+    }
+    const board = await Board.deleteOne({ boardId }).lean();
 
     res.status(200).json({
       err: null,
