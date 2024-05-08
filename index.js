@@ -14,6 +14,7 @@ const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const mypageRouter = require("./routes/mypage");
 const boardRouter = require("./routes/board");
+const commentRouter = require("./routes/comment");
 
 const { NotFound } = require("./middlewares");
 
@@ -65,6 +66,10 @@ app.get("/board", (req, res) => {
   res.render("board/board.html");
 });
 
+app.get("/404", (req, res) => {
+  res.render("404.html");
+});
+
 // 서버 설정
 app.use(express.json());
 
@@ -89,9 +94,10 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/mypage", mypageRouter);
 app.use("/board", boardRouter);
+app.use("/board/:boardId/comment", commentRouter);
 
 app.use((req, res, next) => {
-  next(new NotFound("잘못된 path 입력"));
+  res.redirect("/404");
 });
 
 // 오류 처리

@@ -119,14 +119,6 @@ function cancelEditProfile() {
   profile.childNodes[9].remove();
 }
 
-//네트워크 페이지에서 담아보낼값 아래 localStorage 처럼 사용하면됨
-// let massId = localStorage.getItem("tempId"); // 작동되는거확인 Ok
-// massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
-// 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
-
-let massId = localStorage.getItem("tempId");
-// const massId = "AopBYfBup4";
-
 // mypage/project get 테스트
 fetch("http://localhost:8080/auth/status")
   .then((response) => response.json())
@@ -137,11 +129,12 @@ fetch("http://localhost:8080/auth/status")
 
 // edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 edit-btns이라는 class 할당해서 일괄 display 설정
 function isVisibleBtns() {
+  const params = new URLSearchParams(window.location.search);
+  let currentuser = params.get("user");
   fetch("http://localhost:8080/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      targets = document.querySelectorAll(".edit-btns");
+      targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
         if (data.data.userId == currentuser) {
           target.style.display = "block";
@@ -157,18 +150,17 @@ function isVisibleBtns() {
 function getUserData() {
   const params = new URLSearchParams(window.location.search);
   let currentuser = params.get("user");
-
   fetch(`http://localhost:8080/users/${currentuser}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
       document.querySelector(".Name").innerText = data.user.name;
       document.querySelector(".Nickname").innerText = data.user.nickname;
       document.querySelector(".Email").innerText = data.user.email;
       document.querySelector(".Description").innerText = data.user.description;
+      document.querySelector(".profile-image").src = data.user.profileImg;
 
-      console.log(data); // 전체 데이터 구조 확인
+      // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
         console.error("Education data is not available or not an array:", data);
         return;
@@ -366,9 +358,12 @@ function updateEducationList(educationArray) {
           <p>학교 이름: <p1>${educationItem.schoolName}</p1></p>
           <p>전공: <p2>${educationItem.major}</p2></p>
           <p>학위: <p3>${educationItem.schoolStatus}</p3></p>
+          <div class="editBtns">
           <button onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
           <button onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
+          </div>
       `;
+    isVisibleBtns();
     educationList.appendChild(educationDiv);
   });
 }
@@ -562,9 +557,12 @@ function updateAwardList(awardArray) {
           <p>수상 내역: <p1>${awardItem.title}</p1></p>
           <p>수상 시기: <p2>${awardItem.acqDate}</p2></p>
           <p>상세 설명: <p3>${awardItem.details}</p3></p>
+          <div class="editBtns">
           <button onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
           <button onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
+          </div>
       `;
+    isVisibleBtns();
     awardList.appendChild(awardDiv);
   });
 }
@@ -759,9 +757,12 @@ function updateProjectList(projectArray) {
           <p>수상 시기: <p2>${projectItem.startDate}</p2></p>
           <p>수상 시기: <p3>${projectItem.endDate}</p3></p>
           <p>상세 설명: <p4>${projectItem.details}</p4></p>
+          <div class="editBtns">
           <button onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
           <button onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
+          </div>
       `;
+    isVisibleBtns();
     projectList.appendChild(projectDiv);
   });
 }
@@ -955,12 +956,15 @@ function updateCertificateList(certificateArray) {
       "data-certificate-id",
       certificateItem.certificateId
     );
-    certificateDiv.innerHTML = `
+    certificateDiv.innerHTML = ` 
           <p>자격증 이름: <p1>${certificateItem.title}</p1></p>
           <p>취득 날짜: <p2>${certificateItem.acqDate}</p2></p>
+          <div class="editBtns">
           <button onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
           <button onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
+          </div>
       `;
+    isVisibleBtns();
     certificateList.appendChild(certificateDiv);
   });
 }
@@ -1141,9 +1145,12 @@ function updateSkillList(skillArray) {
     skillDiv.setAttribute("data-skill-id", skillItem.skillId);
     skillDiv.innerHTML = `
           <p>스킬: <p1>${skillItem.stack}</p1></p>
+          <div class="editBtns">
           <button onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
           <button onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
+          </div>
       `;
+    isVisibleBtns();
     skillList.appendChild(skillDiv);
   });
 }
@@ -1240,11 +1247,6 @@ function deleteSkill(button, skillId) {
 
 getUserData();
 isVisibleBtns();
-
-window.addEventListener("popstate", function (event) {
-  delete massId; // 사용자 id 값 삭제
-  localStorage.removeItem("tempId"); // 로컬 스토리지 삭제
-});
 
 //회원탈퇴
 function accountDelete() {
