@@ -12,19 +12,35 @@
       <div>
         <ul>
           <li class="login"><a> Log in </a></li>
-          <li class="userpage"><a> MyPage </a></li>
-          <li class="logout"><a> Log Out </a></li>
+          <li class="userpage"><a> Home </a></li>
+          <li class="board"><a> Board </a></li>
+          <li class="logout"><a> LogOut </a></li>
         </ul>
       </div>
     </header>
-    <div id="userContent"></div>
+    <div class="usercard-container">
+      <div class="usercard">
+        <!-- <div class="usercard-Inner">
+            <div class="usercard-Front">
+              <img class="userImage">
+              <p class="title"> </p>
+            </div>
+            <div class="usercard-Back">
+              <p class="content"> </p>
+            </div>
+          </div> -->
+      </div>
+    </div>
     <div class="modal">
       <div class="title">로그인 창으로 이동합니다.</div>
       <a href="#" class="close"> 닫기 </a>
     </div>
-    <button id="prevButton">prev</button>
-    <button id="nextButton">next</button>
+    <div class="page-btn-container">
+      <button class="page-btn btn-left" type="button">이전 페이지</button>
+      <button class="page-btn btn-right" type="button">다음 페이지</button>
+    </div>
     <footer></footer>
-    <script src="/network/network.js"></script>
+    <script src="/network.js"></script>
+    <!-- type="module"  -->
   </body>
 </html>

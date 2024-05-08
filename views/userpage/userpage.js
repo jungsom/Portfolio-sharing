@@ -22,8 +22,6 @@ let nameContainer,
 // massId 값 아래 중 하나 선택해서 하드코딩하고 참조되는값 바뀌는것 확인 Ok
 // 'ZttKLSVoI4' , 'TU639YT3DO' , 'aaf0b6b7-5ba8-4638-9afd-c38d3d459790'
 
-let massId = localStorage.getItem("tempId");
-
 // mypage/project post 테스트
 // fetch("http://localhost:8080/mypage/project", {
 //   method: "POST",
@@ -59,7 +57,7 @@ function isVisibleBtns() {
     .then((data) => {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
-        if (data.data.userId == massId) {
+        if (data.data.userId == currentuser) {
           target.style.display = "block";
         } else {
           target.style.display = "none";
@@ -71,10 +69,13 @@ function isVisibleBtns() {
 //userpage 에 표시될 유저 data 받아오기 및 표시
 //본인 userpage 던 타 userpage던 아래 코드로 바로 표시가능(구분방법 massId)
 function getUserData() {
-  fetch(`http://localhost:8080/users/${massId}`)
+  const params = new URLSearchParams(window.location.search);
+  let currentuser = params.get("user");
+
+  fetch(`http://localhost:8080/users/${currentuser}`)
     .then((res) => res.json())
     .then((data) => {
-      // console.log(data);
+      console.log(data);
       //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
       document.querySelector(".Name").innerText = data.user.name;
       document.querySelector(".Email").innerText = data.user.email;
