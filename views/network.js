@@ -1,4 +1,23 @@
 let currentPage = 1;
+const modal = document.querySelector(".modal");
+const modalOpenbtn = document.querySelector(".modal_btn");
+const modalClosebtn = document.querySelector(".close_btn");
+
+function modalOpen(txtNum) {
+  changeModalText(txtNum);
+  document.getElementById("modal").style.display = "block";
+}
+
+function modalClose() {
+  document.getElementById("modal").style.display = "none";
+  const goTo = localStorage.getItem("goTo");
+  if (goTo == "network") {
+    window.location.href = "/Network";
+  } else if (goTo == "login") {
+    window.location.href = "/login";
+  }
+  localStorage.removeItem("goTo");
+}
 
 /** 유저 정보 api 요청 */
 async function getUsers(page) {
@@ -134,46 +153,61 @@ async function nextPage() {
     updateButton();
   }
 }
+
 async function renderPage(page) {
   try {
     const userData = await getUsers(page);
-    const userElem = document.getElementById("userContent");
-    userElem.innerHTML = "";
+    const container = document.querySelector(".usercard-container");
+    container.innerHTML = "";
 
     const logintrue = await getLoginStatus();
 
     userData.data.forEach(async (user) => {
-      const container = document.createElement("div");
-      const imageElem = document.createElement("img");
-      const textElem = document.createElement("p");
+      const usercard = document.createElement("div"); // 각 사용자 카드를 만들 때마다 새로운 요소 생성
+      usercard.className = "usercard";
 
-      imageElem.src = user.profileImg;
-      imageElem.alt = user.profileImg;
+      const cardinner = document.createElement("div");
+      const cardfront = document.createElement("div");
+      const cardback = document.createElement("div");
+      const userimage = document.createElement("img");
+      const title = document.createElement("p");
+      const content = document.createElement("p");
 
-      container.appendChild(imageElem);
-      container.appendChild(textElem);
-      userElem.appendChild(container);
-      textElem.className = "userText";
+      cardinner.className = "usercard-Inner";
+      cardfront.className = "usercard-Front";
+      cardback.className = "usercard-Back";
+      userimage.className = "userImage";
+      title.className = "title";
+      content.className = "content";
 
-      textElem.style.display = "none";
+      userimage.src = user.profileImg;
+      userimage.alt = user.profileImg;
 
-      textElem.innerHTML = `안녕하세요! <br>
+      cardfront.appendChild(userimage);
+
+      title.innerHTML = `${user.name}의 포트폴리오`;
+
+      cardfront.appendChild(title);
+      cardinner.appendChild(cardfront);
+
+      content.innerHTML = `안녕하세요! <br>
                     이름: ${user.name} <br>
                     자기소개: ${user.description}`;
 
-      container.addEventListener("mouseenter", () => {
-        textElem.style.display = "block";
-        imageElem.style.filter = "blur(5px)";
-        textElem.style.opacity = "1";
-      });
+      cardback.appendChild(content);
+      cardinner.appendChild(cardback);
+      usercard.appendChild(cardinner);
+      container.appendChild(usercard);
 
-      container.addEventListener("mouseleave", () => {
-        textElem.style.display = "none";
-        imageElem.style.filter = "blur(0px)";
-        textElem.style.opacity = "0";
-      });
+      // cardinner.addEventListener("mouseenter", () => {
+      //   cardinner.style.transform = "rotateY(180deg)";
+      // });
 
-      container.addEventListener("click", () => {
+      // cardinner.addEventListener("mouseleave", () => {
+      //   cardinner.style.transform = "rotateY(0deg)";
+      // });
+
+      cardinner.addEventListener("click", () => {
         if (user.profileimg && logintrue.status === true) {
           localStorage.setItem("tempId", user.userId);
           window.location.href = "/userpage";
