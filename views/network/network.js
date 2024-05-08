@@ -127,7 +127,7 @@ async function renderUserCard() {
       cardinner.addEventListener("click", () => {
         if (user.profileimg && logintrue.status === true) {
           // localStorage.setItem("tempId", user.userId);
-          window.location.href = "/userpage";
+          window.location.href = `/userpage?user=${user.userId}`;
         } else {
           alert("데이터를 불러오는데 오류가 생겼습니다.");
           window.location.href = "/login";
@@ -201,7 +201,7 @@ function getLogOut() {
       alert("로그인 후 이용 가능합니다.");
     } else if (response.status == 200) {
       alert("로그아웃 성공");
-      window.location.href = "/";
+      window.location.href = "/?page=1";
     }
   });
 }
@@ -237,7 +237,7 @@ async function init() {
   //로그아웃 이벤트리스너 추기
   logoutElem.addEventListener("click", () => {
     getLogOut();
-    window.location.href = "/";
+    window.location.href = "/?page=1";
   });
 
   //페이지네이션 관련 이벤트리스너 추가
