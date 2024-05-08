@@ -9,13 +9,10 @@ const {
 
 const router = Router();
 
+// 게시글 전체 조회
 router.get("/", async (req, res, next) => {
   try {
     const board = await Board.find({}).lean();
-
-    if (!board) {
-      throw new NotFound("등록된 게시글을 찾을 수 없습니다."); // 404 에러
-    }
 
     res.status(200).json({
       error: null,
@@ -26,7 +23,8 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:boardId", async (req, res) => {
+// 게시글 조회
+router.get("/:boardId", async (req, res, next) => {
   try {
     const { boardId } = req.params;
     const board = await Board.findOne({ boardId }).lean();
@@ -55,7 +53,7 @@ router.post("/", async (req, res, next) => {
     const nickname = req.session.passport.user.nickname;
     const { title, contents } = req.body;
 
-    if (!title || !contents ) {
+    if (!title || !contents) {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
     if (title.replace(/ /g, "") == "") {
@@ -159,6 +157,57 @@ router.delete("/:boardId", async (req, res, next) => {
     res.status(200).json({
       err: null,
       message: `${nickname}님의 ${boardId}번 게시글을 삭제했습니다.`,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// 게시글 검색
+router.get("/search/result", async (req, res, next) => {
+  try {
+    //
+    const { option, keyword } = req.query;
+    let board = [];
+
+    // 닉네임으로 검색
+    if (option === "nickname") {
+      board = await Board.find({
+        nickname: new RegExp(keyword, "i"),
+      }).lean();
+    }
+
+    // 제목으로 검색
+    if (option === "title") {
+      board = await Board.find({
+        title: new RegExp(keyword, "i"),
+      }).lean();
+    }
+
+    // 내용으로 검색
+    if (option === "contents") {
+      board = await Board.find({
+        contents: new RegExp(keyword, "i"),
+      }).lean();
+    }
+
+    // 제목 + 내용으로 검색
+    if (option === "titleContents") {
+      board = await Board.find({
+        $or: [
+          {
+            title: new RegExp(keyword, "i"),
+          },
+          {
+            contents: new RegExp(keyword, "i"),
+          },
+        ],
+      }).lean();
+    }
+
+    res.status(200).json({
+      error: null,
+      data: board,
     });
   } catch (e) {
     next(e);
