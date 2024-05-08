@@ -9,11 +9,13 @@ const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
 const path = require("path");
+const helmet = require("helmet");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const mypageRouter = require("./routes/mypage");
 const boardRouter = require("./routes/board");
+const commentRouter = require("./routes/comment");
 
 const { NotFound } = require("./middlewares");
 
@@ -45,6 +47,11 @@ app.use(express.static(path.join(__dirname, "profileImg")));
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
+// Helmet 미들웨어 사용
+app.use(helmet());
+// Xss Protection만 하려면 위의 코드는 주석 처리 하고 아래만 사용
+// app.use(helmet.xXssProtection());
+
 app.get("/", (req, res) => {
   res.render("network.html");
 });
@@ -63,7 +70,7 @@ app.get("/network", (req, res) => {
 
 app.get("/404", (req, res) => {
   res.render("404.html");
-})
+});
 
 // 서버 설정
 app.use(express.json());
@@ -89,6 +96,7 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/mypage", mypageRouter);
 app.use("/board", boardRouter);
+app.use("/board/:boardId/comment", commentRouter);
 
 app.use((req, res, next) => {
   res.redirect("/404");

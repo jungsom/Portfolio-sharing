@@ -111,7 +111,6 @@ router.get("/status", async (req, res) => {
       email: user.email,
       nickname: user.nickname,
       name: user.name,
-      nickname: user.nickname,
     },
   });
 });
@@ -180,8 +179,11 @@ router.delete("/", async (req, res, next) => {
       throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
     }
 
-    const user = await User.findOne({ userId }).lean();
-    const hashedPassword = user.password;
+    // findOne({userId} 뒤에 "password"를 넣으면 password만 가져온다.
+    // user가 존재하면 user.password를 반환한다. then 함수형으로 작성하는 것 잊지 말 것!
+    const hashedPassword = await User.findOne({ userId }, "password")
+      .lean()
+      .then((user) => user?.password);
 
     // 입력받은 비밀번호가 DB의 암호화된 비밀번호와 일치하는지 확인
     const passwordCorrect = await bcrypt.compare(password, hashedPassword);
@@ -234,26 +236,6 @@ router.delete("/", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
-
-router.get("/true", async (req, res) => {
-  res.json({
-    status: true,
-    message: "로그인이 된 상태입니다.",
-    data: {
-      id: "r4GOOIxSW9",
-      email: "test@test.com",
-      name: "test by jaegeun",
-      description: "--설명--",
-    },
-  });
-});
-
-router.get("/false", async (req, res) => {
-  res.json({
-    status: false,
-    message: "로그인이 되지 않았습니다.",
-  });
 });
 
 module.exports = router;
