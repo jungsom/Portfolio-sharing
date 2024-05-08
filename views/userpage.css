@@ -3,11 +3,12 @@
   src: url("continuous.ttf") format("truetype");
 }
 
-.contentContainer {
+.content-container {
   display: flex;
   background-color: #eeeae0;
   margin: -1%;
 }
+
 .navbar {
   display: flex;
   flex-direction: column;
@@ -16,14 +17,15 @@
   /* background-color: rgba(216, 107, 4, 0.692); */
   background-color: #eeeae0;
 }
-.navbarContent {
+
+.navbar-Content {
   font-family: "continuous", Arial, sans-serif;
   font-size: 24px;
   padding: 2.5% 0 2.5% 0;
   margin: 0 10% 0 10%;
   box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
 }
-.navbarContent:nth-last-child(1) {
+.navbar-Content:nth-last-child(1) {
   box-shadow: none;
 }
 .logo {
@@ -57,12 +59,7 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* .nameContainer,
-.emailContainer,
-.descriptionContainer {
-  border-left: 5px solid #ccc;
-} */
-.profileContainer {
+.profile-container {
   border-left: 5px solid #ccc;
   padding-left: 10px;
   margin-bottom: 10px;
@@ -156,7 +153,7 @@ input {
   border-radius: 15px;
   background-color: rgb(233, 233, 233);
 }
-.profileEditButton {
+.profile-edit-button {
   margin-right: 10px;
   background-color: #ffee83;
   color: #000000;
@@ -165,7 +162,7 @@ input {
   cursor: pointer;
 }
 
-#cancelEditButton,
+#cancel_edit_button,
 #education_delete_button,
 #awards_delete_button,
 #project_delete_button,
@@ -179,7 +176,7 @@ input {
   cursor: pointer;
 }
 
-#submitEditButton,
+#submit_edit_button,
 #education_confirm_button,
 #awards_confirm_button,
 #project_confirm_button,
@@ -192,10 +189,47 @@ input {
   border-radius: 10%;
   cursor: pointer;
 }
-#buttons-container {
+
+.edit-btns {
   display: flex;
   justify-content: start; /* 버튼을 컨테이너 시작 부분에 정렬 */
 }
-#buttons-container button {
-  margin-right: 10px; /* 오른쪽 여백 추가 */
+
+.edit-btns button {
+  margin-right: 10px;
+  margin-bottom: 10px; /* 오른쪽 여백 추가 */
+}
+
+.education-title h2 {
+  display: flex;
+  justify-content: space-between; /*내용을 양쪽 끝으로 밀어냄 */
+  align-items: center;
+  width: 100%;
+}
+
+.education_plus_button {
+  margin-left: auto;
+}
+
+/* 모달 창 기본 스타일 */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
 }
