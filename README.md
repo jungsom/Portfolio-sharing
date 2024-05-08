@@ -1,4 +1,4 @@
-# ✨Dev.cartes! backend Page (임시 페이지) - Merge 문제 해결. Backend Branch를 이용해주세요.
+# ✨Dev.cartes! backend Page (임시 페이지)
 
 ## 🪄 API 수정 사항
 
@@ -51,6 +51,7 @@
 
   - 404 페이지 추가
   - Board API 기능 추가
+  - XSS Protection 및 보안 강화
 
 - 2024년 5월 7일 화요일
 
