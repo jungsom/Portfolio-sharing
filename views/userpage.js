@@ -38,14 +38,14 @@ function isVisibleBtns() {
   fetch("http://localhost:8080/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      targets = document.querySelectorAll(".editBtns");
-      targets.forEach((target) => {
-        if (data.data.id == massId) {
-          target.style.display = "block";
-        } else {
-          target.style.display = "none";
-        }
-      });
+      // targets = document.querySelectorAll(".editBtns");
+      // targets.forEach((target) => {
+      //   if (data.data.id == massId) {
+      //     target.style.display = "block";
+      //   } else {
+      //     target.style.display = "none";
+      //   }
+      // });
     });
 }
 
@@ -67,6 +67,10 @@ function getUserData() {
         return;
       }
       updateEducationList(data.education);
+      updateAwardList(data.awards);
+      updateProjectList(data.projects);
+      updateCertificateList(data.certificates);
+      updateSkillList(data.skills);
     });
 }
 
@@ -246,6 +250,30 @@ function editProfile() {
   }
 }
 
+//학력 추가 기능
+function addEducation() {
+  const modal = document.getElementById("educationModal"); //폼 데이터를 가져와서 띄운다
+  const deleteButton = document.getElementById("close-modal-button");
+  const confirmButton = document.getElementById("education-confirm-button");
+
+  // 폼 초기화
+  document.getElementById("educationForm").reset();
+
+  //추가 버튼 보이기
+  confirmButton.style.display = "block";
+  deleteButton.style.display = "block";
+
+  modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
+//저장 버튼 클릭 시 post 요청
 function confirmEducation(event) {
   const form = document.getElementById("educationModal");
 
@@ -311,37 +339,30 @@ function updateEducationList(educationArray) {
           <p>전공: <p2>${educationItem.major}</p2></p>
           <p>학위: <p3>${educationItem.schoolStatus}</p3></p>
           <button onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
-          <button onclick="openEditModal('${educationItem.educationId}')">수정</button>
+          <button onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
       `;
     educationList.appendChild(educationDiv);
   });
 }
 
-//학력 추가 기능
-function addEducation() {
-  var modal = document.getElementById("educationModal");
-  modal.style.display = "block";
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-}
-
 // 모달을 열고 폼에 데이터를 채우는 함수
-function openEditModal(educationId) {
-  // 기존 데이터 가져오기
+function openEditEducationModal(educationId) {
+  const modal = document.getElementById("educationModal");
+  const saveButton = document.getElementById("education-confirm-button");
+  const editButton = document.getElementById("education-edit-button");
+  const cancelButton = document.getElementById("close-modal-button");
+
+  console.log(document.getElementById("education-edit-button"));
+
   const educationEntry = document.querySelector(
     `[data-education-id="${educationId}"]`
   );
-  console.log(educationId);
-  console.log(educationEntry);
   const schoolName = educationEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
   const major = educationEntry.querySelector("p2").textContent;
   const schoolStatus = educationEntry.querySelector("p3").textContent;
 
   // 모달 폼에 데이터 채우기
+
   document.getElementById("university").value = schoolName;
   document.getElementById("major").value = major;
   document.getElementById("schoolStatus").value = schoolStatus;
@@ -350,10 +371,15 @@ function openEditModal(educationId) {
   document
     .getElementById("educationModal")
     .setAttribute("data-education-id", educationId);
-  document.getElementById("educationModal").style.display = "block";
+
+  editButton.style.display = "block"; // '수정' 버튼 보이기
+  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+
+  // 모달 표시
+  modal.style.display = "block";
 }
 
-// 폼 데이터를 서버에 전송하는 함수
+// 수정된 폼 데이터를 서버에 전송하는 함수
 function submitEducationUpdate() {
   const educationId = document
     .getElementById("educationModal")
@@ -389,7 +415,7 @@ function submitEducationUpdate() {
 
 // 모달 닫기 함수
 function closeModal() {
-  document.getElementById("editModal").style.display = "none";
+  document.getElementById("educationModal").style.display = "none";
 }
 
 function deleteEducation(button, educationId) {
@@ -414,6 +440,770 @@ function deleteEducation(button, educationId) {
     .catch((error) => {
       console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
+    });
+
+  plusButton.style.display = "block";
+}
+
+//---------------------------------------------------------------------------------
+//수상 추가 기능
+function addAward() {
+  const modal = document.getElementById("awardModal"); //폼 데이터를 가져와서 띄운다
+  const deleteButton = document.getElementById("close-award-button");
+  const confirmButton = document.getElementById("award-confirm-button");
+
+  // 폼 초기화
+  document.getElementById("awardForm").reset();
+
+  //추가 버튼 보이기
+  confirmButton.style.display = "block";
+  deleteButton.style.display = "block";
+
+  modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
+//저장 버튼 클릭 시 post 요청
+function confirmAward(event) {
+  const form = document.getElementById("awardModal");
+
+  event.preventDefault();
+
+  const title = document.getElementById("title").value; // 수상 이름
+  const acqDate = document.getElementById("acqDate").value; // 입상 날짜
+  const details = document.getElementById("details").value; // 상세 설명
+
+  console.log(typeof title);
+  console.log(typeof acqDate);
+  console.log(typeof details);
+
+  // 가져온 데이터를 객체로 구성합니다.
+  const postData = {
+    title: title,
+    acqDate: acqDate,
+    details: details,
+  };
+
+  console.log(postData);
+
+  fetch(`http://localhost:8080/mypage/award`, {
+    method: "POST", // HTTP 메서드
+    headers: {
+      "Content-Type": "application/json", // 컨텐트 타입 설정
+      Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+    },
+    body: JSON.stringify(postData), // JSON 문자열로 변환하여 데이터 전송
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json(); // 응답을 JSON 형태로 파싱
+    })
+    .then((data) => {
+      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      alert("수상 정보가 성공적으로 등록되었습니다.");
+      document.getElementById("title").value = "";
+      document.getElementById("acqDate").value = "";
+      document.getElementById("details").value = "";
+      form.style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error("Error:", error); // 에러 처리
+      alert("수상 정보 등록에 실패하였습니다.");
+    });
+}
+
+//확정된 정보를 div로 추가하기
+function updateAwardList(awardArray) {
+  const awardList = document.getElementById("awardList");
+  awardList.innerHTML = ""; // 기존 목록을 초기화
+
+  awardArray.forEach((awardItem) => {
+    const awardDiv = document.createElement("div");
+    awardDiv.classList.add("award-entry");
+    awardDiv.setAttribute("data-award-id", awardItem.awardId);
+    awardDiv.innerHTML = `
+          <p>수상 내역: <p1>${awardItem.title}</p1></p>
+          <p>수상 시기: <p2>${awardItem.acqDate}</p2></p>
+          <p>상세 설명: <p3>${awardItem.details}</p3></p>
+          <button onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
+          <button onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
+      `;
+    awardList.appendChild(awardDiv);
+  });
+}
+
+// 모달을 열고 폼에 데이터를 채우는 함수
+function openEditAwardModal(awardId) {
+  const modal = document.getElementById("awardModal");
+  const saveButton = document.getElementById("award-confirm-button");
+  const editButton = document.getElementById("award-edit-button");
+  const cancelButton = document.getElementById("close-award-button");
+
+  console.log(document.getElementById("award-edit-button"));
+
+  const awardEntry = document.querySelector(`[data-award-id="${awardId}"]`);
+  const title = awardEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
+  const acqDate = awardEntry.querySelector("p2").textContent;
+  const details = awardEntry.querySelector("p3").textContent;
+
+  // 모달 폼에 데이터 채우기
+
+  document.getElementById("title").value = title;
+  document.getElementById("acqDate").value = acqDate;
+  document.getElementById("details").value = details;
+
+  // 모달 표시
+  document.getElementById("awardModal").setAttribute("data-award-id", awardId);
+
+  editButton.style.display = "block"; // '수정' 버튼 보이기
+  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+
+  // 모달 표시
+  modal.style.display = "block";
+}
+
+// 수정된 폼 데이터를 서버에 전송하는 함수
+function submitAwardUpdate() {
+  const awardId = document
+    .getElementById("awardModal")
+    .getAttribute("data-award-id");
+  const updatedAward = {
+    title: document.getElementById("projectTitle").value,
+    acqDate: document.getElementById("acqDate").value,
+    details: document.getElementById("details").value,
+  };
+
+  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedAward),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("네트워크가 상태가 좋지 않습니다.");
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("수상 정보가 성공적으로 수정되었습니다.");
+      document.getElementById("awardModal").style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("수상 정보 업데이트에 실패했습니다.");
+    });
+}
+
+// 모달 닫기 함수
+function closeAwardModal() {
+  document.getElementById("awardModal").style.display = "none";
+}
+
+function deleteAward(button, awardId) {
+  const plusButton = document.getElementById("award-plus-button");
+  console.log(awardId);
+  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      // 상태 코드 확인
+      if (!response.ok) {
+        throw new Error(`에러!! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("수상 정보가 삭제되었습니다.");
+      const awardEntry = button.closest(".award-entry");
+      awardEntry.remove();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(`수상 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
+    });
+
+  plusButton.style.display = "block";
+}
+
+//---------------------------------------------------------------------------------
+//프로젝트 추가 기능
+function addProject() {
+  const modal = document.getElementById("projectModal"); //폼 데이터를 가져와서 띄운다
+  const deleteButton = document.getElementById("close-project-button");
+  const confirmButton = document.getElementById("project-confirm-button");
+
+  // 폼 초기화
+  document.getElementById("projectForm").reset();
+
+  //추가 버튼 보이기
+  confirmButton.style.display = "block";
+  deleteButton.style.display = "block";
+
+  modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
+//저장 버튼 클릭 시 post 요청
+function confirmProject(event) {
+  const form = document.getElementById("projectModal");
+
+  event.preventDefault();
+
+  const title = document.getElementById("projectTitle").value; // 프로젝트 이름
+  const startDate = document.getElementById("startDate").value; // 시작 날짜
+  const endDate = document.getElementById("endDate").value; // 종료 날짜
+  const details = document.getElementById("projectDetails").value; // 상세 설명
+
+  console.log(typeof title);
+  console.log(typeof startDate);
+  console.log(typeof endDate);
+  console.log(typeof details);
+
+  // 가져온 데이터를 객체로 구성합니다.
+  const postData = {
+    title: title,
+    startDate: startDate,
+    endDate: endDate,
+    details: details,
+  };
+
+  console.log(postData);
+
+  fetch(`http://localhost:8080/mypage/project`, {
+    method: "POST", // HTTP 메서드
+    headers: {
+      "Content-Type": "application/json", // 컨텐트 타입 설정
+      Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+    },
+    body: JSON.stringify(postData), // JSON 문자열로 변환하여 데이터 전송
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json(); // 응답을 JSON 형태로 파싱
+    })
+    .then((data) => {
+      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      alert("프로젝트 정보가 성공적으로 등록되었습니다.");
+      document.getElementById("projectTitle").value = "";
+      document.getElementById("startDate").value = "";
+      document.getElementById("endDate").value = "";
+      document.getElementById("projectDetails").value = "";
+      form.style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error("Error:", error); // 에러 처리
+      alert("프로젝트 정보 등록에 실패하였습니다.");
+    });
+}
+
+//확정된 정보를 div로 추가하기
+function updateProjectList(projectArray) {
+  const projectList = document.getElementById("projectList");
+  projectList.innerHTML = ""; // 기존 목록을 초기화
+
+  projectArray.forEach((projectItem) => {
+    const projectDiv = document.createElement("div");
+    projectDiv.classList.add("project-entry");
+    projectDiv.setAttribute("data-project-id", projectItem.projectId);
+    projectDiv.innerHTML = `
+          <p>수상 내역: <p1>${projectItem.title}</p1></p>
+          <p>수상 시기: <p2>${projectItem.startDate}</p2></p>
+          <p>수상 시기: <p3>${projectItem.endDate}</p3></p>
+          <p>상세 설명: <p4>${projectItem.details}</p4></p>
+          <button onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
+          <button onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
+      `;
+    projectList.appendChild(projectDiv);
+  });
+}
+
+// 모달을 열고 폼에 데이터를 채우는 함수
+function openEditProjectModal(projectId) {
+  const modal = document.getElementById("projectModal");
+  const saveButton = document.getElementById("project-confirm-button");
+  const editButton = document.getElementById("project-edit-button");
+  const cancelButton = document.getElementById("close-project-button");
+
+  console.log(document.getElementById("project-edit-button"));
+
+  const projectEntry = document.querySelector(
+    `[data-project-id="${projectId}"]`
+  );
+  const title = projectEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
+  const startDate = projectEntry.querySelector("p2").textContent;
+  const endDate = projectEntry.querySelector("p3").textContent;
+  const details = projectEntry.querySelector("p4").textContent;
+
+  // 모달 폼에 데이터 채우기
+
+  document.getElementById("projectTitle").value = title;
+  document.getElementById("startDate").value = startDate;
+  document.getElementById("endDate").value = endDate;
+  document.getElementById("projectDetails").value = details;
+
+  // 모달 표시
+  document
+    .getElementById("projectModal")
+    .setAttribute("data-project-id", projectId);
+
+  editButton.style.display = "block"; // '수정' 버튼 보이기
+  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+
+  // 모달 표시
+  modal.style.display = "block";
+}
+
+// 수정된 폼 데이터를 서버에 전송하는 함수
+function submitProjectUpdate() {
+  const projectId = document
+    .getElementById("projectModal")
+    .getAttribute("data-project-id");
+  const updatedProject = {
+    title: document.getElementById("projectTitle").value,
+    startDate: document.getElementById("startDate").value,
+    endDate: document.getElementById("endDate").value,
+    details: document.getElementById("projectDetails").value,
+  };
+
+  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedProject),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("네트워크가 상태가 좋지 않습니다.");
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("수상 정보가 성공적으로 수정되었습니다.");
+      document.getElementById("projectModal").style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("수상 정보 업데이트에 실패했습니다.");
+    });
+}
+
+// 모달 닫기 함수
+function closeProjectModal() {
+  document.getElementById("projectModal").style.display = "none";
+}
+
+function deleteProject(button, projectId) {
+  const plusButton = document.getElementById("project-plus-button");
+  console.log(projectId);
+  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      // 상태 코드 확인
+      if (!response.ok) {
+        throw new Error(`에러!! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("프로젝트 정보가 삭제되었습니다.");
+      const projectEntry = button.closest(".project-entry");
+      projectEntry.remove();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(
+        `프로젝트 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`
+      );
+    });
+
+  plusButton.style.display = "block";
+}
+
+//---------------------------------------------------------------------------------
+//자격증 추가 기능
+function addCertificate() {
+  const modal = document.getElementById("certificateModal"); //폼 데이터를 가져와서 띄운다
+  const deleteButton = document.getElementById("close-certificate-button");
+  const confirmButton = document.getElementById("certificate-confirm-button");
+
+  // 폼 초기화
+  document.getElementById("certificateForm").reset();
+
+  //추가 버튼 보이기
+  confirmButton.style.display = "block";
+  deleteButton.style.display = "block";
+
+  modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
+//저장 버튼 클릭 시 post 요청
+function confirmCertificate(event) {
+  const form = document.getElementById("certificateModal");
+
+  event.preventDefault();
+
+  const title = document.getElementById("certificateTitle").value; // 자격증 이름
+  const acqDate = document.getElementById("acquireDate").value; // 취득 날짜
+
+  console.log(typeof title);
+  console.log(typeof acqDate);
+
+  // 가져온 데이터를 객체로 구성합니다.
+  const postData = {
+    title: title,
+    acqDate: acqDate,
+  };
+
+  console.log(postData);
+
+  fetch(`http://localhost:8080/mypage/certificate`, {
+    method: "POST", // HTTP 메서드
+    headers: {
+      "Content-Type": "application/json", // 컨텐트 타입 설정
+      Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+    },
+    body: JSON.stringify(postData), // JSON 문자열로 변환하여 데이터 전송
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json(); // 응답을 JSON 형태로 파싱
+    })
+    .then((data) => {
+      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      alert("자격증 정보가 성공적으로 등록되었습니다.");
+      document.getElementById("certificateTitle").value = "";
+      document.getElementById("acquireDate").value = "";
+      form.style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error("Error:", error); // 에러 처리
+      alert("자격증 정보 등록에 실패하였습니다.");
+    });
+}
+
+//확정된 정보를 div로 추가하기
+function updateCertificateList(certificateArray) {
+  const certificateList = document.getElementById("certificateList");
+  certificateList.innerHTML = ""; // 기존 목록을 초기화
+
+  certificateArray.forEach((certificateItem) => {
+    const certificateDiv = document.createElement("div");
+    certificateDiv.classList.add("certificate-entry");
+    certificateDiv.setAttribute(
+      "data-certificate-id",
+      certificateItem.certificateId
+    );
+    certificateDiv.innerHTML = `
+          <p>자격증 이름: <p1>${certificateItem.title}</p1></p>
+          <p>취득 날짜: <p2>${certificateItem.acqDate}</p2></p>
+          <button onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
+          <button onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
+      `;
+    certificateList.appendChild(certificateDiv);
+  });
+}
+
+// 모달을 열고 폼에 데이터를 채우는 함수
+function openEditCertificateModal(certificateId) {
+  const modal = document.getElementById("certificateModal");
+  const saveButton = document.getElementById("certificate-confirm-button");
+  const editButton = document.getElementById("certificate-edit-button");
+  const cancelButton = document.getElementById("close-certificate-button");
+
+  console.log(document.getElementById("certificate-edit-button"));
+
+  const certificateEntry = document.querySelector(
+    `[data-certificate-id="${certificateId}"]`
+  );
+  const title = certificateEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
+  const acqDate = certificateEntry.querySelector("p2").textContent;
+
+  // 모달 폼에 데이터 채우기
+
+  document.getElementById("certificateTitle").value = title;
+  document.getElementById("acquireDate").value = acqDate;
+
+  // 모달 표시
+  document
+    .getElementById("certificateModal")
+    .setAttribute("data-certificate-id", certificateId);
+
+  editButton.style.display = "block"; // '수정' 버튼 보이기
+  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+
+  // 모달 표시
+  modal.style.display = "block";
+}
+
+// 수정된 폼 데이터를 서버에 전송하는 함수
+function submitCertificateUpdate() {
+  const certificateId = document
+    .getElementById("certificateModal")
+    .getAttribute("data-certificate-id");
+  const updatedCertificate = {
+    title: document.getElementById("certificateTitle").value,
+    acqDate: document.getElementById("acquireDate").value,
+  };
+
+  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedCertificate),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("네트워크가 상태가 좋지 않습니다.");
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("자격증 정보가 성공적으로 수정되었습니다.");
+      document.getElementById("certificateModal").style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("자격증 정보 업데이트에 실패했습니다.");
+    });
+}
+
+// 모달 닫기 함수
+function closeCertificateModal() {
+  document.getElementById("certificateModal").style.display = "none";
+}
+
+function deleteCertificate(button, certificateId) {
+  const plusButton = document.getElementById("certificate-plus-button");
+  console.log(certificateId);
+  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      // 상태 코드 확인
+      if (!response.ok) {
+        throw new Error(`에러!! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("자격증 정보가 삭제되었습니다.");
+      const certificateEntry = button.closest(".certificate-entry");
+      certificateEntry.remove();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(`자격증 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
+    });
+
+  plusButton.style.display = "block";
+}
+
+//---------------------------------------------------------------------------------
+//스킬 추가 기능
+function addSkill() {
+  const modal = document.getElementById("skillModal"); //폼 데이터를 가져와서 띄운다
+  const deleteButton = document.getElementById("close-skill-button");
+  const confirmButton = document.getElementById("skill-confirm-button");
+
+  // 폼 초기화
+  document.getElementById("skillForm").reset();
+
+  //추가 버튼 보이기
+  confirmButton.style.display = "block";
+  deleteButton.style.display = "block";
+
+  modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
+//저장 버튼 클릭 시 post 요청
+function confirmSkill(event) {
+  const form = document.getElementById("skillModal");
+
+  event.preventDefault();
+
+  const stack = document.getElementById("skillTitle").value; // 자격증 이름
+
+  console.log(typeof stack);
+
+  // 가져온 데이터를 객체로 구성합니다.
+  const postData = {
+    stack: stack,
+  };
+
+  console.log(postData);
+
+  fetch(`http://localhost:8080/mypage/skill`, {
+    method: "POST", // HTTP 메서드
+    headers: {
+      "Content-Type": "application/json", // 컨텐트 타입 설정
+      Accept: "application/json", // 서버로부터 JSON 응답을 기대함을 명시
+    },
+    body: JSON.stringify(postData), // JSON 문자열로 변환하여 데이터 전송
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("네트워크 오류입니다.");
+      }
+      return res.json(); // 응답을 JSON 형태로 파싱
+    })
+    .then((data) => {
+      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      alert("자격증 정보가 성공적으로 등록되었습니다.");
+      document.getElementById("skillTitle").value = "";
+      form.style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error("Error:", error); // 에러 처리
+      alert("자격증 정보 등록에 실패하였습니다.");
+    });
+}
+
+//확정된 정보를 div로 추가하기
+function updateSkillList(skillArray) {
+  const skillList = document.getElementById("skillList");
+  skillList.innerHTML = ""; // 기존 목록을 초기화
+
+  skillArray.forEach((skillItem) => {
+    const skillDiv = document.createElement("div");
+    skillDiv.classList.add("skill-entry");
+    skillDiv.setAttribute("data-skill-id", skillItem.skillId);
+    skillDiv.innerHTML = `
+          <p>스킬: <p1>${skillItem.stack}</p1></p>
+          <button onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
+          <button onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
+      `;
+    skillList.appendChild(skillDiv);
+  });
+}
+
+// 모달을 열고 폼에 데이터를 채우는 함수
+function openEditSkillModal(skillId) {
+  const modal = document.getElementById("skillModal");
+  const editButton = document.getElementById("skill-edit-button");
+  const cancelButton = document.getElementById("close-skill-button");
+
+  console.log(document.getElementById("skill-edit-button"));
+
+  const skillEntry = document.querySelector(`[data-skill-id="${skillId}"]`);
+  const stack = skillEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
+
+  // 모달 폼에 데이터 채우기
+
+  document.getElementById("skillTitle").value = stack;
+
+  // 모달 표시
+  document.getElementById("skillModal").setAttribute("data-skill-id", skillId);
+
+  editButton.style.display = "block"; // '수정' 버튼 보이기
+  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+
+  // 모달 표시
+  modal.style.display = "block";
+}
+
+// 수정된 폼 데이터를 서버에 전송하는 함수
+function submitSkillUpdate() {
+  const skillId = document
+    .getElementById("skillModal")
+    .getAttribute("data-skill-id");
+  const updatedSkill = {
+    stack: document.getElementById("skillTitle").value,
+  };
+
+  fetch(`http://localhost:8080/mypage/skill/${skillId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedSkill),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("네트워크가 상태가 좋지 않습니다.");
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("스킬 정보가 성공적으로 수정되었습니다.");
+      document.getElementById("skillModal").style.display = "none";
+      getUserData();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("스킬 정보 업데이트에 실패했습니다.");
+    });
+}
+
+// 모달 닫기 함수
+function closeSkillModal() {
+  document.getElementById("skillModal").style.display = "none";
+}
+
+function deleteSkill(button, skillId) {
+  const plusButton = document.getElementById("skill-plus-button");
+  console.log(skillId);
+  fetch(`http://localhost:8080/mypage/skill/${skillId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      // 상태 코드 확인
+      if (!response.ok) {
+        throw new Error(`에러!! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      alert("스킬 정보가 삭제되었습니다.");
+      const skillEntry = button.closest(".skill-entry");
+      skillEntry.remove();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(`스킬 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
 
   plusButton.style.display = "block";

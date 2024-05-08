@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User, Education, Project, Certificate, Award } = require("../models");
+const { User, Education, Project, Certificate, Award, Skill } = require("../models");
 const {
   BadRequest,
   Unauthorized,
@@ -77,6 +77,7 @@ router.get("/:userId", async (req, res, next) => {
     const project = await Project.find({ userId }).lean();
     const certificate = await Certificate.find({ userId }).lean();
     const award = await Award.find({ userId }).lean();
+    const skill = await Skill.find({ userId }).lean();
 
     // id 확인(404 error)
     if (!user) {
@@ -106,6 +107,7 @@ router.get("/:userId", async (req, res, next) => {
       certificates: certificate,
       projects: project,
       awards: award,
+      skills: skill,
     });
   } catch (e) {
     next(e);

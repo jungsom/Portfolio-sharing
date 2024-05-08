@@ -34,9 +34,10 @@ body {
 
 .profile,
 .education,
-.awards,
+.award,
 .project,
-.certificate {
+.certificate,
+.skill {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -51,9 +52,10 @@ body {
   padding: 0;
 }
 
-.awards-list,
+.award-list,
 .project-list,
-.certificate-list {
+.certificate-list,
+.skill-list {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
@@ -68,7 +70,7 @@ body {
   margin-bottom: 10px; /*하단 여백 */
 }
 
-.awards-list > div {
+.award-list > div {
   display: flex;
   margin-bottom: 10px; /* 하단 여백 */
 }
@@ -83,6 +85,10 @@ body {
   margin-bottom: 10px; /* 하단 여백 */
 }
 
+.skill-list > div {
+  display: flex;
+  margin-bottom: 10px; /* 하단 여백 */
+}
 /* select 박스와 input 필드의 스타일 */
 .education-list select,
 .education-list input {
@@ -96,8 +102,8 @@ body {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
-.awards-list input:last-child,
-.awards-list select:last-child {
+.award-list input:last-child,
+.award-list select:last-child {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
@@ -108,6 +114,11 @@ body {
 
 .certificate-list input:last-child,
 .certificate-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
+.skill-list input:last-child,
+.skill-list select:last-child {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
@@ -126,10 +137,11 @@ button {
   margin-right: 10px;
 }
 
-#education_delete_button,
-#awards_delete_button,
-#project_delete_button,
-#certificate_delete_button {
+#education-delete-button,
+#award-delete-button,
+#project-delete-button,
+#certificate-delete-button,
+#skill-delete-button {
   margin-right: 10px;
   background-color: #d67d86;
   color: white;
@@ -138,10 +150,11 @@ button {
   cursor: pointer;
 }
 
-#education_confirm_button,
-#awards_confirm_button,
-#project_confirm_button,
-#certificate_confirm_button {
+#education-confirm-button,
+#award-confirm-button,
+#project-confirm-button,
+#certificate-confirm-button,
+#skill-confirm-button {
   margin-right: 10px;
   background-color: #6d78d4;
   color: white;
@@ -160,14 +173,22 @@ button {
   margin-bottom: 10px; /* 오른쪽 여백 추가 */
 }
 
-.education-title h2 {
+.education-title h2,
+.award-title h2,
+.project-title h2,
+.certificate-title h2,
+.skill-title h2 {
   display: flex;
   justify-content: space-between; /*내용을 양쪽 끝으로 밀어냄 */
   align-items: center;
   width: 100%;
 }
 
-.education_plus_button {
+.education-plus-button,
+.award-plus-button,
+.project-plus-button,
+.certificate-plus-button,
+.skill-plus-button {
   margin-left: auto;
 }
 

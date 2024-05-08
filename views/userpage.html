@@ -32,133 +32,73 @@
           Edit
         </button>
       </div>
-      <div class="education">
-        <!-- 학력 정보 -->
-        <div class="education-title">
-          <h2>
-            학력
-            <button id="education_plus_button" onclick="addEducation()">
+    </div>
+    <!-- 학력 정보 -->
+    <div class="education">
+      <div class="education-title">
+        <h2>
+          학력
+          <div class="editBtns">
+            <button id="education-plus-button" onclick="addEducation()">
               + 추가
             </button>
-          </h2>
-        </div>
-        <div class="education-list" id="educationList"></div>
-        <div class="editBtns">
-          <button
-            id="education_edit_button"
-            onclick="editEducation()"
-            style="display: none"
-          >
-            edit
-          </button>
-          <button
-            id="education_display_button"
-            onclick="changeEducationDisplay()"
-            style="display: none"
-          >
-            수정 하기
-          </button>
-        </div>
+          </div>
+        </h2>
       </div>
-      <div class="awards">
-        <!-- 학력 정보 -->
-        <h2>수상 내역</h2>
-        <div class="awards-list" id="awardsList" style="display: none">
-          <div></div>
-        </div>
-        <div class="editBtns">
-          <button
-            id="awards_confirm_button"
-            onclick="confirmAwards()"
-            style="display: none"
-          >
-            확인
-          </button>
-          <button
-            id="awards_edit_button"
-            onclick="editAwards()"
-            style="display: none"
-          >
-            edit
-          </button>
-          <button
-            id="awards_delete_button"
-            onclick="deleteAwards()"
-            style="display: none"
-          >
-            삭제
-          </button>
-          <button id="awards_plus_button" onclick="addAwards()">+</button>
-        </div>
-      </div>
-      <div class="project">
-        <!-- 학력 정보 -->
-        <h2>프로젝트 내역</h2>
-        <div class="project-list" id="projectList" style="display: none">
-          <div></div>
-        </div>
-        <div class="editBtns">
-          <button
-            id="project_confirm_button"
-            onclick="confirmProject()"
-            style="display: none"
-          >
-            확인
-          </button>
-          <button
-            id="project_edit_button"
-            onclick="editProject()"
-            style="display: none"
-          >
-            edit
-          </button>
-          <button
-            id="project_delete_button"
-            onclick="deleteProject()"
-            style="display: none"
-          >
-            삭제
-          </button>
-          <button id="project_plus_button" onclick="addProject()">+</button>
-        </div>
-      </div>
-      <div class="certificate">
-        <!-- 학력 정보 -->
-        <h2>자격증 내역</h2>
-        <div
-          class="certificate-list"
-          id="certificateList"
-          style="display: none"
-        ></div>
-        <div class="editBtns">
-          <button
-            id="certificate_confirm_button"
-            onclick="confirmCertificate()"
-            style="display: none"
-          >
-            확인
-          </button>
-          <button
-            id="certificate_edit_button"
-            onclick="editCertificate()"
-            style="display: none"
-          >
-            edit
-          </button>
-          <button
-            id="certificate_delete_button"
-            onclick="deleteCertificate()"
-            style="display: none"
-          >
-            삭제
-          </button>
-          <button id="certificate_plus_button" onclick="addCertificate()">
-            +
-          </button>
-        </div>
-      </div>
+      <div class="education-list" id="educationList"></div>
     </div>
-    <script src="./userpage.js"></script>
+    <!-- 수상 정보 -->
+    <div class="award">
+      <div class="award-title">
+        <h2>
+          수상
+          <div class="editBtns">
+            <button id="award-plus-button" onclick="addAward()">+ 추가</button>
+          </div>
+        </h2>
+      </div>
+      <div class="award-list" id="awardList"></div>
+    </div>
+    <!-- 프로젝트 정보 -->
+    <div class="project">
+      <div class="project-title">
+        <h2>
+          프로젝트
+          <div class="editBtns">
+            <button id="project-plus-button" onclick="addProject()">
+              + 추가
+            </button>
+          </div>
+        </h2>
+      </div>
+      <div class="project-list" id="projectList"></div>
+    </div>
+    <!-- 자격증 정보 -->
+    <div class="certificate">
+      <div class="certificate-title">
+        <h2>
+          자격증
+          <div class="editBtns">
+            <button id="certificate-plus-button" onclick="addCertificate()">
+              + 추가
+            </button>
+          </div>
+        </h2>
+      </div>
+      <div class="certificate-list" id="certificateList"></div>
+    </div>
+    <!-- 스킬 정보 -->
+    <div class="skill">
+      <div class="skill-title">
+        <h2>
+          스킬
+          <div class="editBtns">
+            <button id="skill-plus-button" onclick="addSkill()">+ 추가</button>
+          </div>
+        </h2>
+      </div>
+      <div class="skill-list" id="skillList"></div>
+    </div>
     <!-- 모달 창 -->
     <div id="educationModal" class="modal">
       <div class="modal-content">
@@ -192,25 +132,162 @@
           </select>
           <input type="date" placeholder="입학 년월" />
           <input type="date" placeholder="졸업 년월" />
-          <button id="education_delete_button" onclick="deleteEducation(this)">
+          <button
+            id="close-modal-button"
+            onclick="closeModal()"
+            style="display: none"
+          >
             취소
           </button>
           <button
             type="button"
-            id="education_confirm_button"
+            id="education-confirm-button"
             onclick="confirmEducation(event)"
+            style="display: none"
           >
-            확인
+            저장
           </button>
           <button
             type="button"
-            class="education-edit-button"
+            id="education-edit-button"
             onclick="submitEducationUpdate()"
+            style="display: none"
           >
             수정
           </button>
         </form>
       </div>
     </div>
+    <div id="awardModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="awardForm">
+          <input type="text" id="title" placeholder="수상 이름" />
+          <input type="date" id="acqDate" placeholder="입상 날짜" />
+          <input type="text" id="details" placeholder="상세 설명" />
+          <button
+            id="close-award-button"
+            onclick="closeAwardModal()"
+            style="display: none"
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            id="award-confirm-button"
+            onclick="confirmAward(event)"
+            style="display: none"
+          >
+            저장
+          </button>
+          <button
+            type="button"
+            id="award-edit-button"
+            onclick="submitAwardUpdate()"
+            style="display: none"
+          >
+            수정
+          </button>
+        </form>
+      </div>
+    </div>
+    <div id="projectModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="projectForm">
+          <input type="text" id="projectTitle" placeholder="프로젝트 이름" />
+          <input type="date" id="startDate" placeholder="시작 날짜" />
+          <input type="date" id="endDate" placeholder="종료 날짜" />
+          <input type="text" id="projectDetails" placeholder="상세 설명" />
+          <button
+            id="close-project-button"
+            onclick="closeProjectModal()"
+            style="display: none"
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            id="project-confirm-button"
+            onclick="confirmProject(event)"
+            style="display: none"
+          >
+            저장
+          </button>
+          <button
+            type="button"
+            id="project-edit-button"
+            onclick="submitProjectUpdate()"
+            style="display: none"
+          >
+            수정
+          </button>
+        </form>
+      </div>
+    </div>
+    <div id="certificateModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="certificateForm">
+          <input type="text" id="certificateTitle" placeholder="자격증 이름" />
+          <input type="date" id="acquireDate" placeholder="취득 날짜" />
+          <button
+            id="close-certificate-button"
+            onclick="closeCertificateModal()"
+            style="display: none"
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            id="certificate-confirm-button"
+            onclick="confirmCertificate(event)"
+            style="display: none"
+          >
+            저장
+          </button>
+          <button
+            type="button"
+            id="certificate-edit-button"
+            onclick="submitCertificateUpdate()"
+            style="display: none"
+          >
+            수정
+          </button>
+        </form>
+      </div>
+    </div>
+    <div id="skillModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="skillForm">
+          <input type="text" id="skillTitle" placeholder="스킬" />
+          <button
+            id="close-skill-button"
+            onclick="closeSkillModal()"
+            style="display: none"
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            id="skill-confirm-button"
+            onclick="confirmSkill(event)"
+            style="display: none"
+          >
+            저장
+          </button>
+          <button
+            type="button"
+            id="skill-edit-button"
+            onclick="submitSkillUpdate()"
+            style="display: none"
+          >
+            수정
+          </button>
+        </form>
+      </div>
+    </div>
+    <script src="./userpage.js"></script>
   </body>
 </html>
