@@ -1,23 +1,6 @@
+import { importTest } from "./login.js";
+
 let currentPage = 1;
-const modal = document.querySelector(".modal");
-const modalOpenbtn = document.querySelector(".modal_btn");
-const modalClosebtn = document.querySelector(".close_btn");
-
-function modalOpen(txtNum) {
-  changeModalText(txtNum);
-  document.getElementById("modal").style.display = "block";
-}
-
-function modalClose() {
-  document.getElementById("modal").style.display = "none";
-  const goTo = localStorage.getItem("goTo");
-  if (goTo == "network") {
-    window.location.href = "/Network";
-  } else if (goTo == "login") {
-    window.location.href = "/login";
-  }
-  localStorage.removeItem("goTo");
-}
 
 /** 유저 정보 api 요청 */
 async function getUsers(page) {
@@ -146,7 +129,7 @@ async function prevPage() {
 /** 다음 페이지로 이동하는 함수 */
 async function nextPage() {
   const data = await getUsers(currentPage);
-  totalPages = data.totalPage;
+  const totalPages = data.totalPage;
   if (currentPage < totalPages) {
     currentPage++;
     renderPage(currentPage);
@@ -190,9 +173,9 @@ async function renderPage(page) {
       cardfront.appendChild(title);
       cardinner.appendChild(cardfront);
 
-      content.innerHTML = `안녕하세요! <br>
-                    이름: ${user.name} <br>
-                    자기소개: ${user.description}`;
+      content.innerHTML = `안녕하세요! <br> <br>
+                    제 이름은 ${user.name} 입니다.<br>
+                     ${user.description}`;
 
       cardback.appendChild(content);
       cardinner.appendChild(cardback);
@@ -226,19 +209,21 @@ async function renderPage(page) {
 async function updateButton() {
   let data = await getUsers(currentPage);
   let totalPages = data.totalPage;
-  const prevButton = document.getElementById("prevButton");
-  const nextButton = document.getElementById("nextButton");
+  const prevButton = document.querySelector(".btn-left");
+  const nextButton = document.querySelector(".btn-right");
 
   if (currentPage === 1) {
     prevButton.disabled = true;
     nextButton.disabled = false;
-    prevButton.style.backgroundColor = "#eeeae0";
+    prevButton.style.backgroundColor = "#fff3d5";
     nextButton.style.backgroundColor = "rgb(255, 255, 255)";
+    prevButton.style.color = "black";
   } else if (currentPage === totalPages) {
     prevButton.disabled = false;
     nextButton.disabled = true;
     prevButton.style.backgroundColor = "rgb(255, 255, 255)";
-    nextButton.style.backgroundColor = "#eeeae0";
+    nextButton.style.backgroundColor = "#fff3d5";
+    nextButton.style.color = "black";
   } else {
     prevButton.disabled = false;
     nextButton.disabled = false;
@@ -283,6 +268,8 @@ function getLogOut() {
 }
 
 async function init() {
+  getAllUserData();
+  importTest();
   updateMenu();
   renderPage(currentPage);
 
@@ -303,8 +290,8 @@ async function init() {
   });
 
   //페이지네이션 관련 이벤트리스너 추가
-  document.getElementById("prevButton").addEventListener("click", prevPage);
-  document.getElementById("nextButton").addEventListener("click", nextPage);
+  document.querySelector(".btn-left").addEventListener("click", prevPage);
+  document.querySelector(".btn-right").addEventListener("click", nextPage);
 }
 
 init();
