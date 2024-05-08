@@ -8,6 +8,8 @@ const {
   Counter,
   Board,
   Like,
+  Skill,
+  Comment,
 } = require("../models");
 const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
@@ -197,6 +199,7 @@ router.delete("/", async (req, res, next) => {
     const deleteProject = await Project.deleteMany({ userId }).lean();
     const deleteCertificate = await Certificate.deleteMany({ userId }).lean();
     const deleteAward = await Award.deleteMany({ userId }).lean();
+    const deleteSkill = await Skill.deleteMany({ userId }).lean();
     const deleteCounter = await Counter.deleteMany({
       "reference_value.userId": userId,
     }).lean();
@@ -209,6 +212,9 @@ router.delete("/", async (req, res, next) => {
     }
     // 작성한 게시글 삭제
     const deleteBoard = await Board.deleteMany({ nickname });
+
+    // 작성한 댓글 삭제
+    const deleteComment = await Comment.deleteMany({ nickname });
 
     // 누른 좋아요 삭제
     const existLike = await Like.find({ fromUser: nickname }).lean();
@@ -230,7 +236,7 @@ router.delete("/", async (req, res, next) => {
       }
       res.status(200).json({
         error: null,
-        message: `회원 탈퇴 성공. 총 ${deleteUser.deletedCount}개의 user, ${deleteEducation.deletedCount}개의 학력, ${deleteAward.deletedCount}개의 수상 이력, ${deleteProject.deletedCount}개의 프로젝트, ${deleteCertificate.deletedCount}개의 자격증, ${deleteBoard.deletedCount}개의 게시글, ${deleteCounter.deletedCount}개의 카운터 데이터가 삭제되었습니다.`,
+        message: `회원 탈퇴 성공. 총 ${deleteUser.deletedCount}개의 user, ${deleteEducation.deletedCount}개의 학력, ${deleteAward.deletedCount}개의 수상 이력, ${deleteProject.deletedCount}개의 프로젝트, ${deleteCertificate.deletedCount}개의 자격증, ${deleteSkill.deletedCount}개의 스킬, ${deleteBoard.deletedCount}개의 게시글, ${deleteComment.deletedCount}개의 댓글, ${deleteCounter.deletedCount}개의 카운터 데이터가 삭제되었습니다.`,
       });
     });
   } catch (err) {

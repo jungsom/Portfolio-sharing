@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { Board, User, Like } = require("../models");
+const { Board, User, Like, Comment } = require("../models");
 const {
   BadRequest,
   Unauthorized,
@@ -28,11 +28,14 @@ router.get("/", async (req, res, next) => {
     let boardData = [];
     for (const data of board) {
       let likes = await Like.find({ boardId: data.boardId }).lean();
+      let comments = await Comment.find({ boardId: data.boardId }).lean();
       // 좋아요수
       const likesCount = likes.reduce(
         (total, like) => total + like.fromUser.length,
         0
       );
+      // 댓글 수
+      const commentsCount = comments.length;
 
       boardData.push({
         nickname: data.nickname,
@@ -40,6 +43,7 @@ router.get("/", async (req, res, next) => {
         contents: data.contents,
         createAt: data.createAt,
         boardId: data.boardId,
+        comments: commentsCount,
         likes: likesCount,
         isLikes:
           likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 눌렀는지
@@ -101,12 +105,16 @@ router.get("/:boardId", async (req, res, next) => {
       0
     );
 
+    // 댓글 목록
+    const comments = await Comment.find({ boardId }).lean();
+
     boardData.push({
       nickname: board.nickname,
       title: board.title,
       contents: board.contents,
       createAt: board.createAt,
       boardId: board.boardId,
+      comments,
       likes: likesCount,
       isLikes:
         likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 누른 게시글인지 true, false
