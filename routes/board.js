@@ -14,6 +14,10 @@ router.get("/", async (req, res, next) => {
   try {
     const board = await Board.find({}).lean();
 
+    if (board.length === 0) {
+      throw new NotFound("등록된 게시글을 찾을 수 없습니다."); // 404 에러
+    }
+
     res.status(200).json({
       error: null,
       data: board,
