@@ -39,6 +39,7 @@ app.set("views", __dirname + "/views");
 
 //static 파일 경로 설정 (추가)
 app.use(express.static(path.join(__dirname, "views")));
+app.use(express.static(path.join(__dirname, "profileImg")));
 
 // 화면 engine을 ejs로 설정
 app.set("view engine", "ejs");
@@ -59,6 +60,10 @@ app.get("/userpage", (req, res) => {
 app.get("/network", (req, res) => {
   res.render("network.html");
 });
+
+app.get("/404", (req, res) => {
+  res.render("404.html");
+})
 
 // 서버 설정
 app.use(express.json());
