@@ -52,6 +52,7 @@
             <div class="post-head">
               <div class="post-head-title"><span>제목</span></div>
               <div class="post-head-nickname"><span>작성자</span></div>
+              <div class="post-head-nickname"><span>작성일자</span></div>
             </div>
             <div class="post-list"></div>
             <div class="board-post-btn visible-btns">
@@ -84,18 +85,24 @@
             <button onclick="registPost()">글 쓰기</button>
           </div>
 
-          <!-- 게시판 내용 (1개보여줌) -->
+          <!-- 게시글 내용 (1개보여줌) -->
           <div class="post-container" id="post-container" style="display: none">
             <div class="post-topwrap">
-              <span id="post-contents">내용</span>
-              <span id="post-writer-nickname">작성자 닉넹ㅁ</span>
-              <span id="post-written-time">작성된 시간</span>
+              <div class="post-title" id="post-title"></div>
+              <div class="post-writtentime" id="post-writtentime"></div>
+              <div class="post-nickname" id="post-nickname"></div>
             </div>
             <div class="post-contents-warp">
-              <span id="post-contents"></span>
+              <div class="post-contents" id="post-contents">왜안뜨니너넨</div>
+            </div>
+            <div class="post-bottomwrap">
+              <div class="post-islike">ㅇㅇㅇㅇㅇㅇㅇ</div>
+              <div class="post-likes">ㅇㅇㅇ</div>
+              <div class="post-like-list">ㅇㅇㅇㅇ</div>
             </div>
             <div class="post-comment-container">
-              <div class="post-comment"></div>
+              <div class="post-comment" id="post-comment"></div>
+              <!-- <div class="comment-write" id="comment-write">작성</div> -->
               <!-- <div id="post-comments">댓글 목록</div> -->
               <!-- 이런 형태로 리스트 쭉 div 로 계속 추가(js에서) -->
             </div>

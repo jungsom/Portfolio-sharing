@@ -27,6 +27,7 @@ function logout() {
   }
 }
 
+//날짜 표시방식 변경 필요
 //게시물 목록 페이지별 조회 및 리스트업
 async function getPostList(page) {
   try {
@@ -34,18 +35,22 @@ async function getPostList(page) {
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
-    for (let i = 0; i < listcount - 1; i++) {
+    console.log(data);
+    for (let i = 0; i < listcount; i++) {
       const postlists = document.querySelector(".post-list");
       // const postlists = document.createElement("div");
       let postTitle = data.data[i].title;
       let postWriter = data.data[i].nickname;
+      let boardId = data.data[i].boardId;
+      let createdAt = data.data[i].createdAt.substr(0, 10);
       postlists.innerHTML += `
       <div class="post-title-list">
-        <li class="title-list"><span class="post-title" id="post-index${i}"><a>${postTitle}</a></span></li>
+        <li class="title-list"><span class="post-title" id="${boardId}"><a onclick="getPostContents(${boardId})">${postTitle}</a></span><span>${createdAt}</span></li>
         <span>${postWriter}</span>
       </div>
       `;
     }
+    //페이지네이션 다음/이전 버튼 활성/비활성화
     if (page == 1) {
       isvisibleNextPrevBtn(1);
     } else if (page == totalPage) {
@@ -58,15 +63,15 @@ async function getPostList(page) {
   }
 }
 
+//페이지네이션 버튼 활성/비활성화 구분
 function isvisibleNextPrevBtn(num) {
   if (num == 1) {
-    console.log("버튼없애기");
     document.getElementById("prev-btn").style.display = "none";
     document.getElementById("next-btn").style.display = "block";
   } else if (num == 2) {
     document.getElementById("prev-btn").style.display = "block";
     document.getElementById("next-btn").style.display = "none";
-  } else {
+  } else if (num == 0) {
     document.getElementById("prev-btn").style.display = "block";
     document.getElementById("next-btn").style.display = "block";
   }
@@ -85,7 +90,6 @@ function getNextPostList() {
   let currentPage = parseInt(params.get("page"));
   currentPage++;
   window.location.href = `/board/?page=${currentPage}`;
-  console.log(currentPage);
   getPostList(currentPage);
 }
 
@@ -94,7 +98,6 @@ function getPrevPostList() {
   let currentPage = parseInt(params.get("page"));
   currentPage--;
   window.location.href = `/board/?page=${currentPage}`;
-  console.log(currentPage);
   getPostList(currentPage);
 }
 
@@ -123,7 +126,6 @@ function clear() {
   });
 }
 
-//display 속성 제대로 안되고 있어서 수정필요함
 //리스트에서 작성창으로
 function goWritePost() {
   document.getElementById("write-post-container").style.display = "block";
@@ -180,6 +182,49 @@ function registPost() {
       }
     });
   }
+}
+
+//게시글 조회 (서버 boardId 기준)
+async function getPostContents(id) {
+  document.getElementById("post-list-container").style.display = "none";
+  document.getElementById("post-container").style.display = "block";
+  try {
+    const res = await fetch(`http://localhost:8080/boards/${id}`);
+    const data = await res.json();
+    console.log(data.data[0].title);
+    console.log(data.data[0].contents);
+    console.log(data.data[0].createdAt.substr(0, 10));
+    console.log(data.data[0].comments);
+    console.log(data.data[0].nickname);
+    console.log(data.data[0].isLikes);
+    console.log(data.data[0].listLikes);
+    console.log(data.data[0].likes);
+
+    const title = data.data[0].title;
+    const contents = data.data[0].contents;
+    const createdAt = data.data[0].createdAt.substr(0, 10); // 앞에거만 잘라써야함
+    const comments = data.data[0].comments; //array
+    const nickname = data.data[0].nickname;
+    const islikes = data.data[0].isLikes; // boolean
+    const listlikes = data.data[0].listLikes; //array
+    const likes = data.data[0].likes;
+
+    document.getElementById("post-title").innerText = title;
+    document.getElementById("post-writtentime").innerText = createdAt;
+    document.getElementById("post-contents").innerText = contents;
+    document.getElementById("post-islikes").innerText = islikes;
+    document.getElementById("post-comments").innerText = comments;
+    document.getElementById("post-listlikes").innerText = listlikes;
+    document.getElementById("post-nickname").innerText = nickname;
+    document.getElementById("post-likes").innerText = likes;
+  } catch (error) {
+    // alert("알수없는 오류로 정보를 불러오는데 실패했습니다.");
+    // window.location.href = "/board/?page=1";
+  }
+}
+
+function gotoPostlist() {
+  window.location.href = "/board/?page=1";
 }
 
 function init() {
