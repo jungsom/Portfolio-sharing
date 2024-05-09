@@ -67,7 +67,7 @@ app.get("/board", (req, res) => {
 });
 
 app.get("/404", (req, res) => {
-  res.render("404.html");
+  res.render("404/404.html");
 });
 
 // 서버 설정
