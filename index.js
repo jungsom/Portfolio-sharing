@@ -93,8 +93,8 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/mypage", mypageRouter);
-app.use("/board", boardRouter);
-app.use("/board/:boardId/comment", commentRouter);
+app.use("/boards", boardRouter);
+app.use("/boards/:boardId/comment", commentRouter);
 
 app.use((req, res, next) => {
   res.redirect("/404");
