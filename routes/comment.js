@@ -1,11 +1,6 @@
 const { Router } = require("express");
 const { Board, Comment } = require("../models");
-const {
-  BadRequest,
-  Unauthorized,
-  Forbidden,
-  NotFound,
-} = require("../middlewares");
+const { BadRequest, Unauthorized, Forbidden, NotFound } = require("../errors");
 
 const router = Router({ mergeParams: true });
 
