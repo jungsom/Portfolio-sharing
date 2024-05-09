@@ -52,12 +52,15 @@ function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
+  if (!nameContainer.childNodes[4].value)
+    nameContainer.childNodes[4].value = "없음";
   nameValue.innerText = nameContainer.childNodes[4].value;
-  if (!nameValue.innerText) nameValue.innerText = "없음";
+  if (!nicknameContainer.childNodes[4].value)
+    nicknameContainer.childNodes[4].value = "없음";
   nicknameValue.innerText = nicknameContainer.childNodes[4].value;
-  if (!nicknameValue.innerText) nicknameValue.innerText = "없음";
+  if (!descriptionContainer.childNodes[4].value)
+    descriptionContainer.childNodes[4].value = "없음";
   descriptionValue.innerText = descriptionContainer.childNodes[4].value;
-  if (!descriptionValue.innerText) descriptionValue.innerText = "없음";
 
   //서버로 name, nickname, description 정보 업데이트하기
   fetch("http://localhost:8080/users/mypage", {
@@ -95,10 +98,9 @@ function submitEditProfile() {
 
   //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
-  const profile = document.querySelector(".profile");
   profileEditButton.style.display = "block";
-  profile.childNodes[10].remove();
-  profile.childNodes[9].remove();
+  document.getElementById("submit_edit_button").remove();
+  document.getElementById("cancel_edit_button").remove();
 }
 
 //cancel 클릭 시 함수
@@ -111,12 +113,9 @@ function cancelEditProfile() {
 
   //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
-  const profile = document.querySelector(".profile");
   profileEditButton.style.display = "block";
-  // console.log(profile.childNodes[9]) = submitEditButton;
-  // console.log(profile.childNodes[10]) = cancelEditButton;
-  profile.childNodes[10].remove();
-  profile.childNodes[9].remove();
+  document.getElementById("submit_edit_button").remove();
+  document.getElementById("cancel_edit_button").remove();
 }
 
 // mypage/project get 테스트
@@ -158,7 +157,9 @@ function getUserData() {
       document.querySelector(".Nickname").innerText = data.user.nickname;
       document.querySelector(".Email").innerText = data.user.email;
       document.querySelector(".Description").innerText = data.user.description;
-      document.querySelector(".profile-image").src = data.user.profileImg;
+      document.querySelector(
+        ".profile-image"
+      ).src = `http://localhost:8080/${data.user.profileImg}`;
 
       // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
@@ -177,8 +178,8 @@ function getUserData() {
 function editProfile() {
   // console.log(nameContainer.childNodes[3]) = Name;
   // console.log(nameContainer.childNodes[4]) = nameEdit;
-  //console.log(profile.childNodes[9]) = submitEditButon;
-  //console.log(profile.childNodes[10]) = cancelEditButon;
+  //console.log(profile.childeNodes[5]) = submitEditButon;
+  //console.log(profile.childeNodes[6]) = cancelEditButon;
 
   // 프로필 편집 로직
   //입력창 및 타이틀 생성 함수로부터 변수 반환
@@ -218,9 +219,9 @@ function editProfile() {
     cancelEditButton.innerText = "Cancel";
     cancelEditButton.id = "cancel_edit_button";
 
-    const profile = document.querySelector(".profile");
-    profile.append(submitEditButton);
-    profile.append(cancelEditButton);
+    const imageprofile = document.querySelector(".imageprofile-container");
+    imageprofile.append(submitEditButton);
+    imageprofile.append(cancelEditButton);
 
     //submit버튼 클릭시 프로필 편집 정보 저장, 서버로 변경점 업데이트
     submitEditButton.addEventListener("click", (e) => submitEditProfile());
@@ -249,10 +250,10 @@ function editProfile() {
     nickname.style.display = "";
     description.style.display = "";
 
-    const profile = document.querySelector(".profile");
+    const imageprofile = document.querySelector(".imageprofile-container");
     const profileEditButton = document.querySelector(".profile-edit-button");
-    const cancelEditButton = profile.lastChild;
-    const submitEditButton = cancelEditButton.previousSibling;
+    const cancelEditButton = document.getElementById("cancel_edit_button");
+    const submitEditButton = document.getElementById("submit_edit_button");
     submitEditButton.style.display = "";
     cancelEditButton.style.display = "";
 
@@ -1248,32 +1249,17 @@ function deleteSkill(button, skillId) {
 getUserData();
 isVisibleBtns();
 
-//회원탈퇴
-function accountDelete() {
-  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
-    const pw = document.getElementById("delete-account-pwchk").value;
-    fetch("http://localhost:8080/auth", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: pw,
-      }),
-    }).then((response) => {
-      if (response.status == 401) {
-        modalOpen(8);
-      } else if (response.status == 200) {
-        localStorage.setItem("goTo", "login");
-        modalOpen(9);
-        clear();
-      }
-    });
-  }
-}
+window.addEventListener("popstate", function (event) {
+  delete massId; // 사용자 id 값 삭제
+  localStorage.removeItem("tempId"); // 로컬 스토리지 삭제
+});
 
 //비밀번호 변경
 function passwordChange() {
+  const modal = document.getElementById("password_change_modal");
+  modal.style.display = "block";
+}
+function passwordChangeConfirm() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
   // console.log(prevPw, pw);
@@ -1289,22 +1275,174 @@ function passwordChange() {
   }).then((response) => {
     // console.log("res : ", response);
     if (response.status == 200) {
-      modalOpen(10);
-      localStorage.setItem("goTo", "login");
-      //변경된 비밀번호로 다시 로그인하게 유도
-      fetch("http://localhost:8080/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      });
+      changepwmodalOpen(10);
+      modalbtnhide();
+      document.getElementById("move_btn1").style.display = "block";
     } else if (response.status == 400) {
-      modalOpen(5);
+      changepwmodalOpen(5);
     } else if (response.status == 401) {
-      modalOpen(11);
+      changepwmodalOpen(11);
     } else if (response.status == 409) {
-      modalOpen(12);
+      changepwmodalOpen(12);
     }
   });
+}
+function gotologin() {
+  modalClose();
+  //변경된 비밀번호로 다시 로그인하게 유도
+  fetch("http://localhost:8080/auth/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+  localStorage.setItem("goTo", "login");
+  window.location.href = "http://localhost:8080";
+}
+
+function passwordCompare() {
+  const pw = document.getElementById("setpw").value;
+  const pwchk = document.getElementById("setpwchk").value;
+  const pwChange = document.getElementById("change-setpw").value;
+  const pwChangechk = document.getElementById("change-setpwchk").value;
+
+  passwordCheck(pwChange, pwChangechk);
+
+  if (pwChange == "") {
+    document.getElementById("alert-text").style.display = "none";
+  } else if (passwordCheck(pwChange, pwChangechk)) {
+    document.getElementById("alert-text").style.display = "none";
+  } else {
+    document.getElementById("alert-text").style.display = "block";
+  }
+}
+
+//회원탈퇴
+function accountDelete() {
+  const modal = document.getElementById("delete_account_modal");
+  modal.style.display = "block";
+}
+
+function accountDeleteConfirm() {
+  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
+    const modalClosebtn = document.querySelector(".modal_btn");
+    modalClosebtn.style.display = "block";
+    const pw = document.getElementById("delete-account-pwchk").value;
+    fetch("http://localhost:8080/auth", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 400) {
+        delaccmodalOpen(5);
+      } else if (response.status == 401) {
+        delaccmodalOpen(8);
+      } else if (response.status == 200) {
+        delaccmodalOpen(9);
+        clear();
+        inputBoxhide();
+        modalbtnhide();
+        document.getElementById("move_btn2").style.display = "block";
+      }
+    });
+  }
+}
+function changepwmodalOpen(txtNum) {
+  changeModalText(txtNum, 1);
+  document.getElementById("password_change_modal").style.display = "block";
+}
+
+function delaccmodalOpen(txtNum) {
+  changeModalText(txtNum, 2);
+  document.getElementById("delete_account_modal").style.display = "block";
+}
+
+function clear() {
+  const target = document.querySelectorAll(".InputBox");
+  target.forEach((target) => {
+    target.value = "";
+  });
+}
+function inputBoxhide() {
+  const target = document.querySelectorAll(".InputBox");
+  target.forEach((target) => {
+    target.style.display = "none";
+  });
+}
+function modalbtnhide() {
+  const target = document.querySelectorAll(".modal_btn");
+  target.forEach((target) => {
+    target.style.display = "none";
+  });
+}
+function movebtnshow() {
+  const target = document.querySelectorAll(".modal_move_btn");
+  target.forEach((target) => {
+    target.style.display = "";
+  });
+}
+function changeModalText(txtNum, n) {
+  if (txtNum == 1) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "등록되어있지 않은 ID 혹은 비밀번호를 입력하였습니다.";
+  } else if (txtNum == 2) {
+    document.getElementById(`modaltext${n}`).innerHTML = "로그인 성공";
+  } else if (txtNum == 3) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "비밀번호를 다시 확인해주세요.";
+  } else if (txtNum == 4) {
+    document.getElementById(`modaltext${n}`).innerHTML = "가입완료!";
+  } else if (txtNum == 5) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "입력되지않은 내용이 있습니다.";
+  } else if (txtNum == 6) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "이미 가입되어있는 ID 입니다.";
+  } else if (txtNum == 7) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "올바른 형태의 email 을 입력해주세요.";
+  } else if (txtNum == 8) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "비밀번호가 일치하지 않습니다.";
+  } else if (txtNum == 9) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "회원탈퇴가 정상적으로 완료되었습니다.";
+  } else if (txtNum == 10) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "비밀번호 변경 성공! 다시 로그인 해주세요.";
+  } else if (txtNum == 11) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "기존 비밀번호가 일치하지 않습니다.";
+  } else if (txtNum == 12) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "변경하려는 비밀번호가 지금 사용하고 있는 비밀번호와 같습니다.";
+  } else if (txtNum == 13) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "이미 사용중인 닉네임 입니다.";
+  }
+}
+function modalClose() {
+  const target = document.querySelectorAll(".modal_btn");
+  target.forEach((target) => {
+    target.style.display = "block";
+  });
+  const movebtn = document.querySelectorAll(".modal_move_btn");
+  movebtn.forEach((target) => {
+    target.style.display = "none";
+  });
+  document.getElementById("delete_account_modal").style.display = "none";
+  document.getElementById("password_change_modal").style.display = "none";
+}
+
+function passwordCheck(pw, pwchk) {
+  if (pw == pwchk) {
+    return true;
+  } else {
+    return false;
+  }
 }

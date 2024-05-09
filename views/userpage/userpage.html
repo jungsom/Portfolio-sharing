@@ -22,31 +22,157 @@
       </nav>
       <div class="container">
         <div class="profile">
-          <!-- 프로필 정보 -->
-          <img
-            class="profile-image"
-            alt="프로필 이미지"
-            style="width: 150px; height: 150px"
-          />
-          <div class="profile-container">
-            <div class="name-container">
-              <h3 class="Name">데브카르트</h3>
+          <div class="imageprofile-container">
+            <!-- 프로필 정보 -->
+            <img
+              src="./studyhard.jpeg"
+              alt="프로필 이미지"
+              style="width: 150px; height: 150px"
+            />
+            <div class="profile-container">
+              <div class="name-container">
+                <h3 class="Name">데브카르트</h3>
+              </div>
+              <div class="nickname-container">
+                <h3 class="Nickname">닉네임</h3>
+              </div>
+              <div class="email-container">
+                <h4 class="Email">Email@email.com</h4>
+              </div>
+              <div class="description-container">
+                <p class="Description">---설명---</p>
+              </div>
             </div>
-            <div class="nickname-container">
-              <h3 class="Nickname">닉네임</h3>
+            <button
+              class="profile-edit-button edit-btns"
+              onclick="editProfile()"
+            >
+              Edit
+            </button>
+          </div>
+          <div class="privacy-modify" id="privacy-modify-container">
+            <button class="change-password-btn" onclick="passwordChange()">
+              비밀번호 변경
+            </button>
+            <div class="modal" id="password_change_modal" display="none">
+              <div class="modal_popup">
+                <p>비밀번호 변경</p>
+                <p id="modaltext1"></p>
+                <span>이전 비밀번호</span>
+                <div class="btnbox">
+                  <input
+                    type="password"
+                    id="existed-pw"
+                    class="InputBox"
+                    placeholder="이전 비밀번호를 입력해주세요"
+                  />
+                </div>
+                <div>
+                  <span>변경 할 비밀번호</span>
+                  <div class="btnbox">
+                    <input
+                      type="password"
+                      id="change-setpw"
+                      class="InputBox"
+                      placeholder="변경하실 비밀번호를 입력해주세요."
+                    />
+                  </div>
+                </div>
+                <div>
+                  <span>비밀번호 재확인</span>
+                  <div class="btnbox">
+                    <input
+                      type="password"
+                      id="change-setpwchk"
+                      class="InputBox"
+                      placeholder="변경하실 비밀번호를 다시 입력해주세요."
+                      onkeyup="passwordCompare()"
+                    />
+                  </div>
+                </div>
+                <!-- <div
+                  class="change-password-container"
+                  style="display: none"
+                ></div> -->
+                <p class="alert-text" id="alert-text">
+                  비밀번호가 일치하지 않습니다.
+                </p>
+                <div style="display: flex; justify-content: center">
+                  <button
+                    type="button"
+                    class="modal_btn"
+                    onclick="passwordChangeConfirm()"
+                  >
+                    확인
+                  </button>
+                  <button
+                    type="button"
+                    class="modal_btn"
+                    onclick="modalClose()"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    type="button"
+                    id="move_btn1"
+                    class="modal_btn"
+                    onclick="gotologin()"
+                  >
+                    이동
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="email-container">
-              <h4 class="Email">Email@email.com</h4>
-            </div>
-            <div class="description-container">
-              <p class="Description">---설명---</p>
+
+            <div class="delete-account">
+              <!-- <p>회원탈퇴를 진행하시려면 현재 비밀번호를 입력해주세요.</p> -->
+              <div id="delete_account_container" class="btnbox">
+                <button class="delete-account-btn" onclick="accountDelete()">
+                  회원 탈퇴
+                </button>
+                <div class="modal" id="delete_account_modal" display="none">
+                  <div class="modal_popup">
+                    <p id="modaltext2">현재 비밀번호를 입력해주세요.</p>
+                    <input
+                      type="password"
+                      id="delete-account-pwchk"
+                      class="InputBox"
+                      placeholder="현재 비밀번호를 입력해주세요."
+                      display="none"
+                    />
+                    <div style="display: flex; justify-content: center">
+                      <button
+                        type="button"
+                        class="modal_btn"
+                        onclick="accountDeleteConfirm()"
+                      >
+                        확인
+                      </button>
+                      <button
+                        type="button"
+                        class="modal_btn"
+                        onclick="modalClose()"
+                      >
+                        닫기
+                      </button>
+                      <button
+                        type="button"
+                        id="move_btn2"
+                        class="modal_btn"
+                        onclick="gotologin()"
+                      >
+                        이동
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <button class="profile-edit-button editBtns" onclick="editProfile()">
             Edit
           </button>
         </div>
-
         <div class="education">
           <!-- 학력 정보 -->
           <div class="education">
