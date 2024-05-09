@@ -159,20 +159,13 @@ async function postSearch() {
   console.log("검색어", search, "검색타입", searchtype);
 
   try {
-    fetch("http://localhost:8080/boards/search/result", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        option: searchtype,
-        keyword: search,
-      }),
-    }).then((response) => {
-      console.log(response);
-      // response.json().then((data) => {
-      //   console.log(data);
-      // });
+    fetch(
+      `http://localhost:8080/boards/search/result?option=${searchtype}&keyword=${search}`,
+      {}
+    ).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+      });
     });
   } catch (error) {}
 }
@@ -283,6 +276,17 @@ async function getPostContents(id) {
 
 function gotoPostlist() {
   window.location.href = "/board/?page=1";
+}
+
+document.querySelector("#userpage").addEventListener("click", gotoUserpage);
+
+function gotoUserpage() {
+  fetch("http://localhost:8080/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      const currentUser = data.data.userId;
+      window.location.href = `/userpage?user=${currentUser}`;
+    });
 }
 
 function init() {
