@@ -1,7 +1,7 @@
 const LocalStrategy = require("passport-local").Strategy;
 const { User } = require("../../models");
 const bcrypt = require("bcrypt");
-const { Unauthorized } = require("../../middlewares");
+const { Unauthorized } = require("../../errors");
 
 const config = {
   usernameField: "email",

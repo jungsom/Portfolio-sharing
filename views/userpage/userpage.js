@@ -1,3 +1,4 @@
+updateMenu();
 //이름, 닉네임, 설명 입력창 및 타이틀 생성
 function createInputElement(str_class) {
   const inputElem = document.createElement("input");
@@ -52,17 +53,8 @@ function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
-  if (!nameContainer.childNodes[4].value)
-    nameContainer.childNodes[4].value = "없음";
-  nameValue.innerText = nameContainer.childNodes[4].value;
-  if (!nicknameContainer.childNodes[4].value)
-    nicknameContainer.childNodes[4].value = "없음";
-  nicknameValue.innerText = nicknameContainer.childNodes[4].value;
-  if (!descriptionContainer.childNodes[4].value)
-    descriptionContainer.childNodes[4].value = "없음";
-  descriptionValue.innerText = descriptionContainer.childNodes[4].value;
 
-  //서버로 name, nickname, description 정보 업데이트하기
+  //서버로 name, nickname, description 정보 업데이트하기, 에러처리
   fetch("http://localhost:8080/users/mypage", {
     method: "PUT", // HTTP 메서드
     headers: {
@@ -75,11 +67,21 @@ function submitEditProfile() {
       description: descriptionContainer.childNodes[4].value,
     }), // JSON 문자열로 변환하여 데이터 전송
   })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("네트워크 오류입니다.");
+    .then((response) => {
+      if (!response.ok) {
+        if (response.status == 400) {
+          throw new Error("입력되지 않은 내용이 있습니다.");
+        } else if (response.status == 401) {
+          throw new Error("로그인 후 이용 가능합니다.");
+        } else if (response.status == 403) {
+          throw new Error("접근할 수 없습니다.");
+        } else if (response.status == 409) {
+          throw new Error("이미 사용중인 닉네임입니다.");
+        } else if (response.status == 500) {
+          throw new Error("서버 내부에서 오류가 발생했습니다.");
+        }
+        return response.json(); // 응답을 JSON 형태로 파싱
       }
-      return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
       console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
@@ -87,7 +89,7 @@ function submitEditProfile() {
     })
     .catch((error) => {
       console.error("Error:", error); // 에러 처리
-      alert("에러가 발생했습니다");
+      alert(error);
     });
 
   //요소 보이기
@@ -143,7 +145,44 @@ function isVisibleBtns() {
       });
     });
 }
+async function updateMenu() {
+  const loginElem = document.querySelector(".user-status-item-left.login");
+  const joinElem = document.querySelector(".user-status-item.join");
 
+  const userpageElem = document.querySelector(
+    ".user-status-item-left.userpage"
+  );
+  const logoutElem = document.querySelector(".user-status-item.logout");
+
+  const logintrue = await getLoginStatus();
+  if (logintrue.status === true) {
+    userpageElem.style.display = "block";
+    logoutElem.style.display = "block";
+    loginElem.style.display = "none";
+    joinElem.style.display = "none";
+  } else {
+    userpageElem.style.display = "none";
+    logoutElem.style.display = "none";
+    loginElem.style.display = "block";
+    joinElem.style.display = "block";
+  }
+
+  userpageElem.childNodes[1].href = `/userpage/?user=${logintrue.data.userId}`;
+  console.log(userpageElem.childNodes[1].href);
+}
+/** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
+async function getLoginStatus() {
+  try {
+    const response = await fetch(`http://localhost:8080/auth/status`);
+    if (!response.ok) {
+      throw new Errow("데이터를 불러오는 중에 문제가 발생했습니다.");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 //userpage 에 표시될 유저 data 받아오기 및 표시
 //본인 userpage 던 타 userpage던 아래 코드로 바로 표시가능(구분방법 massId)
 function getUserData() {
@@ -161,7 +200,6 @@ function getUserData() {
       document.querySelector(
         ".profile-image"
       ).src = `http://localhost:8080/${data.user.profileImg}`;
-
       // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
         console.error("Education data is not available or not an array:", data);
@@ -174,7 +212,24 @@ function getUserData() {
       updateSkillList(data.skills);
     });
 }
-
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        alert("로그아웃 성공");
+        window.location.href = "/network";
+      }
+    });
+  }
+}
 // 프로필 편집 기능
 function editProfile() {
   // console.log(nameContainer.childNodes[3]) = Name;
@@ -218,9 +273,11 @@ function editProfile() {
     cancelEditButton.innerText = "Cancel";
     cancelEditButton.id = "cancel_edit_button";
 
-    const imageprofile = document.querySelector(".imageprofile-container");
-    imageprofile.append(submitEditButton);
-    imageprofile.append(cancelEditButton);
+    const profileBtnContainer = document.querySelector(
+      ".edit-button-container"
+    );
+    profileBtnContainer.append(submitEditButton);
+    profileBtnContainer.append(cancelEditButton);
 
     //submit버튼 클릭시 프로필 편집 정보 저장, 서버로 변경점 업데이트
     submitEditButton.addEventListener("click", (e) => submitEditProfile());
@@ -275,9 +332,14 @@ function addEducation() {
   const modal = document.getElementById("educationModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-modal-button");
   const confirmButton = document.getElementById("education-confirm-button");
+  const editButton = document.getElementById("education-edit-button");
 
   // 폼 초기화
   document.getElementById("educationForm").reset();
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
@@ -397,6 +459,7 @@ function openEditEducationModal(educationId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
@@ -438,7 +501,15 @@ function submitEducationUpdate() {
 
 // 모달 닫기 함수
 function closeModal() {
-  document.getElementById("educationModal").style.display = "none";
+  const modal = document.getElementById("educationModal");
+  modal.style.display = "none";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
 }
 
 function deleteEducation(button, educationId) {
@@ -474,6 +545,7 @@ function addAward() {
   const modal = document.getElementById("awardModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-award-button");
   const confirmButton = document.getElementById("award-confirm-button");
+  const editButton = document.getElementById("award-edit-button");
 
   // 폼 초기화
   document.getElementById("awardForm").reset();
@@ -481,6 +553,10 @@ function addAward() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -592,6 +668,7 @@ function openEditAwardModal(awardId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
@@ -603,7 +680,7 @@ function submitAwardUpdate() {
     .getElementById("awardModal")
     .getAttribute("data-award-id");
   const updatedAward = {
-    title: document.getElementById("projectTitle").value,
+    title: document.getElementById("title").value,
     acqDate: document.getElementById("acqDate").value,
     details: document.getElementById("details").value,
   };
@@ -669,6 +746,7 @@ function addProject() {
   const modal = document.getElementById("projectModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-project-button");
   const confirmButton = document.getElementById("project-confirm-button");
+  const editButton = document.getElementById("project-edit-button");
 
   // 폼 초기화
   document.getElementById("projectForm").reset();
@@ -676,6 +754,10 @@ function addProject() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -798,6 +880,7 @@ function openEditProjectModal(projectId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
@@ -878,6 +961,7 @@ function addCertificate() {
   const modal = document.getElementById("certificateModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-certificate-button");
   const confirmButton = document.getElementById("certificate-confirm-button");
+  const editButton = document.getElementById("certificate-edit-button");
 
   // 폼 초기화
   document.getElementById("certificateForm").reset();
@@ -885,6 +969,10 @@ function addCertificate() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -996,6 +1084,7 @@ function openEditCertificateModal(certificateId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none"; // '취소' 버튼 보이기
 
   // 모달 표시
   modal.style.display = "block";
@@ -1072,6 +1161,7 @@ function addSkill() {
   const modal = document.getElementById("skillModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-skill-button");
   const confirmButton = document.getElementById("skill-confirm-button");
+  const editButton = document.getElementById("skill-edit-button");
 
   // 폼 초기화
   document.getElementById("skillForm").reset();
@@ -1079,6 +1169,10 @@ function addSkill() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -1160,6 +1254,7 @@ function openEditSkillModal(skillId) {
   const modal = document.getElementById("skillModal");
   const editButton = document.getElementById("skill-edit-button");
   const cancelButton = document.getElementById("close-skill-button");
+  const confirmButton = document.getElementById("skill-confirm-button");
 
   console.log(document.getElementById("skill-edit-button"));
 
@@ -1175,6 +1270,7 @@ function openEditSkillModal(skillId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  confirmButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";

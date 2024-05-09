@@ -41,7 +41,7 @@
   background: #ffffff;
   border-radius: 20px;
 }
-.modal .modal_popup .close_btn {
+.modal .modal_popup {
   display: block;
   padding: 10px 20px;
   background-color: rgb(116, 0, 0);
@@ -60,6 +60,9 @@
 }
 .content-container {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: white;
 }
 
 ._h4 {
@@ -70,12 +73,8 @@
 body {
   font-family: Arial, sans-serif;
 }
-
-.Container {
+.imageprofile-container {
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: white;
 }
 
 .profile,
@@ -93,11 +92,18 @@ body {
   justify-content: space-between;
 }
 .profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.profilediv {
   border-left: 5px solid #ccc;
   padding-left: 10px;
-  margin-bottom: 10px;
+  margin: 0 0 10px 50px;
+  height: fit-content;
 }
-*/ .education-list {
+.education-list {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -177,8 +183,8 @@ body {
 }
 
 .profile-image {
-  width: 100px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
   margin-bottom: 10px;
 }
 
@@ -237,7 +243,8 @@ input {
 
 .editBtns {
   display: flex;
-  justify-content: start; /* 버튼을 컨테이너 시작 부분에 정렬 */
+  justify-content: start; /*버튼을 컨테이너 시작 부분에 정렬 */
+  align-items: center;
 }
 
 .editBtns button {

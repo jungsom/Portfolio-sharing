@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
 const path = require("path");
+const helmet = require("helmet");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
@@ -16,7 +17,7 @@ const mypageRouter = require("./routes/mypage");
 const boardRouter = require("./routes/board");
 const commentRouter = require("./routes/comment");
 
-const { NotFound } = require("./middlewares");
+const { NotFound } = require("./errors");
 
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
@@ -71,11 +72,24 @@ app.get("/aboutus", (req, res) => {
 });
 
 app.get("/404", (req, res) => {
-  res.render("404/404.html");
+  res.status(404).render("404.html");
 });
 
 // 서버 설정
 app.use(express.json());
+
+// Helmet 설정, CSP 설정 true로 하면 오류가 나서 false로 변경함
+app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'", "example.com"],
+        "style-src": null,
+      },
+    },
+  })
+);
 
 // 세션 설정
 app.use(cookieParser());
