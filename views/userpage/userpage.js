@@ -276,9 +276,14 @@ function addEducation() {
   const modal = document.getElementById("educationModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-modal-button");
   const confirmButton = document.getElementById("education-confirm-button");
+  const editButton = document.getElementById("education-edit-button");
 
   // 폼 초기화
   document.getElementById("educationForm").reset();
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
@@ -398,6 +403,7 @@ function openEditEducationModal(educationId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
@@ -439,7 +445,15 @@ function submitEducationUpdate() {
 
 // 모달 닫기 함수
 function closeModal() {
-  document.getElementById("educationModal").style.display = "none";
+  const modal = document.getElementById("educationModal");
+  modal.style.display = "none";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
 }
 
 function deleteEducation(button, educationId) {
@@ -475,6 +489,7 @@ function addAward() {
   const modal = document.getElementById("awardModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-award-button");
   const confirmButton = document.getElementById("award-confirm-button");
+  const editButton = document.getElementById("award-edit-button");
 
   // 폼 초기화
   document.getElementById("awardForm").reset();
@@ -482,6 +497,10 @@ function addAward() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -593,6 +612,7 @@ function openEditAwardModal(awardId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
@@ -604,7 +624,7 @@ function submitAwardUpdate() {
     .getElementById("awardModal")
     .getAttribute("data-award-id");
   const updatedAward = {
-    title: document.getElementById("projectTitle").value,
+    title: document.getElementById("title").value,
     acqDate: document.getElementById("acqDate").value,
     details: document.getElementById("details").value,
   };
@@ -670,6 +690,7 @@ function addProject() {
   const modal = document.getElementById("projectModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-project-button");
   const confirmButton = document.getElementById("project-confirm-button");
+  const editButton = document.getElementById("project-edit-button");
 
   // 폼 초기화
   document.getElementById("projectForm").reset();
@@ -677,6 +698,10 @@ function addProject() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -799,6 +824,7 @@ function openEditProjectModal(projectId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
@@ -879,6 +905,7 @@ function addCertificate() {
   const modal = document.getElementById("certificateModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-certificate-button");
   const confirmButton = document.getElementById("certificate-confirm-button");
+  const editButton = document.getElementById("certificate-edit-button");
 
   // 폼 초기화
   document.getElementById("certificateForm").reset();
@@ -886,6 +913,10 @@ function addCertificate() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -997,6 +1028,7 @@ function openEditCertificateModal(certificateId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none"; // '취소' 버튼 보이기
 
   // 모달 표시
   modal.style.display = "block";
@@ -1073,6 +1105,7 @@ function addSkill() {
   const modal = document.getElementById("skillModal"); //폼 데이터를 가져와서 띄운다
   const deleteButton = document.getElementById("close-skill-button");
   const confirmButton = document.getElementById("skill-confirm-button");
+  const editButton = document.getElementById("skill-edit-button");
 
   // 폼 초기화
   document.getElementById("skillForm").reset();
@@ -1080,6 +1113,10 @@ function addSkill() {
   //추가 버튼 보이기
   confirmButton.style.display = "block";
   deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -1161,6 +1198,7 @@ function openEditSkillModal(skillId) {
   const modal = document.getElementById("skillModal");
   const editButton = document.getElementById("skill-edit-button");
   const cancelButton = document.getElementById("close-skill-button");
+  const confirmButton = document.getElementById("skill-confirm-button");
 
   console.log(document.getElementById("skill-edit-button"));
 
@@ -1176,6 +1214,7 @@ function openEditSkillModal(skillId) {
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
   cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  confirmButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
