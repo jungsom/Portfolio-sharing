@@ -10,8 +10,8 @@
   position: fixed;
 }
 .main-container {
-  margin-left: 30%;
-  width: 80%;
+  margin-left: 10%;
+  width: 100%;
 }
 
 .post-container {
@@ -39,6 +39,7 @@
   border-color: black;
 }
 .post-list-container {
+  margin-top: 5%;
   width: 80%;
   text-align: center;
   align-items: center;
@@ -52,6 +53,7 @@ li {
 }
 
 .write-post-container {
+  margin-top: 5%;
   width: 80%;
   text-align: center;
   align-items: center;

@@ -129,7 +129,7 @@ async function renderUserCard() {
       title.className = "title";
       content.className = "content";
 
-      userimage.src = `/${user.profileImg}`;
+      userimage.src = user.profileImg;
       userimage.alt = user.profileImg;
 
       cardfront.appendChild(userimage);
@@ -266,7 +266,7 @@ async function init() {
   userpageElem.addEventListener("click", menuClickHandler);
 
   boardElem.addEventListener("click", () => {
-    window.location.href = "/board";
+    window.location.href = "/board/?page=1";
   });
 
   //로그아웃 이벤트리스너 추기
