@@ -11,6 +11,8 @@
   - Board API경로 수정(board -> boards)
   - Board 댓글 검색 기능 추가
     - Board 검색도 일반 게시글 조회와 똑같이 페이지네이션과 조회수, 좋아요 순으로 정렬이 가능합니다.
+  - middlewares 디렉토리 -> erros & utils 디렉토리로 분리
+  - validation Joi로 수정
 
 - 2024년 5월 8일 수요일
 

@@ -15,6 +15,7 @@ const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
 const passport = require("passport");
 const { Unauthorized, BadRequest, Conflict } = require("../errors");
+const { authSchema } = require("../utils/validation");
 
 const router = Router();
 
@@ -23,8 +24,16 @@ router.post("/join", async (req, res, next) => {
   try {
     const { email, nickname, name, password, description } = req.body;
 
-    if (!email || !nickname || !name || !password) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
+    // Joi validation
+    const { error } = authSchema.validate({
+      email,
+      nickname,
+      name,
+      password,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
     }
 
     // 같은 이메일로 이미 가입이 되어 있는지 확인
