@@ -233,6 +233,7 @@ router.delete("/:boardId", async (req, res, next) => {
       throw new Forbidden("접근할 수 없습니다.");
     }
     await Board.deleteOne({ boardId }).lean();
+    await Comment.deleteMany({ boardId }).lean(); // 게시글의 댓글 데이터도 삭제
     await Like.findOneAndDelete({ boardId }).lean(); // 게시글의 좋아요 데이터도 삭제
 
     res.status(200).json({
