@@ -70,7 +70,7 @@
                 </div>
                 <div class="edit-button-container">
                   <button
-                    class="profile-edit-button editBtns"
+                    class="profile-edit-button editBtns submitbtn"
                     onclick="editProfile()"
                   >
                     Edit
@@ -80,43 +80,53 @@
             </div>
             <div class="privacy-modify" id="privacy-modify-container">
               <button
-                class="change-password-btn editBtns"
+                class="change-password-btn editBtns submitbtn"
                 onclick="passwordChange()"
               >
                 비밀번호 변경
               </button>
               <div class="modal" id="password_change_modal" display="none">
                 <div class="modal_popup">
-                  <p>비밀번호 변경</p>
-                  <p id="modaltext1"></p>
-                  <span>이전 비밀번호</span>
-                  <div class="btnbox">
-                    <input
-                      type="password"
-                      id="existed-pw"
-                      class="InputBox"
-                      placeholder="이전 비밀번호를 입력해주세요"
-                    />
+                  <div>
+                    <h2>비밀번호 변경</h2>
                   </div>
                   <div>
-                    <span>변경 할 비밀번호</span>
+                    <p id="modaltext1"></p>
+                    <p class="alert-text" id="alert-text">
+                      새 비밀번호가 일치하지 않습니다.
+                    </p>
+                  </div>
+                  <div style="margin-bottom: 10px">
+                    <span>이전 비밀번호</span>
+                    <div class="btnbox">
+                      <input
+                        type="password"
+                        id="existed-pw"
+                        class="InputBox"
+                        placeholder="이전 비밀번호를 입력해주세요"
+                        oninput="modaltextclear()"
+                      />
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 10px">
+                    <span>새 비밀번호</span>
                     <div class="btnbox">
                       <input
                         type="password"
                         id="change-setpw"
                         class="InputBox"
-                        placeholder="변경하실 비밀번호를 입력해주세요."
+                        placeholder="새 비밀번호를 입력해주세요."
                       />
                     </div>
                   </div>
-                  <div>
+                  <div style="margin-bottom: 10px">
                     <span>비밀번호 재확인</span>
                     <div class="btnbox">
                       <input
                         type="password"
                         id="change-setpwchk"
                         class="InputBox"
-                        placeholder="변경하실 비밀번호를 다시 입력해주세요."
+                        placeholder="새 비밀번호를 다시 입력해주세요."
                         onkeyup="passwordCompare()"
                       />
                     </div>
@@ -125,9 +135,6 @@
                   class="change-password-container"
                   style="display: none"
                 ></div> -->
-                  <p class="alert-text" id="alert-text">
-                    비밀번호가 일치하지 않습니다.
-                  </p>
                   <div style="display: flex; justify-content: center">
                     <button
                       type="button"
@@ -156,17 +163,19 @@
               </div>
 
               <div class="delete-account">
-                <!-- <p>회원탈퇴를 진행하시려면 현재 비밀번호를 입력해주세요.</p> -->
                 <div id="delete_account_container" class="btnbox">
                   <button
-                    class="delete-account-btn editBtns"
+                    class="delete-account-btn editBtns submitbtn"
                     onclick="accountDelete()"
                   >
                     회원 탈퇴
                   </button>
                   <div class="modal" id="delete_account_modal" display="none">
                     <div class="modal_popup">
-                      <p id="modaltext2">현재 비밀번호를 입력해주세요.</p>
+                      <div>
+                        <h2>회원탈퇴</h2>
+                      </div>
+                      <p id="modaltext2">정말 떠나는건가요...? ㅜ.ㅜ</p>
                       <input
                         type="password"
                         id="delete-account-pwchk"

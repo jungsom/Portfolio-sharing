@@ -1,4 +1,19 @@
 /* login에서 가져온 속성 */
+.submitbtn {
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  background-color: #ff708ae6;
+  color: #fff;
+  border: solid 1px #000;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin: 10px;
+}
 .btnbox {
   border-color: gray;
 }
@@ -10,7 +25,11 @@
 .privacy-modify {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+.privacy-modify > button {
+  margin: 0;
 }
 .modal_btn {
   display: block;
@@ -33,15 +52,20 @@
 }
 
 .modal .modal_popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute; /*팝업*/
   top: 50%;
   left: 50%;
+  background-color: rgb(116, 0, 0);
   transform: translate(-50%, -50%);
-  padding: 20px;
-  background: #ffffff;
+  padding: 30px;
+  color: #fff;
+  /* background: #ffffff; */
   border-radius: 20px;
 }
-.modal .modal_popup {
+/* .modal .modal_popup {
   display: block;
   padding: 10px 20px;
   background-color: rgb(116, 0, 0);
@@ -50,9 +74,9 @@
   color: #fff;
   cursor: pointer;
   transition: box-shadow 0.2s;
-}
+} */
 .InputBox {
-  width: 200px;
+  width: 250px;
 }
 /* ------- */
 .contents {
