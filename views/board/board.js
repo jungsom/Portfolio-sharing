@@ -45,6 +45,7 @@ async function getPostList(page) {
     const listcount = data.data.length;
     const totalPage = data.totalPage;
     console.log(data);
+
     for (let i = 0; i < listcount; i++) {
       const postlists = document.querySelector(".post-list");
       // const postlists = document.createElement("div");
@@ -260,6 +261,7 @@ function registPost() {
 async function getPostContents(id) {
   document.getElementById("post-list-container").style.display = "none";
   document.getElementById("post-container").style.display = "block";
+  console.log("게시글 조회");
   try {
     const res = await fetch(`http://localhost:8080/boards/${id}`);
     const data = await res.json();
@@ -274,20 +276,25 @@ async function getPostContents(id) {
     const listlikes = data.data[0].listLikes; //array
     const listlikeslength = listlikes.length;
     const likes = data.data[0].likes;
+    const listlikesdiv = document.querySelector(".post-like-list");
+    const islikediv = document.querySelector(".post-likes");
+    const iscommentdiv = document.querySelector(".post-comment");
 
     document.getElementById("post-title").innerText = title;
     document.getElementById("post-contents").innerText = contents;
     document.getElementById("post-writtentime").innerText = createdAt;
     document.getElementById("post-nickname").innerText = nickname;
-
     document.getElementById("post-likes").innerText = likes;
+
+    listlikesdiv.innerHTML = ``;
+    islikediv.innerHTML = ``;
+    iscommentdiv.innerHTML = ``;
+
     for (let i = 0; i < listlikeslength; i++) {
-      const listlikesdiv = document.querySelector(".post-like-list");
       listlikesdiv.innerHTML += `
         <span class="islike-user" id="${listlikes[i]}">${listlikes[i]}</span></li>   
       `;
     }
-    const islikediv = document.querySelector(".post-likes");
 
     if (islikes) {
       islikediv.innerHTML = `
@@ -303,7 +310,6 @@ async function getPostContents(id) {
       `;
     }
 
-    const iscommentdiv = document.querySelector(".post-comment");
     for (let j = 0; j < commentscount; j++) {
       iscommentdiv.innerHTML += `
       <div class ="comment-writer">${comments[j].nickname}</div>
@@ -314,10 +320,36 @@ async function getPostContents(id) {
       <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
       `;
     }
+    localStorage.setItem("boardId", id);
   } catch (error) {
     // alert("알수없는 오류로 정보를 불러오는데 실패했습니다.");
     // window.location.href = "/board/?page=1";
   }
+}
+
+function postLike() {
+  const boardId = localStorage.getItem("boardId");
+  fetch(`http://localhost:8080/boards/${boardId}/likes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  }).then((response) => {
+    // localStorage.removeItem("boardId");
+    if (response.status == 200) {
+      getPostContents(boardId);
+      localStorage.removeItem("boardId");
+    } else if (response.status == 401) {
+      alert("로그인 후 이용 가능합니다.");
+      window.location.href = "/login";
+      localStorage.removeItem("boardId");
+    } else if (response.status == 404) {
+      alert("해당 게시글이 존재하지 않습니다.");
+      window.location.href = "/board/?page=1";
+      localStorage.removeItem("boardId");
+    }
+  });
 }
 
 function gotoPostlist() {
