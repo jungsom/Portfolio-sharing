@@ -74,7 +74,7 @@ async function goToBoard() {
     const logintrue = await getLoginStatus();
 
     if (logintrue.status === true) {
-      window.location.href = `/board`;
+      window.location.href = `/board/?page=1`;
     } else {
       alert("로그인 창으로 이동합니다.");
       window.location.href = `/login`;
