@@ -6,6 +6,12 @@
 
 현재 진행 상황은 [Notion 페이지](https://www.notion.so/Devcartes-14aa0f1e311d4c3a9bcb09dd15122bc6)에서 확인하실 수 있습니다.
 
+- 2024년 5월 9일 목요일
+
+  - Board API경로 수정(board -> boards)
+  - Board 댓글 검색 기능 추가
+    - Board 검색도 일반 게시글 조회와 똑같이 페이지네이션과 조회수, 좋아요 순으로 정렬이 가능합니다.
+
 - 2024년 5월 8일 수요일
 
   - Skill MVP 추가
@@ -50,6 +56,11 @@
 **- POST, PUT 사용 시 서버에 보내야 할 항목들은 API 문서의 Body params 부분을 참고해주세요.**
 
 ## 💻 백엔드 Changelog
+
+- 2024년 5월 9일 목요일
+
+  - frontend branch의 index.js와 충돌이 발생하는 부분을 수정했습니다.
+  - Board API comment 검색 추가 + 페이지네이션, 정렬
 
 - 2024년 5월 8일 수요일
 
