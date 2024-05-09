@@ -241,7 +241,7 @@ function registPost() {
         console.log(response);
         if (response.status == 201) {
           alert("게시물 작성 완료");
-          window.location.href = "/board";
+          window.location.href = "/board/?page=1";
         } else if (response.status == 401) {
           alert("로그인 후 이용 가능합니다.");
         } else if (response.status == 403) {
@@ -400,7 +400,30 @@ function postLike() {
   });
 }
 
-function postDelete() {}
+function postDelete() {
+  if (confirm("정말로 해당 게시글을 삭제하시겠습니까?")) {
+    const boardId = localStorage.getItem("boardId");
+    fetch(`http://localhost:8080/boards/${boardId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 204) {
+        outWritePost();
+      } else if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+        window.location.href = "/login";
+      } else if (response.status == 403) {
+        alert("권한이 없습니다.");
+      } else if (response.status == 404) {
+        alert("데이터를 찾을 수 없습니다.");
+      }
+      localStorage.removeItem("boardId");
+    });
+  }
+}
 
 function postModify() {
   goWritePost();
