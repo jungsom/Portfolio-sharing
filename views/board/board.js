@@ -20,15 +20,61 @@ function logout() {
       alert("로그인 후 이용 가능합니다.");
     } else if (response.status == 200) {
       alert("로그아웃 성공");
-      window.location.href = "/board";
+      window.location.href = "/";
     }
   });
 }
 
+//게시물 목록 페이지별 조회
+async function getPostList(page) {
+  try {
+    const res = await fetch(`http://localhost:8080/boards/?page=${page}`);
+    const data = await res.json();
+    const listcount = data.data.length;
+    console.log(data);
+    console.log(data.data[0].nickname);
+    for (let i = 0; i < listcount - 1; i++) {
+      const postlists = document.querySelector(".post-list");
+      // const postlists = document.createElement("div");
+      let postTitle = data.data[i].title;
+      let postWriter = data.data[i].nickname;
+      postlists.innerHTML += `
+      <div class="post-title-list">
+        <li class="title-list"><span class="post-title" id="post-index${i}"><a>${postTitle}</a></span></li>
+        <span>${postWriter}</span>
+      </div>
+      `;
+
+      console.log(i + "번째 포스트리스트 업데이트");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function gotoFirstPostList() {
+  const params = new URLSearchParams(window.location.search);
+  let currentPage = parseInt(params.get("page")) || 1;
+
+  if (currentPage >= 2) {
+    currentPage = 1;
+  }
+  getPostList(currentPage);
+}
+
+function nextPostList() {
+  const params = new URLSearchParams(window.location.search);
+  console.log(params);
+  let currentPage = parseInt(params.get("page")) || 1;
+  console.log("curpage: ", currentPage);
+}
+
 function init() {
   isVisibleBtns();
-  // getPostList();
+  gotoFirstPostList();
 }
+
+// 현재페이지
 
 function isVisibleBtns() {
   fetch("http://localhost:8080/auth/status")
@@ -62,12 +108,13 @@ function clear() {
 //     });
 // }
 
+//display 속성 제대로 안되고 있어서 수정필요함
 //리스트에서 작성창으로
 function goWritePost() {
   clear();
-  document.querySelector("post-list-container").style.display = "none";
-  document.querySelector("write-post-container").style.display = "block";
-  document.querySelector("board-post-btn visible-btns").style.display = "none";
+  document.getElementById("post-list-container").style.display = "none";
+  document.getElementById("write-post-container").style.display = "block";
+  document.getElementById("board-post-btn visible-btns").style.display = "none";
 }
 
 //작성창에서 리스트로
@@ -76,20 +123,11 @@ function outWritePost() {
     confirm("현재 작성중인 내용은 저장되지 않습니다. 정말 되돌아가겠습니까?")
   ) {
     clear();
-    document.querySelector("post-list-container").style.display = "block";
-    document.querySelector("write-post-container").style.display = "none";
-    document.querySelector("board-post-btn visible-btns").style.display =
+    document.getElementById("post-list-container").style.display = "block";
+    document.getElementById("write-post-container").style.display = "none";
+    document.getElementById("board-post-btn visible-btns").style.display =
       "block";
   }
-}
-
-//게시물 목록 조회
-function getPostList() {
-  fetch("http://localhost:8080/board")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    });
 }
 
 //게시물 등록 // 등록되고나면 clear() 해줘야함
@@ -97,7 +135,7 @@ function registPost() {
   if (confirm("작성된 내용을 등록하시겠습니까?")) {
     const title = document.getElementById("write-post-title").value;
     const contents = document.getElementById("write-post-contents").value;
-    fetch("http://localhost:8080/board", {
+    fetch("http://localhost:8080/boards", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
