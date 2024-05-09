@@ -32,7 +32,8 @@ function ismycontents() {
   fetch("http://localhost:8080/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      const currentUser = data.data.userId;
+      const currentNick = data.data.nickname;
+      localStorage.setItem("nickname", currentNick);
     });
 }
 
@@ -152,6 +153,8 @@ function clear() {
 function goWritePost() {
   document.getElementById("write-post-container").style.display = "block";
   document.getElementById("post-list-container").style.display = "none";
+  document.getElementById("post-container").style.display = "none";
+  localStorage.setItem("postState", "new");
   clear();
 }
 
@@ -162,6 +165,7 @@ function outWritePost() {
   ) {
     document.getElementById("post-list-container").style.display = "block";
     document.getElementById("write-post-container").style.display = "none";
+    localStorage.removeItem("postState");
     clear();
   }
 }
@@ -219,41 +223,81 @@ async function getpostSearch(page) {
 //게시물 등록 // 등록되고나면 clear() 해줘야함
 function registPost() {
   if (confirm("작성된 내용을 등록하시겠습니까?")) {
+    const poststate = localStorage.getItem("postState");
     const title = document.getElementById("write-post-title").value;
     const contents = document.getElementById("write-post-contents").value;
-    fetch("http://localhost:8080/boards", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: title,
-        contents: contents,
-      }),
-    }).then((response) => {
-      console.log(response);
-      if (response.status == 201) {
-        alert("게시물 작성 OK");
-        window.location.href = "/board/?page=1";
-      } else if (response.status == 401) {
-        alert("로그인 후 이용 가능합니다.");
-      } else if (response.status == 403) {
-        alert("권한이 없습니다.");
-      } else if (response.status == 400) {
-        response.json().then((data) => {
-          console.log(data);
-          if (data.error == "입력되지 않은 내용이 있습니다.") {
-            alert("입력되지 않은 내용이 있습니다.");
-          }
-          if (data.error == "공백은 제목으로 사용 불가능합니다.") {
-            alert("공백은 제목으로 사용 불가능합니다.");
-          }
-          if (data.error == "공백은 내용으로 사용 불가능합니다.") {
-            alert("공백은 내용으로 사용 불가능합니다.");
-          }
-        });
-      }
-    });
+
+    if (poststate == "new") {
+      fetch("http://localhost:8080/boards", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title,
+          contents: contents,
+        }),
+      }).then((response) => {
+        console.log(response);
+        if (response.status == 201) {
+          alert("게시물 작성 완료");
+          window.location.href = "/board";
+        } else if (response.status == 401) {
+          alert("로그인 후 이용 가능합니다.");
+        } else if (response.status == 403) {
+          alert("권한이 없습니다.");
+        } else if (response.status == 400) {
+          response.json().then((data) => {
+            console.log(data);
+            if (data.error == "입력되지 않은 내용이 있습니다.") {
+              alert("입력되지 않은 내용이 있습니다.");
+            }
+            if (data.error == "공백은 제목으로 사용 불가능합니다.") {
+              alert("공백은 제목으로 사용 불가능합니다.");
+            }
+            if (data.error == "공백은 내용으로 사용 불가능합니다.") {
+              alert("공백은 내용으로 사용 불가능합니다.");
+            }
+          });
+        }
+      });
+    } else if (poststate == "modify") {
+      const boardId = localStorage.getItem("boardId");
+      fetch(`http://localhost:8080/boards/${boardId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title,
+          contents: contents,
+        }),
+      }).then((response) => {
+        console.log(response);
+        if (response.status == 201) {
+          alert("게시물 수정 완료");
+          outWritePost();
+        } else if (response.status == 401) {
+          alert("로그인 후 이용 가능합니다.");
+        } else if (response.status == 403) {
+          alert("권한이 없습니다.");
+        } else if (response.status == 404) {
+          alert("게시글을 찾을 수 없습니다.");
+        } else if (response.status == 400) {
+          response.json().then((data) => {
+            if (data.error == "입력되지 않은 내용이 있습니다.") {
+              alert("입력되지 않은 내용이 있습니다.");
+            }
+            if (data.error == "공백은 제목으로 사용 불가능합니다.") {
+              alert("공백은 제목으로 사용 불가능합니다.");
+            }
+            if (data.error == "공백은 내용으로 사용 불가능합니다.") {
+              alert("공백은 내용으로 사용 불가능합니다.");
+            }
+          });
+        }
+      });
+    }
   }
 }
 
@@ -261,11 +305,15 @@ function registPost() {
 async function getPostContents(id) {
   document.getElementById("post-list-container").style.display = "none";
   document.getElementById("post-container").style.display = "block";
-  console.log("게시글 조회");
   try {
     const res = await fetch(`http://localhost:8080/boards/${id}`);
     const data = await res.json();
-
+    const currentNick = localStorage.getItem("nickname");
+    if (currentNick == data.data[0].nickname) {
+      isvisiblePostBtn(1);
+    } else {
+      isvisiblePostBtn(2);
+    }
     const title = data.data[0].title;
     const contents = data.data[0].contents;
     const createdAt = data.data[0].createdAt.substr(0, 10); // 앞에거만 잘라써야함
@@ -352,10 +400,44 @@ function postLike() {
   });
 }
 
+function postDelete() {}
+
+function postModify() {
+  goWritePost();
+  const boardId = localStorage.getItem("boardId");
+  localStorage.setItem("postState", "modify");
+
+  fetch(`http://localhost:8080/boards/${boardId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      const title = data.data[0].title;
+      const contents = data.data[0].contents;
+      document.getElementById("write-post-title").value = title;
+      document.getElementById("write-post-contents").value = contents;
+    });
+}
+
+function isvisiblePostBtn(num) {
+  if (num == 1) {
+    document.getElementById("post-modify-btn").style.display = "block";
+    document.getElementById("post-delete-btn").style.display = "block";
+  } else if (num == 2) {
+    document.getElementById("post-modify-btn").style.display = "none";
+    document.getElementById("post-delete-btn").style.display = "none";
+  }
+}
+
 function gotoPostlist() {
   window.location.href = "/board/?page=1";
 }
 
+document
+  .querySelector(".post-modify-btn")
+  .addEventListener("click", postModify);
+document
+  .querySelector(".post-delete-btn")
+  .addEventListener("click", postDelete);
 document.querySelector("#userpage").addEventListener("click", gotoUserpage);
 
 function gotoUserpage() {
@@ -370,6 +452,7 @@ function gotoUserpage() {
 function init() {
   isVisibleBtns();
   displayFirst();
+  ismycontents();
 }
 
 init();
