@@ -129,7 +129,7 @@ async function renderUserCard() {
       title.className = "title";
       content.className = "content";
 
-      userimage.src = user.profileImg;
+      userimage.src = `/${user.profileImg}`;
       userimage.alt = user.profileImg;
 
       cardfront.appendChild(userimage);
