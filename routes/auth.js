@@ -14,6 +14,7 @@ const {
 const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
 const passport = require("passport");
+const mongoose = require("mongoose");
 const { Unauthorized, BadRequest, Conflict } = require("../errors");
 const { authSchema } = require("../utils/validation");
 
@@ -215,15 +216,15 @@ router.delete("/", async (req, res, next) => {
     const deleteUser = await User.deleteOne({ userId }).lean();
 
     // 작성한 게시글의 좋아요 데이터 삭제
-    const findBoard = await Board.find({ nickname });
+    const findBoard = await Board.find({ nickname }).lean();
     for (const data of findBoard) {
-      await Like.findOneAndDelete({ boardId: data.boardId });
+      await Like.findOneAndDelete({ boardId: data.boardId }).lean();
     }
     // 작성한 게시글 삭제
-    const deleteBoard = await Board.deleteMany({ nickname });
+    const deleteBoard = await Board.deleteMany({ nickname }).lean();
 
     // 작성한 댓글 삭제
-    const deleteComment = await Comment.deleteMany({ nickname });
+    const deleteComment = await Comment.deleteMany({ nickname }).lean();
 
     // 누른 좋아요 삭제
     const existLike = await Like.find({ fromUser: nickname }).lean();
