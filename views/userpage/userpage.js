@@ -211,7 +211,24 @@ function getUserData() {
       updateSkillList(data.skills);
     });
 }
-
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        alert("로그아웃 성공");
+        window.location.href = "/network";
+      }
+    });
+  }
+}
 // 프로필 편집 기능
 function editProfile() {
   // console.log(nameContainer.childNodes[3]) = Name;
