@@ -14,7 +14,7 @@ const {
 const bcrypt = require("bcrypt");
 const { nanoid } = require("nanoid");
 const passport = require("passport");
-const { Unauthorized, BadRequest, Conflict } = require("../middlewares");
+const { Unauthorized, BadRequest, Conflict } = require("../errors");
 
 const router = Router();
 
