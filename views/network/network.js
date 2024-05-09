@@ -227,12 +227,10 @@ async function updateMenu() {
     userpageElem.style.display = "block";
     logoutElem.style.display = "block";
     loginElem.style.display = "none";
-    joinElem.style.display = "none";
   } else {
     userpageElem.style.display = "none";
     logoutElem.style.display = "none";
     loginElem.style.display = "block";
-    joinElem.style.display = "block";
   }
 }
 
@@ -279,16 +277,8 @@ async function init() {
   const boardElem = document.querySelector(".menu-items.board");
   const aboutElem = document.querySelector(".menu-items.aboutUs");
 
-<<<<<<< HEAD
   loginElem.addEventListener("click", () => {
     window.location.href = "/login";
-=======
-  loginElem.addEventListener("click", menuClickHandler);
-  userpageElem.addEventListener("click", menuClickHandler);
-
-  boardElem.addEventListener("click", () => {
-    window.location.href = "/board/?page=1";
->>>>>>> 3f785f52660b834df581080af376aaa9041f3aba
   });
   userpageElem.addEventListener("click", goToUserPage);
   logoutElem.addEventListener("click", () => {
