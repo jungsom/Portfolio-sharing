@@ -53,17 +53,8 @@ function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
-  if (!nameContainer.childNodes[4].value)
-    nameContainer.childNodes[4].value = "없음";
-  nameValue.innerText = nameContainer.childNodes[4].value;
-  if (!nicknameContainer.childNodes[4].value)
-    nicknameContainer.childNodes[4].value = "없음";
-  nicknameValue.innerText = nicknameContainer.childNodes[4].value;
-  if (!descriptionContainer.childNodes[4].value)
-    descriptionContainer.childNodes[4].value = "없음";
-  descriptionValue.innerText = descriptionContainer.childNodes[4].value;
 
-  //서버로 name, nickname, description 정보 업데이트하기
+  //서버로 name, nickname, description 정보 업데이트하기, 에러처리
   fetch("http://localhost:8080/users/mypage", {
     method: "PUT", // HTTP 메서드
     headers: {
@@ -76,11 +67,21 @@ function submitEditProfile() {
       description: descriptionContainer.childNodes[4].value,
     }), // JSON 문자열로 변환하여 데이터 전송
   })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("네트워크 오류입니다.");
+    .then((response) => {
+      if (!response.ok) {
+        if (response.status == 400) {
+          throw new Error("입력되지 않은 내용이 있습니다.");
+        } else if (response.status == 401) {
+          throw new Error("로그인 후 이용 가능합니다.");
+        } else if (response.status == 403) {
+          throw new Error("접근할 수 없습니다.");
+        } else if (response.status == 409) {
+          throw new Error("이미 사용중인 닉네임입니다.");
+        } else if (response.status == 500) {
+          throw new Error("서버 내부에서 오류가 발생했습니다.");
+        }
+        return response.json(); // 응답을 JSON 형태로 파싱
       }
-      return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
       console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
@@ -88,7 +89,7 @@ function submitEditProfile() {
     })
     .catch((error) => {
       console.error("Error:", error); // 에러 처리
-      alert("에러가 발생했습니다");
+      alert(error);
     });
 
   //요소 보이기
@@ -272,9 +273,11 @@ function editProfile() {
     cancelEditButton.innerText = "Cancel";
     cancelEditButton.id = "cancel_edit_button";
 
-    const imageprofile = document.querySelector(".imageprofile-container");
-    imageprofile.append(submitEditButton);
-    imageprofile.append(cancelEditButton);
+    const profileBtnContainer = document.querySelector(
+      ".edit-button-container"
+    );
+    profileBtnContainer.append(submitEditButton);
+    profileBtnContainer.append(cancelEditButton);
 
     //submit버튼 클릭시 프로필 편집 정보 저장, 서버로 변경점 업데이트
     submitEditButton.addEventListener("click", (e) => submitEditProfile());
