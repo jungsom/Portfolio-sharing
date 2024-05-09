@@ -4,9 +4,50 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>게시판</title>
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/layout/header.css" />
     <link rel="stylesheet" href="/board/board.css" />
   </head>
   <body>
+    <div class="container">
+      <!-- header -->
+      <div class="header">
+          <div class="logo">
+              <a href="/">
+                  <img class="logo-image" src="/img/logo.png" alt="logo" />
+              </a>
+          </div>
+          <div class="menu">
+              <div class="menu-items home">
+                  <a href="/">홈</a>
+              </div>
+              <div class="menu-items board">
+                  <a href="/board">게시판</a>
+              </div>
+              <div class="menu-items aboutUs">
+                  <a href="/aboutUs">About Us</a>
+              </div>
+          </div>
+          <div class="user-status">
+              <!-- 로그인 전 -->
+              <div class="user-status-item-left login">
+                  <a href="/login">로그인</a>
+              </div>
+              <div class="user-status-item join">
+                  <a href="/join">회원가입</a>
+              </div>
+              <!-- 로그인 후 -->
+              <!-- <div class="user-status-item-left login">
+                  <a href="/login">내 정보</a>
+              </div>
+              <div class="user-status-item join">
+                  <a href="/join">로그아웃</a>
+              </div> -->
+          </div>
+      </div>
+
+      <!-- contents -->
+      <div class="contents">
     <!-- 네비게이션 -->
     <div class="menu-container">
       <ul>
@@ -72,6 +113,11 @@
         </div>
       </div>
     </div>
+    
+  </div>
+</div>
+
+<script src="/layout/header.js"></script>
     <script type="text/javascript" src="/board/board.js"></script>
   </body>
 </html>
