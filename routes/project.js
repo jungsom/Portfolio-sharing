@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { User, Project } = require("../models");
 const { BadRequest, Unauthorized, Forbidden, NotFound } = require("../errors");
+const { projectSchema } = require("../utils/validation");
 
 const router = Router();
 
@@ -39,8 +40,22 @@ router.post("/", async (req, res, next) => {
     const { userId } = req.session.passport.user; // id를 session에 있는 id 값으로
     const { title, startDate, endDate, details } = req.body;
 
-    if (!title || !startDate || !endDate || !details) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
+    // Joi validation
+    const { error } = projectSchema.validate({
+      title,
+      startDate,
+      endDate,
+      details,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
+    }
+    // 추가 validation
+    if (title.trim() !== title) {
+      throw new BadRequest(
+        "프로젝트 제목 앞뒤에는 띄어쓰기를 사용할 수 없습니다."
+      ); // 400 에러
     }
 
     const project = await Project.create({
@@ -79,8 +94,22 @@ router.put("/:projectId", async (req, res, next) => {
     const { projectId } = req.params;
     const { title, startDate, endDate, details } = req.body;
 
-    if (!title || !startDate || !endDate || !details) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
+    // Joi validation
+    const { error } = projectSchema.validate({
+      title,
+      startDate,
+      endDate,
+      details,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
+    }
+    // 추가 validation
+    if (title.trim() !== title) {
+      throw new BadRequest(
+        "프로젝트 제목 앞뒤에는 띄어쓰기를 사용할 수 없습니다."
+      ); // 400 에러
     }
 
     const project = await Project.findOneAndUpdate(

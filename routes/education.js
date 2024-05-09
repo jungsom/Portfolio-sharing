@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { User, Education } = require("../models");
 const { BadRequest, Unauthorized, Forbidden, NotFound } = require("../errors");
+const { educationSchema } = require("../utils/validation");
 
 const router = Router();
 
@@ -39,8 +40,23 @@ router.post("/", async (req, res, next) => {
     const userId = req.session.passport.user.userId;
     const { schoolName, major, schoolStatus } = req.body;
 
-    if (!schoolName || !major || !schoolStatus) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
+    // Joi validation
+    const { error } = educationSchema.validate({
+      schoolName,
+      major,
+      schoolStatus,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
+    }
+    // 추가 validation
+    if (
+      schoolName.trim() !== schoolName ||
+      major.trim() !== major ||
+      schoolStatus.trim() !== schoolStatus
+    ) {
+      throw new BadRequest("입력값 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
     }
 
     const education = await Education.create({
@@ -52,7 +68,7 @@ router.post("/", async (req, res, next) => {
 
     res.status(201).json({
       error: null,
-      message: "수상내역이 추가되었습니다.",
+      message: "학력 정보가 추가되었습니다.",
       data: {
         userId: education.userId,
         educationId: education.educationId,
@@ -77,8 +93,23 @@ router.put("/:educationId", async (req, res, next) => {
     const educationId = req.params.educationId;
     const { schoolName, major, schoolStatus } = req.body;
 
-    if (!schoolName || !major || !schoolStatus) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
+    // Joi validation
+    const { error } = educationSchema.validate({
+      schoolName,
+      major,
+      schoolStatus,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
+    }
+    // 추가 validation
+    if (
+      schoolName.trim() !== schoolName ||
+      major.trim() !== major ||
+      schoolStatus.trim() !== schoolStatus
+    ) {
+      throw new BadRequest("입력값 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
     }
 
     const validSchoolStatus = ["재학중", "학사졸업", "석사졸업", "박사졸업"];

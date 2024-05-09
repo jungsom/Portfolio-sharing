@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { Board, User, Like, Comment } = require("../models");
 const { BadRequest, Unauthorized, Forbidden, NotFound } = require("../errors");
+const { boardSchema } = require("../utils/validation");
 
 const router = Router();
 
@@ -132,14 +133,14 @@ router.post("/", async (req, res, next) => {
     const nickname = req.session.passport.user.nickname;
     const { title, contents } = req.body;
 
-    if (!title || !contents) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
-    }
-    if (title.replace(/ /g, "") == "") {
-      throw new BadRequest("공백은 제목으로 사용 불가능합니다."); // 400 에러
-    }
-    if (contents.replace(/ /g, "") == "") {
-      throw new BadRequest("공백은 내용으로 사용 불가능합니다."); // 400 에러
+    // Joi validation
+    const { error } = boardSchema.validate({
+      title,
+      contents,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
     }
 
     const board = await Board.create({
@@ -175,14 +176,14 @@ router.put("/:boardId", async (req, res, next) => {
     const { title, contents } = req.body;
     const nickname = req.session.passport.user.nickname;
 
-    if (!title || !contents) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
-    }
-    if (title.trim().length === 0) {
-      throw new BadRequest("공백은 제목으로 사용 불가능합니다."); // 400 에러
-    }
-    if (contents.trim().length === 0) {
-      throw new BadRequest("공백은 내용으로 사용 불가능합니다."); // 400 에러
+    // Joi validation
+    const { error } = boardSchema.validate({
+      title,
+      contents,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
     }
 
     const findBoard = await Board.findOne({ boardId }).lean();
