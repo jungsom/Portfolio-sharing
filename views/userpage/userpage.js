@@ -158,7 +158,9 @@ function getUserData() {
       document.querySelector(".Nickname").innerText = data.user.nickname;
       document.querySelector(".Email").innerText = data.user.email;
       document.querySelector(".Description").innerText = data.user.description;
-      document.querySelector(".profile-image").src = data.user.profileImg;
+      document.querySelector(
+        ".profile-image"
+      ).src = `http://localhost:8080/${data.user.profileImg}`;
 
       // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
