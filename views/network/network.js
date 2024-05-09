@@ -227,7 +227,6 @@ async function updateMenu() {
     userpageElem.style.display = "block";
     logoutElem.style.display = "block";
     loginElem.style.display = "none";
-    joinElem.style.display = "none";
   } else {
     userpageElem.style.display = "none";
     logoutElem.style.display = "none";

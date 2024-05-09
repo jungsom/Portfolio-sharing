@@ -233,6 +233,7 @@ function registPost() {
       console.log(response);
       if (response.status == 201) {
         alert("게시물 작성 OK");
+        window.location.href = "/board/?page=1";
       } else if (response.status == 401) {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 403) {
