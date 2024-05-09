@@ -14,6 +14,7 @@ router.get("/", async (req, res, next) => {
     try {
         const { boardId } = req.params;
         const board = await Board.findOne({ boardId }).lean();
+        const comment = await Comment.find({ boardId }).lean();
 
         if (!board) {
             throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
