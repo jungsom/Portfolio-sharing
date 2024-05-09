@@ -50,14 +50,6 @@ router.post("/", async (req, res, next) => {
       const errorMessages = error.details.map((detail) => detail.message);
       throw new BadRequest(errorMessages[0]); // 400 에러
     }
-    // 추가 validation
-    if (
-      schoolName.trim() !== schoolName ||
-      major.trim() !== major ||
-      schoolStatus.trim() !== schoolStatus
-    ) {
-      throw new BadRequest("입력값 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
-    }
 
     const education = await Education.create({
       userId,
@@ -102,14 +94,6 @@ router.put("/:educationId", async (req, res, next) => {
     if (error) {
       const errorMessages = error.details.map((detail) => detail.message);
       throw new BadRequest(errorMessages[0]); // 400 에러
-    }
-    // 추가 validation
-    if (
-      schoolName.trim() !== schoolName ||
-      major.trim() !== major ||
-      schoolStatus.trim() !== schoolStatus
-    ) {
-      throw new BadRequest("입력값 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
     }
 
     const validSchoolStatus = ["재학중", "학사졸업", "석사졸업", "박사졸업"];

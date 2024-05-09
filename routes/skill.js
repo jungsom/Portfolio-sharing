@@ -46,10 +46,6 @@ router.post("/", async (req, res, next) => {
       const errorMessages = error.details.map((detail) => detail.message);
       throw new BadRequest(errorMessages[0]); // 400 에러
     }
-    // 추가 validation
-    if (stack.trim() !== stack) {
-      throw new BadRequest("스킬명 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
-    }
 
     const skill = await Skill.create({
       userId,
@@ -86,10 +82,6 @@ router.put("/:skillId", async (req, res, next) => {
     if (error) {
       const errorMessages = error.details.map((detail) => detail.message);
       throw new BadRequest(errorMessages[0]); // 400 에러
-    }
-    // 추가 validation
-    if (stack.trim() !== stack) {
-      throw new BadRequest("스킬명 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
     }
 
     const skill = await Skill.findOneAndUpdate(

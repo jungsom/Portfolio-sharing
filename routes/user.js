@@ -146,14 +146,6 @@ router.put("/mypage", async (req, res, next) => {
       throw new BadRequest(errorMessages[0]); // 400 에러
     }
 
-    // 추가 validation
-    if (name.trim() !== name) {
-      throw new BadRequest("이름 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
-    }
-    if (nickname.split(" ").join("") !== nickname) {
-      throw new BadRequest("닉네임에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
-    }
-
     const existsNickname = await User.findOne({ nickname }).lean();
     if (
       existsNickname &&
