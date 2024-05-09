@@ -54,7 +54,7 @@ const authSchema = Joi.object({
     }),
   password: Joi.string().min(4).required().messages({
     "string.empty": "비밀번호를 입력하세요.",
-    "string.min": "닉네임은 최소 4글자 이상이어야 합니다.",
+    "string.min": "비밀번호는 최소 4글자 이상이어야 합니다.",
     "any.required": "입력하지 않은 값이 있습니다.",
   }),
 });
