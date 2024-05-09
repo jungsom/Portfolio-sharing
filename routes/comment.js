@@ -14,13 +14,9 @@ router.get("/", async (req, res, next) => {
     try {
         const { boardId } = req.params;
         const board = await Board.findOne({ boardId }).lean();
-        const comment = await Comment.find({ boardId }).lean();
 
         if (!board) {
-            throw new NotFound("등록된 게시글이 없습니다."); // 404 에러
-        }
-        if (!comment.length) {
-            throw new NotFound("등록된 댓글이 없습니다."); // 404 에러
+            throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
         }
 
         res.status(200).json({
@@ -42,7 +38,11 @@ router.post("/", async (req, res, next) => {
         const nickname = req.session.passport.user.nickname;
         const { boardId } = req.params;
         const { contents } = req.body;
+        const findBoard = await Board.findOne({ boardId }).lean();
 
+        if (!findBoard) {
+          throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
+        }
         if (contents.trim().length === 0) {
             throw new BadRequest("내용을 입력하세요."); // 400 에러
         }
@@ -83,10 +83,10 @@ router.put("/:commentId", async (req, res, next) => {
     const findComment = await Comment.findOne({ commentId }).lean();
 
     if (!findBoard) {
-        throw new NotFound("등록된 게시글이 없습니다."); // 404 에러
+        throw new NotFound("게시글을 찾을 수없습니다."); // 404 에러
     }
     if (!findComment) {
-        throw new NotFound("등록된 댓글이 없습니다."); // 404 에러
+        throw new NotFound("댓글을 찾을 수 없습니다."); // 404 에러
     }
     if (nickname !== findComment.nickname) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
@@ -131,10 +131,10 @@ router.delete("/:commentId", async (req, res, next) => {
     const findComment = await Comment.findOne({ commentId }).lean();
 
     if (!findBoard) {
-        throw new NotFound("등록된 게시글이 없습니다."); // 404 에러
+        throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
     }
     if (!findComment) {
-        throw new NotFound("등록된 댓글이 없습니다."); // 404 에러
+        throw new NotFound("댓글을 찾을 수 없습니다."); // 404 에러
     }
     if (nickname !== findComment.nickname) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
