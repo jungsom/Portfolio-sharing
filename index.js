@@ -66,6 +66,10 @@ app.get("/board", (req, res) => {
   res.render("board/board.html");
 });
 
+app.get("/aboutus", (req, res) => {
+  res.render("aboutus/aboutus.html");
+});
+
 app.get("/404", (req, res) => {
   res.render("404/404.html");
 });
