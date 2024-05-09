@@ -28,7 +28,7 @@ router.get("/", async (req, res, next) => {
   const page = Number(req.query.page || 1); // 현재 페이지
   const perPage = Number(req.query.perPage || 10); // 페이지 당 게시글 수
   const { sortName } = req.body; // 정렬할 이름
-  let sortProcess = { createAt: -1 }; // 기본은 최신 순
+  let sortProcess = { createdAt: -1 }; // 기본은 최신 순
 
   try {
     if (sortName === "이름순") {

@@ -20,10 +20,6 @@ router.get("/", async (req, res, next) => {
     const nickname = req.session.passport.user.nickname;
     const board = await Board.find({}).lean();
 
-    if (board.length === 0) {
-      throw new NotFound("등록된 게시글을 찾을 수 없습니다."); // 404 에러
-    }
-
     // 게시글 좋아요 관련 및 res 관련
     let boardData = [];
     for (const data of board) {
@@ -41,7 +37,7 @@ router.get("/", async (req, res, next) => {
         nickname: data.nickname,
         title: data.title,
         contents: data.contents,
-        createAt: data.createAt,
+        createdAt: data.createdAt,
         boardId: data.boardId,
         comments: commentsCount,
         likes: likesCount,
@@ -112,7 +108,7 @@ router.get("/:boardId", async (req, res, next) => {
       nickname: board.nickname,
       title: board.title,
       contents: board.contents,
-      createAt: board.createAt,
+      createdAt: board.createdAt,
       boardId: board.boardId,
       comments,
       likes: likesCount,
