@@ -313,6 +313,11 @@ router.post("/:boardId/likes", async (req, res, next) => {
 // 게시글 검색
 router.get("/search/result", async (req, res, next) => {
   try {
+    // 세션 확인(401 error)
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다.");
+    }
+
     const { option, keyword } = req.query;
     let board = [];
 
@@ -320,21 +325,27 @@ router.get("/search/result", async (req, res, next) => {
     if (option === "nickname") {
       board = await Board.find({
         nickname: new RegExp(keyword, "i"),
-      }).lean();
+      })
+        .lean()
+        .sort({ boardId: -1 });
     }
 
     // 제목으로 검색
     if (option === "title") {
       board = await Board.find({
         title: new RegExp(keyword, "i"),
-      }).lean();
+      })
+        .lean()
+        .sort({ boardId: -1 });
     }
 
     // 내용으로 검색
     if (option === "contents") {
       board = await Board.find({
         contents: new RegExp(keyword, "i"),
-      }).lean();
+      })
+        .lean()
+        .sort({ boardId: -1 });
     }
 
     // 제목 + 내용으로 검색
@@ -348,12 +359,88 @@ router.get("/search/result", async (req, res, next) => {
             contents: new RegExp(keyword, "i"),
           },
         ],
-      }).lean();
+      })
+        .lean()
+        .sort({ boardId: -1 });
+    }
+
+    // 댓글로 검색
+    if (option === "comments") {
+      // 검색하려는 키워드가 있는 댓글의 boardId를 가져옴
+      const searchedComments = await Comment.find(
+        {
+          contents: new RegExp(keyword, "i"),
+        },
+        "-_id boardId"
+      ).lean();
+
+      // boardId만 추출해서 배열에 넣어준 후에 new Set을 이용해서 중복 제거를 하고 내림차 순으로 정렬함
+      const boardIdList = [];
+      for (const item of searchedComments) {
+        boardIdList.push(Number(item.boardId));
+      }
+      const boardIdSet = [...new Set(boardIdList)].sort((a, b) => b - a);
+
+      // 위에서 찾은 boardId 값으로 게시판 글을 찾아서 board에 넣어줌
+      // findOne이 아닌 find로 하면 객체 안에 또 객체가 들어감
+      for (const item of boardIdSet) {
+        const findBoard = await Board.findOne({ boardId: item }).lean();
+        board.push(findBoard);
+      }
+    }
+
+    // 게시글 좋아요 관련 및 res 관련
+    const nickname = req.session.passport.user.nickname;
+    let boardData = [];
+    for (const data of board) {
+      let likes = await Like.find({ boardId: data.boardId }).lean();
+      let comments = await Comment.find({ boardId: data.boardId }).lean();
+      // 좋아요수
+      const likesCount = likes.reduce(
+        (total, like) => total + like.fromUser.length,
+        0
+      );
+      // 댓글 수
+      const commentsCount = comments.length;
+
+      boardData.push({
+        nickname: data.nickname,
+        title: data.title,
+        contents: data.contents,
+        createdAt: data.createdAt,
+        boardId: data.boardId,
+        comments: commentsCount,
+        likes: likesCount,
+        isLikes:
+          likes.length !== 0 ? likes[0].fromUser.includes(nickname) : false, // 본인이 좋아요를 눌렀는지
+        listLikes: likes.length !== 0 ? likes[0].fromUser : [], // 좋아요 누른 리스트
+      });
+    }
+
+    // 페이지네이션
+    const page = Number(req.query.page || 1); // 현재 페이지
+    const perPage = Number(req.query.perPage || 10); // 페이지 당 게시글 수
+    const total = board.length; // 총 Board 수 세기
+    const totalPage = Math.ceil(total / perPage);
+
+    const { sortName } = req.body;
+
+    // 기본은 최신순
+    let resultBoard = boardData
+      .sort((a, b) => b.boardId - a.boardId)
+      .slice(perPage * (page - 1), perPage * (page - 1) + perPage);
+
+    // body에 좋아요순 입력 시
+    if (sortName === "좋아요순") {
+      resultBoard = boardData
+        .sort((a, b) => b.likes - a.likes)
+        .slice(perPage * (page - 1), perPage * (page - 1) + perPage);
     }
 
     res.status(200).json({
       error: null,
-      data: board,
+      totalPage,
+      data: resultBoard,
     });
   } catch (e) {
     next(e);
