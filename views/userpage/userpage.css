@@ -1,21 +1,97 @@
 @font-face {
   font-family: "continuous";
-  src: url("continuous.ttf") format("truetype");
+  src: url("../continuous.ttf") format("truetype");
+}
+/* login에서 가져온 속성 */
+.btnbox {
+  border-color: gray;
+}
+.alert-text {
+  color: red;
+  font-weight: bold;
+  display: none;
+}
+.privacy-modify {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* .delete-account {
+  display: flex;
+} */
+.modal_btn {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: royalblue;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.modal_btn:hover {
+  box-shadow: 3px 4px 11px 0px #00000040;
+}
+#move_btn1,
+#move_btn2 {
+  display: none;
+}
+.modal .modal_popup {
+  /*팝업*/
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+}
+.modal .modal_popup .close_btn {
+  display: block;
+  padding: 10px 20px;
+  background-color: rgb(116, 0, 0);
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.InputBox {
+  width: 200px;
+}
+/* ------- */
+.content-container {
+  display: flex;
+  background-color: #eeeae0;
+  margin: -1%;
 }
 
 .navbar {
   display: flex;
-  height: 100px;
-  background-color: rgba(216, 107, 4, 0.692);
-  border: solid;
-  border-width: 8px;
+  flex-direction: column;
+  width: 25%;
+  padding: 30px 0 35% 0;
+  /* background-color: rgba(216, 107, 4, 0.692); */
+  background-color: #eeeae0;
 }
 
+.navbar-content {
+  font-family: "continuous", Arial, sans-serif;
+  font-size: 24px;
+  padding: 2.5% 0 2.5% 0;
+  margin: 0 10% 0 10%;
+  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+}
+.navbar-content:nth-last-child(1) {
+  box-shadow: none;
+}
 .logo {
   font-family: "continuous", Arial, sans-serif;
-  font-size: 36px;
-  padding-left: 20px;
-  align-content: center;
+  font-size: 52px;
+  padding: 0 0 30% 10%;
 }
 ._h4 {
   margin-block-end: 0.1em;
@@ -30,16 +106,27 @@ body {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
+  background-color: white;
 }
 
 .profile,
 .education,
-.awards,
+.award,
 .project,
-.certificate {
+.certificate,
+.skill {
   flex: 1 1 50%;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile {
+  display: flex;
+  justify-content: space-between;
+}
+.profile-container {
+  border-left: 5px solid #ccc;
+  padding-left: 10px;
+  margin-bottom: 10px;
 }
 
 .education-list {
@@ -51,9 +138,10 @@ body {
   padding: 0;
 }
 
-.awards-list,
+.award-list,
 .project-list,
-.certificate-list {
+.certificate-list,
+.skill-list {
   display: flex;
   flex-direction: column; /* 항목들을 수직으로 쌓습니다 */
   width: 100%;
@@ -68,7 +156,7 @@ body {
   margin-bottom: 10px; /*하단 여백 */
 }
 
-.awards-list > div {
+.award-list > div {
   display: flex;
   margin-bottom: 10px; /* 하단 여백 */
 }
@@ -83,6 +171,10 @@ body {
   margin-bottom: 10px; /* 하단 여백 */
 }
 
+.skill-list > div {
+  display: flex;
+  margin-bottom: 10px; /* 하단 여백 */
+}
 /* select 박스와 input 필드의 스타일 */
 .education-list select,
 .education-list input {
@@ -96,8 +188,8 @@ body {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
-.awards-list input:last-child,
-.awards-list select:last-child {
+.award-list input:last-child,
+.award-list select:last-child {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
@@ -108,6 +200,11 @@ body {
 
 .certificate-list input:last-child,
 .certificate-list select:last-child {
+  margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
+}
+
+.skill-list input:last-child,
+.skill-list select:last-child {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
@@ -125,7 +222,23 @@ button {
   box-sizing: border-box; /* border와 padding을 너비에 포함 */
   margin-right: 10px;
 }
+input {
+  border: none;
+  border-radius: 15px;
+  background-color: rgb(233, 233, 233);
+}
+.profile-edit-button,
+.change-password-btn,
+.delete-account-btn {
+  margin-right: 10px;
+  background-color: #ffee83;
+  color: #000000;
+  border-width: 1px;
+  border-radius: 5%;
+  cursor: pointer;
+}
 
+#cancel_edit_button,
 #education_delete_button,
 #awards_delete_button,
 #project_delete_button,
@@ -135,18 +248,22 @@ button {
   color: white;
   padding: 0 15px;
   border: none;
+  border-radius: 10%;
   cursor: pointer;
 }
 
-#education_confirm_button,
-#awards_confirm_button,
-#project_confirm_button,
-#certificate_confirm_button {
+#submit_edit_button,
+#education-confirm-button,
+#award-confirm-button,
+#project-confirm-button,
+#certificate-confirm-button,
+#skill-confirm-button {
   margin-right: 10px;
   background-color: #6d78d4;
   color: white;
   padding: 0 15px;
   border: none;
+  border-radius: 10%;
   cursor: pointer;
 }
 
@@ -160,14 +277,22 @@ button {
   margin-bottom: 10px; /* 오른쪽 여백 추가 */
 }
 
-.education-title h2 {
+.education-title h2,
+.award-title h2,
+.project-title h2,
+.certificate-title h2,
+.skill-title h2 {
   display: flex;
   justify-content: space-between; /*내용을 양쪽 끝으로 밀어냄 */
   align-items: center;
   width: 100%;
 }
 
-.education_plus_button {
+.education-plus-button,
+.award-plus-button,
+.project-plus-button,
+.certificate-plus-button,
+.skill-plus-button {
   margin-left: auto;
 }
 
@@ -184,7 +309,6 @@ button {
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
-
 /* 모달 내용 스타일 */
 .modal-content {
   background-color: #fefefe;
