@@ -1,3 +1,4 @@
+updateMenu();
 //이름, 닉네임, 설명 입력창 및 타이틀 생성
 function createInputElement(str_class) {
   const inputElem = document.createElement("input");
@@ -143,7 +144,44 @@ function isVisibleBtns() {
       });
     });
 }
+async function updateMenu() {
+  const loginElem = document.querySelector(".user-status-item-left.login");
+  const joinElem = document.querySelector(".user-status-item.join");
 
+  const userpageElem = document.querySelector(
+    ".user-status-item-left.userpage"
+  );
+  const logoutElem = document.querySelector(".user-status-item.logout");
+
+  const logintrue = await getLoginStatus();
+  if (logintrue.status === true) {
+    userpageElem.style.display = "block";
+    logoutElem.style.display = "block";
+    loginElem.style.display = "none";
+    joinElem.style.display = "none";
+  } else {
+    userpageElem.style.display = "none";
+    logoutElem.style.display = "none";
+    loginElem.style.display = "block";
+    joinElem.style.display = "block";
+  }
+
+  userpageElem.childNodes[1].href = `/userpage/?user=${logintrue.data.userId}`;
+  console.log(userpageElem.childNodes[1].href);
+}
+/** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
+async function getLoginStatus() {
+  try {
+    const response = await fetch(`http://localhost:8080/auth/status`);
+    if (!response.ok) {
+      throw new Errow("데이터를 불러오는 중에 문제가 발생했습니다.");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 //userpage 에 표시될 유저 data 받아오기 및 표시
 //본인 userpage 던 타 userpage던 아래 코드로 바로 표시가능(구분방법 massId)
 function getUserData() {
@@ -161,7 +199,6 @@ function getUserData() {
       document.querySelector(
         ".profile-image"
       ).src = `http://localhost:8080/${data.user.profileImg}`;
-
       // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
         console.error("Education data is not available or not an array:", data);
