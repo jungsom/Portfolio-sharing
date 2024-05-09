@@ -60,15 +60,18 @@ async function getPostList(page) {
       `;
     }
     //페이지네이션 다음/이전 버튼 활성/비활성화
-    if (page == 1) {
+    if (totalPage == 1) {
+      isvisibleNextPrevBtn(3);
+    } else if (page == 1) {
       isvisibleNextPrevBtn(1);
     } else if (page == totalPage) {
       isvisibleNextPrevBtn(2);
     } else {
       isvisibleNextPrevBtn(0);
     }
+    localStorage.removeItem("search");
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 }
 
@@ -83,6 +86,9 @@ function isvisibleNextPrevBtn(num) {
   } else if (num == 0) {
     document.getElementById("prev-btn").style.display = "block";
     document.getElementById("next-btn").style.display = "block";
+  } else if (num == 3) {
+    document.getElementById("prev-btn").style.display = "none";
+    document.getElementById("next-btn").style.display = "none";
   }
 }
 
@@ -96,10 +102,16 @@ function displayFirst() {
 //다음페이지 post 리스트
 function getNextPostList() {
   const params = new URLSearchParams(window.location.search);
+  const isSearch = localStorage.getItem("search");
   let currentPage = parseInt(params.get("page"));
   currentPage++;
-  window.location.href = `/board/?page=${currentPage}`;
-  getPostList(currentPage);
+  if (isSearch == "Y") {
+    window.location.href = `/board/search/result?page=${currentPage}`;
+    getpostSearch(currentPage);
+  } else {
+    window.location.href = `/board/?page=${currentPage}`;
+    getPostList(currentPage);
+  }
 }
 
 function getPrevPostList() {
@@ -154,20 +166,53 @@ function outWritePost() {
 }
 
 async function postSearch() {
+  getpostSearch(1);
+}
+
+async function getpostSearch(page) {
   const search = document.getElementById("search-box").value;
   const searchtype = document.getElementById("search-type").value;
+  const postlists = document.querySelector(".post-list");
+  // const params = new URLSearchParams(window.location.search);
+  // let currentPage = parseInt(params.get("page"));
   console.log("검색어", search, "검색타입", searchtype);
-
+  postlists.innerHTML = ``;
   try {
-    fetch(
-      `http://localhost:8080/boards/search/result?option=${searchtype}&keyword=${search}`,
-      {}
-    ).then((response) => {
-      response.json().then((data) => {
-        console.log(data);
-      });
-    });
-  } catch (error) {}
+    const res = await fetch(
+      `http://localhost:8080/boards/search/result?option=${searchtype}&keyword=${search}`
+    );
+    const data = await res.json();
+    const listcount = data.data.length;
+    const totalPage = data.totalPage;
+    console.log(data);
+
+    for (let i = 0; i < listcount; i++) {
+      // const postlists = document.createElement("div");
+      let postTitle = data.data[i].title;
+      let postWriter = data.data[i].nickname;
+      let boardId = data.data[i].boardId;
+      let createdAt = data.data[i].createdAt.substr(0, 10);
+      postlists.innerHTML += `
+      <div class="post-title-list">
+        <li class="title-list"><span class="post-title" id="${boardId}"><a onclick="getPostContents(${boardId})">${postTitle}</a></span><span>${createdAt}</span></li>
+        <span>${postWriter}</span>
+      </div>
+      `;
+    }
+    localStorage.setItem("search", "Y");
+    //페이지네이션 다음/이전 버튼 활성/비활성화
+    if (totalPage == 1) {
+      isvisibleNextPrevBtn(3);
+    } else if (page == 1) {
+      isvisibleNextPrevBtn(1);
+    } else if (page == totalPage) {
+      isvisibleNextPrevBtn(2);
+    } else {
+      isvisibleNextPrevBtn(0);
+    }
+  } catch (error) {
+    // console.error(error);
+  }
 }
 
 //게시물 등록 // 등록되고나면 clear() 해줘야함
