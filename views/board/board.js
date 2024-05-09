@@ -27,6 +27,15 @@ function logout() {
   }
 }
 
+//현재 로그인된 계정의 userId get
+function ismycontents() {
+  fetch("http://localhost:8080/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      const currentUser = data.data.userId;
+    });
+}
+
 //날짜 표시방식 변경 필요
 //게시물 목록 페이지별 조회 및 리스트업
 async function getPostList(page) {
@@ -144,6 +153,30 @@ function outWritePost() {
   }
 }
 
+async function postSearch() {
+  const search = document.getElementById("search-box").value;
+  const searchtype = document.getElementById("search-type").value;
+  console.log("검색어", search, "검색타입", searchtype);
+
+  try {
+    fetch("http://localhost:8080/boards/search/result", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        option: searchtype,
+        keyword: search,
+      }),
+    }).then((response) => {
+      console.log(response);
+      // response.json().then((data) => {
+      //   console.log(data);
+      // });
+    });
+  } catch (error) {}
+}
+
 //게시물 등록 // 등록되고나면 clear() 해줘야함
 function registPost() {
   if (confirm("작성된 내용을 등록하시겠습니까?")) {
@@ -191,32 +224,57 @@ async function getPostContents(id) {
   try {
     const res = await fetch(`http://localhost:8080/boards/${id}`);
     const data = await res.json();
-    console.log(data.data[0].title);
-    console.log(data.data[0].contents);
-    console.log(data.data[0].createdAt.substr(0, 10));
-    console.log(data.data[0].comments);
-    console.log(data.data[0].nickname);
-    console.log(data.data[0].isLikes);
-    console.log(data.data[0].listLikes);
-    console.log(data.data[0].likes);
 
     const title = data.data[0].title;
     const contents = data.data[0].contents;
     const createdAt = data.data[0].createdAt.substr(0, 10); // 앞에거만 잘라써야함
-    const comments = data.data[0].comments; //array
+    const commentscount = data.data[0].comments.length;
+    const comments = data.data[0].comments;
     const nickname = data.data[0].nickname;
     const islikes = data.data[0].isLikes; // boolean
     const listlikes = data.data[0].listLikes; //array
+    const listlikeslength = listlikes.length;
     const likes = data.data[0].likes;
 
     document.getElementById("post-title").innerText = title;
-    document.getElementById("post-writtentime").innerText = createdAt;
     document.getElementById("post-contents").innerText = contents;
-    document.getElementById("post-islikes").innerText = islikes;
-    document.getElementById("post-comments").innerText = comments;
-    document.getElementById("post-listlikes").innerText = listlikes;
+    document.getElementById("post-writtentime").innerText = createdAt;
     document.getElementById("post-nickname").innerText = nickname;
+
     document.getElementById("post-likes").innerText = likes;
+    for (let i = 0; i < listlikeslength; i++) {
+      const listlikesdiv = document.querySelector(".post-like-list");
+      listlikesdiv.innerHTML += `
+        <span class="islike-user" id="${listlikes[i]}">${listlikes[i]}</span></li>   
+      `;
+    }
+    const islikediv = document.querySelector(".post-likes");
+
+    if (islikes) {
+      islikediv.innerHTML = `
+      <div class="post-islike" id="post-islike" onclick="postLike()">
+      ♥
+      </div>
+      `;
+    } else {
+      islikediv.innerHTML = `
+      <div class="post-islike" id="post-islike" onclick="postLike()">
+      ♡
+      </div>
+      `;
+    }
+
+    const iscommentdiv = document.querySelector(".post-comment");
+    for (let j = 0; j < commentscount; j++) {
+      iscommentdiv.innerHTML += `
+      <div class ="comment-writer">${comments[j].nickname}</div>
+      <div class ="comment-createdAt">${comments[j].createdAt.substr(
+        0,
+        10
+      )}</div>
+      <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
+      `;
+    }
   } catch (error) {
     // alert("알수없는 오류로 정보를 불러오는데 실패했습니다.");
     // window.location.href = "/board/?page=1";
