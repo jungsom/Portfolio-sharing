@@ -138,6 +138,10 @@ body {
   margin-right: 0; /* 마지막 요소의 우측 마진 제거 */
 }
 
+.education-entry {
+  background-color: #e0a7ab;
+}
+
 .btnbox {
   border-color: gray;
 }
