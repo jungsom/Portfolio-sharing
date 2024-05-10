@@ -80,29 +80,15 @@ async function getPostList(page) {
   }
 }
 
-// 페이지네이션 버튼 활성/비활성화 함수 업데이트
 function isvisibleNextPrevBtn(totalPage, currentPage) {
-  document.getElementById("prev-btn").style.display =
-    currentPage === 1 ? "none" : "block";
-  document.getElementById("next-btn").style.display =
-    currentPage === totalPage ? "none" : "block";
-}
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
 
-//페이지네이션 버튼 활성/비활성화 구분
-function isvisibleNextPrevBtn(num) {
-  if (num == 1) {
-    document.getElementById("prev-btn").style.display = "none";
-    document.getElementById("next-btn").style.display = "block";
-  } else if (num == 2) {
-    document.getElementById("prev-btn").style.display = "block";
-    document.getElementById("next-btn").style.display = "none";
-  } else if (num == 0) {
-    document.getElementById("prev-btn").style.display = "block";
-    document.getElementById("next-btn").style.display = "block";
-  } else if (num == 3) {
-    document.getElementById("prev-btn").style.display = "none";
-    document.getElementById("next-btn").style.display = "none";
-  }
+  // 처음 페이지에서는 이전 버튼을 비활성화
+  prevBtn.style.display = currentPage === 1 ? "none" : "block";
+
+  // 마지막 페이지에서는 다음 버튼을 비활성화
+  nextBtn.style.display = currentPage === totalPage ? "none" : "block";
 }
 
 //현재 data 몇번째 페이지 참조하는지 찾는 함수
@@ -472,13 +458,26 @@ function registComment() {
   }).then((response) => {
     if (response.status == 201) {
       alert("댓글 작성 완료!");
-      getPostContents(boardId);
+      response.json().then((data) => {
+        // 댓글이 성공적으로 등록된 후, 페이지에 바로 추가하기 위해 호출
+        addCommentToPage(data.comment);
+        contents.value = "";
+      });
+      getPostContents(boardId); // 포스트 콘텐츠를 갱신 (필요한 경우)
     } else {
       response.json().then((data) => {
         alert(data.error);
       });
     }
   });
+}
+
+function addCommentToPage(comment) {
+  const commentsContainer = document.getElementById("post-comments");
+  const commentDiv = document.createElement("div");
+  commentDiv.className = "comment-container"; // CSS 클래스 할당
+  commentDiv.textContent = comment.contents; // 서버로부터 받은 댓글 내용
+  commentsContainer.appendChild(commentDiv); // 댓글 컨테이너에 댓글 div 추가
 }
 
 function deleteComment(id) {

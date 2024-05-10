@@ -59,7 +59,7 @@
           <!-- 게시판 목록 -->
           <div class="post-list-container" id="post-list-container">
             <h3>게시판</h3>
-            <div class="serach-box">
+            <div class="search-box">
               <select id="search-type">
                 <option value="title">제목</option>
                 <option value="contents">내용</option>
@@ -129,20 +129,22 @@
             </div>
             <div class="post-contents" id="post-contents"></div>
             <div class="post-view-wrap">
-              <div
-                class="post-modify-btn align-left btn btn-yellow"
-                id="post-modify-btn"
-              >
-                수정
-              </div>
-              <div
-                class="post-delete-btn align-left btn btn-red"
-                id="post-delete-btn"
-              >
-                삭제
-              </div>
               <div class="post-golist-btn align-left btn" id="post-golist-btn">
-                목록
+                게시글 목록으로 돌아가기
+              </div>
+              <div class="btn-group">
+                <div
+                  class="post-modify-btn align-left btn btn-yellow"
+                  id="post-modify-btn"
+                >
+                  수정
+                </div>
+                <div
+                  class="post-delete-btn align-left btn btn-red"
+                  id="post-delete-btn"
+                >
+                  삭제
+                </div>
               </div>
             </div>
             <div class="post-bottomwrap">
@@ -152,18 +154,20 @@
 
             <div class="post-comment-container">
               <textarea
-                class="post-comment-contents align-left"
+                class="post-comment-contents"
                 id="post-comment-contents"
                 placeholder="댓글을 입력하세요"
               ></textarea>
+              <div class="post-comment-wrap">
+                <div
+                  class="post-comment-btn align-right btn btn-green"
+                  id="post-comment-btn"
+                >
+                  등록
+                </div>
+              </div>
               <div class="post-comment" id="post-comments">
                 여기에 댓글이 표시됩니다...
-              </div>
-              <div
-                class="post-comment-btn align-left btn btn-green"
-                id="post-comment-btn"
-              >
-                등록
               </div>
             </div>
           </div>
