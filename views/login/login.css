@@ -126,6 +126,9 @@
   display: block;
   text-align: center;
 }
+.alert-text {
+  color: red;
+}
 
 /* 팝업모달 */
 h2 {

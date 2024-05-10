@@ -55,7 +55,7 @@ function changeModalText(txtNum) {
     document.getElementById("modaltext").innerHTML = "로그인 성공";
   } else if (txtNum == 3) {
     document.getElementById("modaltext").innerHTML =
-      "비밀번호를 다시 확인해주세요.";
+      "비밀번호를 다시 확인해주세요. (최소 4자리)";
   } else if (txtNum == 4) {
     document.getElementById("modaltext").innerHTML = "가입완료!";
   } else if (txtNum == 5) {
@@ -129,8 +129,16 @@ function login() {
 
 //비밀번호, 비밀번호 확인 같은지 다른지 판단
 function passwordCheck(pw, pwchk) {
-  if (pw == pwchk) {
-    return true;
+  if (pw != "" && pwchk != "") {
+    if (pw == pwchk) {
+      if (pw.length >= 4) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
@@ -139,20 +147,13 @@ function passwordCheck(pw, pwchk) {
 function passwordCompare() {
   const pw = document.getElementById("setpw").value;
   const pwchk = document.getElementById("setpwchk").value;
-  const pwChange = document.getElementById("change-setpw").value;
-  const pwChangechk = document.getElementById("change-setpwchk").value;
-
-  passwordCheck(pw, pwchk);
 
   if (pw == "") {
     document.getElementById("alert-text").style.display = "none";
-    document.getElementById("alert-text2").style.display = "none";
-  } else if (passwordCheck(pw, pwchk)) {
+  } else if (pw == pwchk) {
     document.getElementById("alert-text").style.display = "none";
-    document.getElementById("alert-text2").style.display = "none";
   } else {
     document.getElementById("alert-text").style.display = "block";
-    document.getElementById("alert-text2").style.display = "block";
   }
 }
 
@@ -175,14 +176,6 @@ function setAccount() {
       return false;
     }
   }
-
-  if (!passwordCheck(pw, pwchk)) {
-    modalOpen(3);
-  }
-  if (!emailCheck(email)) {
-    modalOpen(7);
-  }
-
   if (passwordCheck(pw, pwchk) && emailCheck(email)) {
     fetch("/auth/join", {
       method: "POST",
@@ -213,6 +206,12 @@ function setAccount() {
         });
       }
     });
+  } else if (!passwordCheck(pw, pwchk)) {
+    modalOpen(3);
+    return;
+  } else if (!emailCheck(email)) {
+    modalOpen(7);
+    return;
   }
 }
 

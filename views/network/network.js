@@ -57,12 +57,12 @@ async function goToUserPage() {
     if (logintrue.status === true) {
       window.location.href = `/userpage?user=${logintrue.data.userId}`;
     } else {
-      alert("로그인 창으로 이동합니다.");
+      alert("로그인이 필요한 서비스입니다.");
       window.location.href = `/login`;
     }
   } catch (error) {
     console.error(error);
-    alert("로그인 창으로 이동합니다.");
+    alert("로그인이 필요한 서비스입니다.");
     window.location.href = `/login`;
   }
 }
@@ -76,12 +76,12 @@ async function goToBoard() {
     if (logintrue.status === true) {
       window.location.href = `/board/?page=1`;
     } else {
-      alert("로그인 창으로 이동합니다.");
+      alert("로그인이 필요한 서비스입니다.");
       window.location.href = `/login`;
     }
   } catch (error) {
     console.error(error);
-    alert("로그인 창으로 이동합니다.");
+    alert("로그인이 필요한 서비스입니다.");
     window.location.href = `/login`;
   }
 }
