@@ -14,7 +14,7 @@ body {
 }
 
 .contents {
-    padding: 100px 85px;
+  padding: 100px 85px;
 }
 
 .btn-container {
@@ -23,6 +23,21 @@ body {
 
 .btn {
   padding: 16px 32px;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  border-radius: 24px;
+  background-color: white;
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  font-weight: 500;
+
+  &:hover {
+    animation: jelly 0.5s;
+  }
+}
+
+.btn2 {
   border: 2px solid rgba(0, 0, 0, 0.5);
   border-radius: 24px;
   background-color: white;
