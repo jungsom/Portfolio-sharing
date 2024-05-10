@@ -8,6 +8,7 @@ const {
   Board,
   Like,
   Skill,
+  Comment,
 } = require("../models");
 const {
   BadRequest,
@@ -199,6 +200,18 @@ router.put("/mypage", async (req, res, next) => {
             fromUser: req.session.passport.user.nickname,
           },
           { fromUser: nickname }
+        ).lean();
+      }
+      // comment nickname 변경
+      const findComment = await Comment.find({
+        nickname: req.session.passport.user.nickname,
+      }).lean();
+      if (findComment.length !== 0) {
+        await Comment.updateMany(
+          {
+            nickname: req.session.passport.user.nickname,
+          },
+          { nickname }
         ).lean();
       }
 
