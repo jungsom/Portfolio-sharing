@@ -92,38 +92,69 @@
             id="write-post-container"
             style="display: none"
           >
-            <span>Title</span>
+            <div class="align-left">Title</div>
             <input class="write-post-title input-box" id="write-post-title" />
-            <span>Contents</span>
-            <input
+            <div class="align-left">Contents</div>
+            <textarea
               class="write-post-contents input-box"
               id="write-post-contents"
-            />
-            <button onclick="outWritePost()">취소</button>
-            <button onclick="registPost()">글 쓰기</button>
+            ></textarea>
+            <button class="btn btn-red" onclick="outWritePost()">취소</button>
+            <button class="btn btn-green" onclick="registPost()">작성</button>
           </div>
 
           <!-- 게시글 내용 (1개보여줌) -->
           <div class="post-container" id="post-container" style="display: none">
             <div class="post-topwrap">
-              <div class="post-title" id="post-title"></div>
-              <div class="post-writtentime" id="post-writtentime"></div>
-              <div class="post-nickname" id="post-nickname"></div>
+              <div class="post-title align-left-title" id="post-title"></div>
+              <div
+                class="post-writtentime align-right"
+                id="post-writtentime"
+              ></div>
+              <div class="post-nickname align-right" id="post-nickname"></div>
             </div>
-            <div class="post-contents-warp">
-              <div class="post-contents" id="post-contents"></div>
-            </div>
-            <div class="post-bottomwrap">
-              <div class="post-likes" id="post-likes"></div>
-              <div class="post-like-list" id="post-like-list"></div>
-              <div class="post-modify-btn" id="post-modify-btn">수정</div>
-              <div class="post-delete-btn" id="post-delete-btn">삭제</div>
+            <div class="post-view-wrap">
+              <div class="post-contents-warp">
+                <div class="post-contents" id="post-contents"></div>
+              </div>
+              <div class="post-bottomwrap">
+                <div class="post-likes align-right" id="post-likes"></div>
+                <div
+                  class="post-like-list align-right"
+                  id="post-like-list"
+                ></div>
+                <div
+                  class="post-golist-btn align-left btn"
+                  id="post-golist-btn"
+                >
+                  목록
+                </div>
+                <div
+                  class="post-modify-btn align-left btn btn-yellow"
+                  id="post-modify-btn"
+                >
+                  수정
+                </div>
+                <div
+                  class="post-delete-btn align-left btn btn-red"
+                  id="post-delete-btn"
+                >
+                  삭제
+                </div>
+              </div>
             </div>
             <div class="post-comment-container">
+              <textarea
+                class="post-comment-contents align-left"
+                id="post-comment-contents"
+              ></textarea>
+              <div
+                class="post-comment-btn align-left btn btn-green"
+                id="post-comment-btn"
+              >
+                등록
+              </div>
               <div class="post-comment" id="post-comments"></div>
-
-              <input class="post-comment-contents" id="post-comment-contents" />
-              <div class="post-comment-btn" id="post-comment-btn">등록</div>
             </div>
           </div>
         </div>

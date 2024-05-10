@@ -29,7 +29,7 @@ function logout() {
 
 //현재 로그인된 계정의 userId get
 function ismycontents() {
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       const currentNick = data.data.nickname;
@@ -41,7 +41,7 @@ function ismycontents() {
 //게시물 목록 페이지별 조회 및 리스트업
 async function getPostList(page) {
   try {
-    const res = await fetch(`http://localhost:8080/boards/?page=${page}`);
+    const res = await fetch(`/boards/?page=${page}`);
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
@@ -127,7 +127,7 @@ function getPrevPostList() {
 // 현재페이지
 
 function isVisibleBtns() {
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       if (data.status) {
@@ -184,7 +184,7 @@ async function getpostSearch(page) {
   postlists.innerHTML = ``;
   try {
     const res = await fetch(
-      `http://localhost:8080/boards/search/result?option=${searchtype}&keyword=${search}`
+      `/boards/search/result?option=${searchtype}&keyword=${search}`
     );
     const data = await res.json();
     const listcount = data.data.length;
@@ -228,7 +228,7 @@ function registPost() {
     const contents = document.getElementById("write-post-contents").value;
 
     if (poststate == "new") {
-      fetch("http://localhost:8080/boards", {
+      fetch("/boards", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -263,7 +263,7 @@ function registPost() {
       });
     } else if (poststate == "modify") {
       const boardId = localStorage.getItem("boardId");
-      fetch(`http://localhost:8080/boards/${boardId}`, {
+      fetch(`/boards/${boardId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -306,7 +306,7 @@ async function getPostContents(id) {
   document.getElementById("post-list-container").style.display = "none";
   document.getElementById("post-container").style.display = "block";
   try {
-    const res = await fetch(`http://localhost:8080/boards/${id}`);
+    const res = await fetch(`/boards/${id}`);
     const data = await res.json();
     const currentNick = localStorage.getItem("nickname");
     if (currentNick == data.data[0].nickname) {
@@ -360,12 +360,17 @@ async function getPostContents(id) {
 
     for (let j = 0; j < commentscount; j++) {
       iscommentdiv.innerHTML += `
-      <div class ="comment-writer">${comments[j].nickname}</div>
-      <div class ="comment-createdAt">${comments[j].createdAt.substr(
-        0,
-        10
-      )}</div>
-      <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
+      <div class ="comment-container align-left">
+        <div class ="comment-writer">${comments[j].nickname}</div>
+        <div class ="comment-createdAt">${comments[j].createdAt.substr(
+          0,
+          10
+        )}</div>
+        <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
+        <div class ="comment-delete-btn btn btn-red ${nickname}" id="comment-delete-btn" onclick="deleteComment(${
+        comments[j].commentId
+      })" style="display: block">삭제</div>
+      </div>
       `;
     }
     localStorage.setItem("boardId", id);
@@ -377,7 +382,7 @@ async function getPostContents(id) {
 
 function postLike() {
   const boardId = localStorage.getItem("boardId");
-  fetch(`http://localhost:8080/boards/${boardId}/likes`, {
+  fetch(`/boards/${boardId}/likes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -403,7 +408,7 @@ function postLike() {
 function postDelete() {
   if (confirm("정말로 해당 게시글을 삭제하시겠습니까?")) {
     const boardId = localStorage.getItem("boardId");
-    fetch(`http://localhost:8080/boards/${boardId}`, {
+    fetch(`/boards/${boardId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -430,7 +435,7 @@ function postModify() {
   const boardId = localStorage.getItem("boardId");
   localStorage.setItem("postState", "modify");
 
-  fetch(`http://localhost:8080/boards/${boardId}`)
+  fetch(`/boards/${boardId}`)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
@@ -439,6 +444,56 @@ function postModify() {
       document.getElementById("write-post-title").value = title;
       document.getElementById("write-post-contents").value = contents;
     });
+}
+
+//댓글 작성
+function registComment() {
+  const contents = document.getElementById("post-comment-contents").value;
+  const boardId = localStorage.getItem("boardId");
+  fetch(`/boards/${boardId}/comment`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      contents: contents,
+    }),
+  }).then((response) => {
+    if (response.status == 201) {
+      alert("댓글 작성 완료!");
+      getPostContents(boardId);
+    } else {
+      response.json().then((data) => {
+        alert(data.error);
+      });
+    }
+  });
+}
+
+function deleteComment(id) {
+  if (confirm("정말로 해당 댓글을 삭제하시겠습니까?")) {
+    const commentId = id;
+    const boardId = localStorage.getItem("boardId");
+    fetch(`/boards/${boardId}/comment/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      console.log(response);
+      if (response.status == 200) {
+        response.json().then((data) => {
+          alert(data.message);
+        });
+        getPostContents(boardId);
+      } else {
+        response.json().then((data) => {
+          alert(data.error);
+        });
+      }
+    });
+  }
 }
 
 function isvisiblePostBtn(num) {
@@ -455,6 +510,13 @@ function gotoPostlist() {
   window.location.href = "/board/?page=1";
 }
 
+//eventlistener
+document
+  .querySelector("#post-comment-btn")
+  .addEventListener("click", registComment);
+document
+  .querySelector(".post-golist-btn")
+  .addEventListener("click", gotoPostlist);
 document
   .querySelector(".post-modify-btn")
   .addEventListener("click", postModify);
@@ -464,7 +526,7 @@ document
 document.querySelector("#userpage").addEventListener("click", gotoUserpage);
 
 function gotoUserpage() {
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       const currentUser = data.data.userId;
