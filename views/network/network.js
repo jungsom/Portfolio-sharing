@@ -236,20 +236,21 @@ async function updateMenu() {
 
 /** 로그아웃 함수 */
 function getLogOut() {
-  fetch("/auth/logout", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  }).then((response) => {
-    if (response.status == 401) {
-      alert("로그인 후 이용 가능합니다.");
-    } else if (response.status == 200) {
-      alert("로그아웃 성공");
-      window.location.href = "/?page=1";
-    }
-  });
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        window.location.href = "/?page=1";
+      }
+    });
+  }
 }
 
 /** 초기 화면 1페이지로 이동시키는 함수 */
