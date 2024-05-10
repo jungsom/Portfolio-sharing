@@ -1,3 +1,7 @@
+.contents {
+  padding: 100px 85px;
+}
+
 /* login에서 가져온 속성 */
 .submitbtn {
   font-family: "Pretendard Variable", Pretendard, -apple-system,

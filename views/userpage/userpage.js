@@ -69,14 +69,27 @@ function submitEditProfile() {
   })
     .then((response) => {
       if (!response.ok) {
+        if (response.status == 400) {
+          throw new Error("입력되지 않은 내용이 있습니다.");
+        } else if (response.status == 401) {
+          throw new Error("로그인 후 이용 가능합니다.");
+        } else if (response.status == 403) {
+          throw new Error("접근할 수 없습니다.");
+        } else if (response.status == 409) {
+          throw new Error("이미 사용중인 닉네임입니다.");
+        } else if (response.status == 500) {
+          throw new Error("서버 내부에서 오류가 발생했습니다.");
+        }
         return response.json(); // 응답을 JSON 형태로 파싱
       }
     })
     .then((data) => {
-      if (!data.error) {
-        console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
-        alert("프로필 정보가 성공적으로 등록되었습니다.");
-      } else alert(data.error);
+      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      alert("프로필 정보가 성공적으로 등록되었습니다.");
+    })
+    .catch((error) => {
+      console.error("Error:", error); // 에러 처리
+      alert(error);
     });
 
   //요소 보이기
@@ -87,7 +100,7 @@ function submitEditProfile() {
 
   //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
-  profileEditButton.style.display = "flex";
+  profileEditButton.style.display = "block";
   document.getElementById("submit_edit_button").remove();
   document.getElementById("cancel_edit_button").remove();
 }
@@ -102,7 +115,7 @@ function cancelEditProfile() {
 
   //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
-  profileEditButton.style.display = "flex";
+  profileEditButton.style.display = "block";
   document.getElementById("submit_edit_button").remove();
   document.getElementById("cancel_edit_button").remove();
 }
@@ -293,7 +306,7 @@ function editProfile() {
     nickname.style.display = "";
     description.style.display = "";
 
-    // const imageprofile = document.querySelector(".imageprofile-container");
+    const imageprofile = document.querySelector(".imageprofile-container");
     const profileEditButton = document.querySelector(".profile-edit-button");
     const cancelEditButton = document.getElementById("cancel_edit_button");
     const submitEditButton = document.getElementById("submit_edit_button");
@@ -419,6 +432,7 @@ function updateEducationList(educationArray) {
 
 // 모달을 열고 폼에 데이터를 채우는 함수
 function openEditEducationModal(educationId) {
+  getUserData();
   const modal = document.getElementById("educationModal");
   const saveButton = document.getElementById("education-confirm-button");
   const editButton = document.getElementById("education-edit-button");
@@ -1370,8 +1384,8 @@ function passwordChangeConfirm() {
   });
 }
 function passwordCompare() {
-  // const pw = document.getElementById("setpw").value;
-  // const pwchk = document.getElementById("setpwchk").value;
+  const pw = document.getElementById("setpw").value;
+  const pwchk = document.getElementById("setpwchk").value;
   const pwChange = document.getElementById("change-setpw").value;
   const pwChangechk = document.getElementById("change-setpwchk").value;
 
@@ -1450,9 +1464,7 @@ function gotologin() {
   localStorage.setItem("goTo", "login");
   window.location.href = "http://localhost:8080";
 }
-function modaltextclear() {
-  document.getElementById("modaltext1").innerHTML = "";
-}
+
 function clear() {
   const target = document.querySelectorAll(".InputBox");
   target.forEach((target) => {
