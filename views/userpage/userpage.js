@@ -1,3 +1,6 @@
+authcheck();
+updateMenu();
+
 //이름, 닉네임, 설명 입력창 및 타이틀 생성
 function createInputElement(str_class) {
   const inputElem = document.createElement("input");
@@ -45,22 +48,20 @@ function removeInputElement() {
   nicknameContainer.childNodes[3].remove();
   descriptionContainer.childNodes[3].remove();
 }
-
+//요소 보이기 함수
+// function displayon(...args) {
+//   for (const i of args) {
+//     args.style.display = "";
+//   }
+// }
 //submit 클릭 시 함수
 function submitEditProfile() {
-  // 편집 값 저장 & 공백시 "없음" 출력
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
-  nameValue.innerText = nameContainer.childNodes[4].value;
-  if (!nameValue.innerText) nameValue.innerText = "없음";
-  nicknameValue.innerText = nicknameContainer.childNodes[4].value;
-  if (!nicknameValue.innerText) nicknameValue.innerText = "없음";
-  descriptionValue.innerText = descriptionContainer.childNodes[4].value;
-  if (!descriptionValue.innerText) descriptionValue.innerText = "없음";
 
-  //서버로 name, nickname, description 정보 업데이트하기
-  fetch("http://localhost:8080/users/mypage", {
+  //서버로 name, nickname, description 정보 업데이트하기, 에러처리
+  fetch("/users/mypage", {
     method: "PUT", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -72,19 +73,19 @@ function submitEditProfile() {
       description: descriptionContainer.childNodes[4].value,
     }), // JSON 문자열로 변환하여 데이터 전송
   })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("네트워크 오류입니다.");
+    .then((response) => {
+      if (response.ok) {
+        return response.json(); // 응답을 JSON 형태로 파싱
       }
-      return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
-      alert("프로필 정보가 성공적으로 등록되었습니다.");
-    })
-    .catch((error) => {
-      console.error("Error:", error); // 에러 처리
-      alert("에러가 발생했습니다");
+      if (!data.error) {
+        console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+        alert("프로필 정보가 성공적으로 등록되었습니다.");
+        nameValue.innerText = data.data.name;
+        nicknameValue.innerText = data.data.nickname;
+        descriptionValue.innerText = data.data.description;
+      } else alert(data.error);
     });
 
   //요소 보이기
@@ -95,10 +96,9 @@ function submitEditProfile() {
 
   //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
-  const profile = document.querySelector(".profile");
   profileEditButton.style.display = "block";
-  profile.childNodes[10].remove();
-  profile.childNodes[9].remove();
+  document.getElementById("submit_edit_button").remove();
+  document.getElementById("cancel_edit_button").remove();
 }
 
 //cancel 클릭 시 함수
@@ -111,55 +111,79 @@ function cancelEditProfile() {
 
   //Edit 버튼 보이기 , submit/cancel 버튼 삭제
   const profileEditButton = document.querySelector(".profile-edit-button");
-  const profile = document.querySelector(".profile");
   profileEditButton.style.display = "block";
-  // console.log(profile.childNodes[9]) = submitEditButton;
-  // console.log(profile.childNodes[10]) = cancelEditButton;
-  profile.childNodes[10].remove();
-  profile.childNodes[9].remove();
+  document.getElementById("submit_edit_button").remove();
+  document.getElementById("cancel_edit_button").remove();
 }
-
-// mypage/project get 테스트
-fetch("http://localhost:8080/auth/status")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data); // 전체 데이터 구조 확인
-  })
-  .catch((error) => console.error("Error:", error));
-
-// edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 edit-btns이라는 class 할당해서 일괄 display 설정
+// edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 editBtns이라는 class 할당해서 일괄 display 설정
 function isVisibleBtns() {
   const params = new URLSearchParams(window.location.search);
   let currentuser = params.get("user");
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
         if (data.data.userId == currentuser) {
-          target.style.display = "block";
+          target.style.display = "flex";
         } else {
           target.style.display = "none";
         }
       });
     });
 }
+async function updateMenu() {
+  const loginElem = document.querySelector(".user-status-item.login");
+  const userpageElem = document.querySelector(
+    ".user-status-item-left.userpage"
+  );
+  const logoutElem = document.querySelector(".user-status-item.logout");
 
+  const logintrue = await getLoginStatus();
+  if (logintrue.status === true) {
+    userpageElem.style.display = "block";
+    logoutElem.style.display = "block";
+    loginElem.style.display = "none";
+  } else {
+    userpageElem.style.display = "none";
+    logoutElem.style.display = "none";
+    loginElem.style.display = "block";
+  }
+
+  userpageElem.childNodes[1].href = `/userpage/?user=${logintrue.data.userId}`;
+  console.log(userpageElem.childNodes[1].href);
+}
+/** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
+async function getLoginStatus() {
+  try {
+    const response = await fetch(`/auth/status`);
+    if (!response.ok) {
+      throw new Errow("데이터를 불러오는 중에 문제가 발생했습니다.");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 //userpage 에 표시될 유저 data 받아오기 및 표시
 //본인 userpage 던 타 userpage던 아래 코드로 바로 표시가능(구분방법 massId)
 function getUserData() {
   const params = new URLSearchParams(window.location.search);
   let currentuser = params.get("user");
-  fetch(`http://localhost:8080/users/${currentuser}`)
+  fetch(`/users/${currentuser}`)
     .then((res) => res.json())
     .then((data) => {
+      if (!data.user) {
+        window.location.href = "/404";
+      }
       //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
+      console.log(`${currentuser}`);
       document.querySelector(".Name").innerText = data.user.name;
       document.querySelector(".Nickname").innerText = data.user.nickname;
       document.querySelector(".Email").innerText = data.user.email;
       document.querySelector(".Description").innerText = data.user.description;
-      document.querySelector(".profile-image").src = data.user.profileImg;
-
+      document.querySelector(".profile-image").src = `/${data.user.profileImg}`;
       // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
         console.error("Education data is not available or not an array:", data);
@@ -172,13 +196,27 @@ function getUserData() {
       updateSkillList(data.skills);
     });
 }
-
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        window.location.href = "/?page=1";
+      }
+    });
+  }
+}
 // 프로필 편집 기능
 function editProfile() {
   // console.log(nameContainer.childNodes[3]) = Name;
   // console.log(nameContainer.childNodes[4]) = nameEdit;
-  //console.log(profile.childNodes[9]) = submitEditButon;
-  //console.log(profile.childNodes[10]) = cancelEditButon;
 
   // 프로필 편집 로직
   //입력창 및 타이틀 생성 함수로부터 변수 반환
@@ -218,9 +256,11 @@ function editProfile() {
     cancelEditButton.innerText = "Cancel";
     cancelEditButton.id = "cancel_edit_button";
 
-    const profile = document.querySelector(".profile");
-    profile.append(submitEditButton);
-    profile.append(cancelEditButton);
+    const profileBtnContainer = document.querySelector(
+      ".edit-button-container"
+    );
+    profileBtnContainer.append(submitEditButton);
+    profileBtnContainer.append(cancelEditButton);
 
     //submit버튼 클릭시 프로필 편집 정보 저장, 서버로 변경점 업데이트
     submitEditButton.addEventListener("click", (e) => submitEditProfile());
@@ -249,10 +289,9 @@ function editProfile() {
     nickname.style.display = "";
     description.style.display = "";
 
-    const profile = document.querySelector(".profile");
     const profileEditButton = document.querySelector(".profile-edit-button");
-    const cancelEditButton = profile.lastChild;
-    const submitEditButton = cancelEditButton.previousSibling;
+    const cancelEditButton = document.getElementById("cancel_edit_button");
+    const submitEditButton = document.getElementById("submit_edit_button");
     submitEditButton.style.display = "";
     cancelEditButton.style.display = "";
 
@@ -273,15 +312,18 @@ function editProfile() {
 //학력 추가 기능
 function addEducation() {
   const modal = document.getElementById("educationModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-modal-button");
   const confirmButton = document.getElementById("education-confirm-button");
+  const editButton = document.getElementById("education-edit-button");
 
   // 폼 초기화
   document.getElementById("educationForm").reset();
 
+  if (editButton) {
+    editButton.style.display = "none";
+  }
+
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
 
   modal.style.display = "block";
 
@@ -291,6 +333,14 @@ function addEducation() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -316,7 +366,7 @@ function confirmEducation(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/education`, {
+  fetch(`/mypage/education`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -355,12 +405,14 @@ function updateEducationList(educationArray) {
     educationDiv.classList.add("education-entry");
     educationDiv.setAttribute("data-education-id", educationItem.educationId);
     educationDiv.innerHTML = `
-          <p>학교 이름: <p1>${educationItem.schoolName}</p1></p>
-          <p>전공: <p2>${educationItem.major}</p2></p>
-          <p>학위: <p3>${educationItem.schoolStatus}</p3></p>
+          <div>
+          <p>학교 이름 : <p1>${educationItem.schoolName}</p1></p>
+          <p>전공이름 / 없음 : <p2>${educationItem.major}</p2></p>
+          <p>학위 : <p3>${educationItem.schoolStatus}</p3></p>
+          </div>
           <div class="editBtns">
-          <button onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
-          <button onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -370,10 +422,10 @@ function updateEducationList(educationArray) {
 
 // 모달을 열고 폼에 데이터를 채우는 함수
 function openEditEducationModal(educationId) {
+  getUserData();
   const modal = document.getElementById("educationModal");
   const saveButton = document.getElementById("education-confirm-button");
   const editButton = document.getElementById("education-edit-button");
-  const cancelButton = document.getElementById("close-modal-button");
 
   console.log(document.getElementById("education-edit-button"));
 
@@ -396,10 +448,25 @@ function openEditEducationModal(educationId) {
     .setAttribute("data-education-id", educationId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -413,7 +480,7 @@ function submitEducationUpdate() {
     schoolStatus: document.getElementById("schoolStatus").value,
   };
 
-  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
+  fetch(`/mypage/education/${educationId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -436,15 +503,10 @@ function submitEducationUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeModal() {
-  document.getElementById("educationModal").style.display = "none";
-}
-
 function deleteEducation(button, educationId) {
   const plusButton = document.getElementById("education_plus_button");
   console.log(educationId);
-  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
+  fetch(`/mypage/education/${educationId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -459,28 +521,30 @@ function deleteEducation(button, educationId) {
       alert("학력 정보가 삭제되었습니다.");
       const educationEntry = button.closest(".education-entry");
       educationEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
 //수상 추가 기능
 function addAward() {
   const modal = document.getElementById("awardModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-award-button");
   const confirmButton = document.getElementById("award-confirm-button");
+  const editButton = document.getElementById("award-edit-button");
 
   // 폼 초기화
   document.getElementById("awardForm").reset();
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -490,6 +554,14 @@ function addAward() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -515,7 +587,7 @@ function confirmAward(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/award`, {
+  fetch(`/mypage/award`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -554,12 +626,14 @@ function updateAwardList(awardArray) {
     awardDiv.classList.add("award-entry");
     awardDiv.setAttribute("data-award-id", awardItem.awardId);
     awardDiv.innerHTML = `
-          <p>수상 내역: <p1>${awardItem.title}</p1></p>
-          <p>수상 시기: <p2>${awardItem.acqDate}</p2></p>
-          <p>상세 설명: <p3>${awardItem.details}</p3></p>
+          <div>
+          <p>이름 : <p1>${awardItem.title}</p1></p>
+          <p>수상 시기 : <p2>${awardItem.acqDate}</p2></p>
+          <p>설명 : <p3>${awardItem.details}</p3></p>
+          </div>
           <div class="editBtns">
-          <button onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
-          <button onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -572,7 +646,6 @@ function openEditAwardModal(awardId) {
   const modal = document.getElementById("awardModal");
   const saveButton = document.getElementById("award-confirm-button");
   const editButton = document.getElementById("award-edit-button");
-  const cancelButton = document.getElementById("close-award-button");
 
   console.log(document.getElementById("award-edit-button"));
 
@@ -591,10 +664,25 @@ function openEditAwardModal(awardId) {
   document.getElementById("awardModal").setAttribute("data-award-id", awardId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -603,12 +691,12 @@ function submitAwardUpdate() {
     .getElementById("awardModal")
     .getAttribute("data-award-id");
   const updatedAward = {
-    title: document.getElementById("projectTitle").value,
+    title: document.getElementById("title").value,
     acqDate: document.getElementById("acqDate").value,
     details: document.getElementById("details").value,
   };
 
-  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+  fetch(`/mypage/award/${awardId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -631,15 +719,10 @@ function submitAwardUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeAwardModal() {
-  document.getElementById("awardModal").style.display = "none";
-}
-
 function deleteAward(button, awardId) {
   const plusButton = document.getElementById("award-plus-button");
   console.log(awardId);
-  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+  fetch(`/mypage/award/${awardId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -654,28 +737,30 @@ function deleteAward(button, awardId) {
       alert("수상 정보가 삭제되었습니다.");
       const awardEntry = button.closest(".award-entry");
       awardEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`수상 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
 //프로젝트 추가 기능
 function addProject() {
   const modal = document.getElementById("projectModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-project-button");
   const confirmButton = document.getElementById("project-confirm-button");
+  const editButton = document.getElementById("project-edit-button");
 
   // 폼 초기화
   document.getElementById("projectForm").reset();
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -685,6 +770,14 @@ function addProject() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -713,7 +806,7 @@ function confirmProject(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/project`, {
+  fetch(`/mypage/project`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -753,13 +846,15 @@ function updateProjectList(projectArray) {
     projectDiv.classList.add("project-entry");
     projectDiv.setAttribute("data-project-id", projectItem.projectId);
     projectDiv.innerHTML = `
-          <p>수상 내역: <p1>${projectItem.title}</p1></p>
-          <p>수상 시기: <p2>${projectItem.startDate}</p2></p>
-          <p>수상 시기: <p3>${projectItem.endDate}</p3></p>
-          <p>상세 설명: <p4>${projectItem.details}</p4></p>
+          <div>
+          <p>이름 : <p1>${projectItem.title}</p1></p>
+          <p>시작 날짜 : <p2>${projectItem.startDate}</p2></p>
+          <p>종료 날짜 : <p3>${projectItem.endDate}</p3></p>
+          <p>설명: <p4>${projectItem.details}</p4></p>
+          </div>
           <div class="editBtns">
-          <button onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
-          <button onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -772,7 +867,6 @@ function openEditProjectModal(projectId) {
   const modal = document.getElementById("projectModal");
   const saveButton = document.getElementById("project-confirm-button");
   const editButton = document.getElementById("project-edit-button");
-  const cancelButton = document.getElementById("close-project-button");
 
   console.log(document.getElementById("project-edit-button"));
 
@@ -797,10 +891,25 @@ function openEditProjectModal(projectId) {
     .setAttribute("data-project-id", projectId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -815,7 +924,7 @@ function submitProjectUpdate() {
     details: document.getElementById("projectDetails").value,
   };
 
-  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+  fetch(`/mypage/project/${projectId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -838,15 +947,10 @@ function submitProjectUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeProjectModal() {
-  document.getElementById("projectModal").style.display = "none";
-}
-
 function deleteProject(button, projectId) {
   const plusButton = document.getElementById("project-plus-button");
   console.log(projectId);
-  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+  fetch(`/mypage/project/${projectId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -861,6 +965,7 @@ function deleteProject(button, projectId) {
       alert("프로젝트 정보가 삭제되었습니다.");
       const projectEntry = button.closest(".project-entry");
       projectEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -868,23 +973,24 @@ function deleteProject(button, projectId) {
         `프로젝트 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`
       );
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
 //자격증 추가 기능
 function addCertificate() {
   const modal = document.getElementById("certificateModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-certificate-button");
   const confirmButton = document.getElementById("certificate-confirm-button");
+  const editButton = document.getElementById("certificate-edit-button");
 
   // 폼 초기화
   document.getElementById("certificateForm").reset();
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -894,6 +1000,14 @@ function addCertificate() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -916,7 +1030,7 @@ function confirmCertificate(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/certificate`, {
+  fetch(`/mypage/certificate`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -957,11 +1071,13 @@ function updateCertificateList(certificateArray) {
       certificateItem.certificateId
     );
     certificateDiv.innerHTML = ` 
-          <p>자격증 이름: <p1>${certificateItem.title}</p1></p>
-          <p>취득 날짜: <p2>${certificateItem.acqDate}</p2></p>
+          <div>
+          <p>이름 : <p1>${certificateItem.title}</p1></p>
+          <p>취득 날짜 : <p2>${certificateItem.acqDate}</p2></p>
+          </div>
           <div class="editBtns">
-          <button onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
-          <button onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -974,7 +1090,6 @@ function openEditCertificateModal(certificateId) {
   const modal = document.getElementById("certificateModal");
   const saveButton = document.getElementById("certificate-confirm-button");
   const editButton = document.getElementById("certificate-edit-button");
-  const cancelButton = document.getElementById("close-certificate-button");
 
   console.log(document.getElementById("certificate-edit-button"));
 
@@ -995,10 +1110,25 @@ function openEditCertificateModal(certificateId) {
     .setAttribute("data-certificate-id", certificateId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  saveButton.style.display = "none"; // '취소' 버튼 보이기
 
   // 모달 표시
   modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -1011,7 +1141,7 @@ function submitCertificateUpdate() {
     acqDate: document.getElementById("acquireDate").value,
   };
 
-  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+  fetch(`/mypage/certificate/${certificateId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -1034,15 +1164,10 @@ function submitCertificateUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeCertificateModal() {
-  document.getElementById("certificateModal").style.display = "none";
-}
-
 function deleteCertificate(button, certificateId) {
   const plusButton = document.getElementById("certificate-plus-button");
   console.log(certificateId);
-  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+  fetch(`/mypage/certificate/${certificateId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -1057,28 +1182,30 @@ function deleteCertificate(button, certificateId) {
       alert("자격증 정보가 삭제되었습니다.");
       const certificateEntry = button.closest(".certificate-entry");
       certificateEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`자격증 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
 //스킬 추가 기능
 function addSkill() {
   const modal = document.getElementById("skillModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-skill-button");
   const confirmButton = document.getElementById("skill-confirm-button");
+  const editButton = document.getElementById("skill-edit-button");
 
   // 폼 초기화
   document.getElementById("skillForm").reset();
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
+
+  if (editButton) {
+    editButton.style.display = "none";
+  }
 
   modal.style.display = "block";
 
@@ -1088,6 +1215,14 @@ function addSkill() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -1107,7 +1242,7 @@ function confirmSkill(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/skill`, {
+  fetch(`/mypage/skill`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -1144,10 +1279,12 @@ function updateSkillList(skillArray) {
     skillDiv.classList.add("skill-entry");
     skillDiv.setAttribute("data-skill-id", skillItem.skillId);
     skillDiv.innerHTML = `
-          <p>스킬: <p1>${skillItem.stack}</p1></p>
+          <div>
+          <p><p1>${skillItem.stack}</p1></p>
+          </div>
           <div class="editBtns">
-          <button onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
-          <button onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -1159,7 +1296,7 @@ function updateSkillList(skillArray) {
 function openEditSkillModal(skillId) {
   const modal = document.getElementById("skillModal");
   const editButton = document.getElementById("skill-edit-button");
-  const cancelButton = document.getElementById("close-skill-button");
+  const confirmButton = document.getElementById("skill-confirm-button");
 
   console.log(document.getElementById("skill-edit-button"));
 
@@ -1174,10 +1311,25 @@ function openEditSkillModal(skillId) {
   document.getElementById("skillModal").setAttribute("data-skill-id", skillId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
+  confirmButton.style.display = "none";
 
   // 모달 표시
   modal.style.display = "block";
+
+  window.onclick = function (event) {
+    //폼 밖을 클릭하면 꺼진다
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -1189,7 +1341,7 @@ function submitSkillUpdate() {
     stack: document.getElementById("skillTitle").value,
   };
 
-  fetch(`http://localhost:8080/mypage/skill/${skillId}`, {
+  fetch(`/mypage/skill/${skillId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -1212,15 +1364,10 @@ function submitSkillUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeSkillModal() {
-  document.getElementById("skillModal").style.display = "none";
-}
-
 function deleteSkill(button, skillId) {
   const plusButton = document.getElementById("skill-plus-button");
   console.log(skillId);
-  fetch(`http://localhost:8080/mypage/skill/${skillId}`, {
+  fetch(`/mypage/skill/${skillId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -1229,13 +1376,13 @@ function deleteSkill(button, skillId) {
         throw new Error(`에러!! status: ${response.status}`);
       }
       return response.json();
-      return response.json();
     })
     .then((data) => {
       console.log(data);
       alert("스킬 정보가 삭제되었습니다.");
       const skillEntry = button.closest(".skill-entry");
       skillEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -1248,36 +1395,21 @@ function deleteSkill(button, skillId) {
 getUserData();
 isVisibleBtns();
 
-//회원탈퇴
-function accountDelete() {
-  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
-    const pw = document.getElementById("delete-account-pwchk").value;
-    fetch("http://localhost:8080/auth", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: pw,
-      }),
-    }).then((response) => {
-      if (response.status == 401) {
-        modalOpen(8);
-      } else if (response.status == 200) {
-        localStorage.setItem("goTo", "login");
-        modalOpen(9);
-        clear();
-      }
-    });
-  }
-}
+window.addEventListener("popstate", function (event) {
+  delete massId; // 사용자 id 값 삭제
+  localStorage.removeItem("tempId"); // 로컬 스토리지 삭제
+});
 
 //비밀번호 변경
 function passwordChange() {
+  const modal = document.getElementById("password_change_modal");
+  modal.style.display = "block";
+}
+function passwordChangeConfirm() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
   // console.log(prevPw, pw);
-  fetch("http://localhost:8080/auth", {
+  fetch("/auth", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -1289,22 +1421,249 @@ function passwordChange() {
   }).then((response) => {
     // console.log("res : ", response);
     if (response.status == 200) {
-      modalOpen(10);
-      localStorage.setItem("goTo", "login");
-      //변경된 비밀번호로 다시 로그인하게 유도
-      fetch("http://localhost:8080/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      });
+      changepwmodalOpen(10);
+      modalbtnhide();
+      document.getElementById("move_btn1").style.display = "block";
     } else if (response.status == 400) {
-      modalOpen(5);
+      changepwmodalOpen(5);
     } else if (response.status == 401) {
-      modalOpen(11);
+      changepwmodalOpen(11);
     } else if (response.status == 409) {
-      modalOpen(12);
+      changepwmodalOpen(12);
     }
   });
 }
+function passwordCompare() {
+  const pw = document.getElementById("setpw").value;
+  const pwchk = document.getElementById("setpwchk").value;
+  const pwChange = document.getElementById("change-setpw").value;
+  const pwChangechk = document.getElementById("change-setpwchk").value;
+
+  passwordCheck(pwChange, pwChangechk);
+
+  if (pwChange == "") {
+    document.getElementById("alert-text").style.display = "none";
+  } else if (passwordCheck(pwChange, pwChangechk)) {
+    document.getElementById("alert-text").style.display = "none";
+  } else {
+    document.getElementById("alert-text").style.display = "block";
+  }
+}
+function passwordCheck(pw, pwchk) {
+  if (pw == pwchk) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//회원탈퇴
+function accountDelete() {
+  const modal = document.getElementById("delete_account_modal");
+  modal.style.display = "block";
+}
+
+function accountDeleteConfirm() {
+  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
+    const modalClosebtn = document.querySelector(".modal_btn");
+    modalClosebtn.style.display = "block";
+    const pw = document.getElementById("delete-account-pwchk").value;
+    fetch("/auth", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 400) {
+        delaccmodalOpen(5);
+      } else if (response.status == 401) {
+        delaccmodalOpen(8);
+      } else if (response.status == 200) {
+        delaccmodalOpen(9);
+        clear();
+        inputBoxhide();
+        modalbtnhide();
+        document.getElementById("move_btn2").style.display = "block";
+      }
+    });
+  }
+}
+function changepwmodalOpen(txtNum) {
+  changeModalText(txtNum, 1);
+  document.getElementById("password_change_modal").style.display = "block";
+}
+
+function delaccmodalOpen(txtNum) {
+  changeModalText(txtNum, 2);
+  document.getElementById("delete_account_modal").style.display = "block";
+}
+
+function gotologin() {
+  modalClose();
+  //변경된 비밀번호로 다시 로그인하게 유도
+  fetch("/auth/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+  localStorage.setItem("goTo", "login");
+  window.location.href = "/login";
+}
+
+function clear() {
+  const target = document.querySelectorAll(".InputBox");
+  target.forEach((target) => {
+    target.value = "";
+  });
+}
+function inputBoxhide() {
+  const target = document.querySelectorAll(".InputBox");
+  target.forEach((target) => {
+    target.style.display = "none";
+  });
+}
+function modalbtnhide() {
+  const target = document.querySelectorAll(".modal_btn");
+  target.forEach((target) => {
+    target.style.display = "none";
+  });
+}
+function changeModalText(txtNum, n) {
+  if (txtNum == 1) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "등록되어있지 않은 ID 혹은 비밀번호를 입력하였습니다.";
+  } else if (txtNum == 2) {
+    document.getElementById(`modaltext${n}`).innerHTML = "로그인 성공";
+  } else if (txtNum == 3) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "비밀번호를 다시 확인해주세요.";
+  } else if (txtNum == 4) {
+    document.getElementById(`modaltext${n}`).innerHTML = "가입완료!";
+  } else if (txtNum == 5) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "입력되지않은 내용이 있습니다.";
+  } else if (txtNum == 6) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "이미 가입되어있는 ID 입니다.";
+  } else if (txtNum == 7) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "올바른 형태의 email 을 입력해주세요.";
+  } else if (txtNum == 8) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "비밀번호가 일치하지 않습니다.";
+  } else if (txtNum == 9) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "회원탈퇴가 정상적으로 완료되었습니다.";
+  } else if (txtNum == 10) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "비밀번호 변경 성공! 다시 로그인 해주세요.";
+  } else if (txtNum == 11) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "기존 비밀번호가 일치하지 않습니다.";
+  } else if (txtNum == 12) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "변경하려는 비밀번호가 지금 사용하고 있는 비밀번호와 같습니다.";
+  } else if (txtNum == 13) {
+    document.getElementById(`modaltext${n}`).innerHTML =
+      "이미 사용중인 닉네임 입니다.";
+  }
+}
+function modalClose() {
+  const target = document.querySelectorAll(".modal_btn");
+  target.forEach((target) => {
+    target.style.display = "block";
+  });
+  const movebtn1 = document.getElementById("move_btn1");
+  movebtn1.style.display = "none";
+  const movebtn2 = document.getElementById("move_btn2");
+  movebtn2.style.display = "none";
+  document.getElementById("delete_account_modal").style.display = "none";
+  document.getElementById("password_change_modal").style.display = "none";
+}
+
+//Header 공통코드
+document.querySelector("#login").addEventListener("click", gotoLogin);
+document.querySelector("#logout").addEventListener("click", logout);
+document.querySelector("#userpage").addEventListener("click", gotoUserpage);
+document.querySelector("#board").addEventListener("click", gotoBoard);
+
+function gotoUserpage() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        const currentUser = data.data.userId;
+        window.location.href = `/userpage?user=${currentUser}`;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        alert("로그아웃 성공");
+        window.location.href = "/";
+      }
+    });
+  }
+}
+
+function gotoLogin() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
+      } else {
+        window.location.href = "/login";
+      }
+    });
+}
+
+function gotoBoard() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        window.location.href = "/board/?page=1";
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+
+//각각 페이지 실행 시 올바른 접근인지 체크
+function authcheck() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        return;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+///헤더 공통코드 끝

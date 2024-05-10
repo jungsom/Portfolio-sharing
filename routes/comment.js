@@ -1,72 +1,73 @@
 const { Router } = require("express");
 const { Board, Comment } = require("../models");
-const {
-    BadRequest,
-    Unauthorized,
-    Forbidden,
-    NotFound,
-} = require("../middlewares");
+const { BadRequest, Unauthorized, Forbidden, NotFound } = require("../errors");
+const { commentSchema } = require("../utils/validation");
 
 const router = Router({ mergeParams: true });
 
 // 댓글 조회
 router.get("/", async (req, res, next) => {
-    try {
-        const { boardId } = req.params;
-        const board = await Board.findOne({ boardId }).lean();
-        const comment = await Comment.find({ boardId }).lean();
+  try {
+    const { boardId } = req.params;
+    const board = await Board.findOne({ boardId }).lean();
+    const comment = await Comment.find({ boardId }).lean();
 
-        if (!board) {
-            throw new NotFound("등록된 게시글이 없습니다."); // 404 에러
-        }
-        if (!comment.length) {
-            throw new NotFound("등록된 댓글이 없습니다."); // 404 에러
-        }
-
-        res.status(200).json({
-            error: null,
-            data: comment,
-        });
-    } catch (e) {
-        next(e);
+    if (!board) {
+      throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
     }
+
+    res.status(200).json({
+      error: null,
+      data: comment,
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 // 댓글 작성
 router.post("/", async (req, res, next) => {
-    try {
-        if (!req.session.passport) {
-            throw new Unauthorized("로그인 후 이용 가능합니다."); // 401 error
-        }
-
-        const nickname = req.session.passport.user.nickname;
-        const { boardId } = req.params;
-        const { contents } = req.body;
-
-        if (contents.trim().length === 0) {
-            throw new BadRequest("내용을 입력하세요."); // 400 에러
-        }
-
-        const comment = await Comment.create({
-            nickname,
-            boardId,
-            contents,
-        });
-
-        res.status(201).json({
-            error: null,
-            message: `${nickname}님의 댓글이 작성되었습니다.`,
-            data: {
-            nickname: comment.nickname,
-            boardId: comment.boardId,
-            commentId: comment.commentId,
-            contents: comment.contents,
-            createdAt: comment.createdAt,
-            },
-        });
-    } catch (e) {
-        next(e);
+  try {
+    if (!req.session.passport) {
+      throw new Unauthorized("로그인 후 이용 가능합니다."); // 401 error
     }
+
+    const nickname = req.session.passport.user.nickname;
+    const { boardId } = req.params;
+    const { contents } = req.body;
+    const findBoard = await Board.findOne({ boardId }).lean();
+
+    if (!findBoard) {
+      throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
+    }
+
+    // Joi validation
+    const { error } = commentSchema.validate({ contents });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
+    }
+
+    const comment = await Comment.create({
+      nickname,
+      boardId,
+      contents,
+    });
+
+    res.status(201).json({
+      error: null,
+      message: `${nickname}님의 댓글이 작성되었습니다.`,
+      data: {
+        nickname: comment.nickname,
+        boardId: comment.boardId,
+        commentId: comment.commentId,
+        contents: comment.contents,
+        createdAt: comment.createdAt,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 // 댓글 수정
@@ -80,19 +81,23 @@ router.put("/:commentId", async (req, res, next) => {
     const { boardId, commentId } = req.params;
     const { contents } = req.body;
     const findBoard = await Board.findOne({ boardId }).lean();
-    const findComment = await Comment.findOne({ commentId }).lean();
+    const findComment = await Comment.findOne({ boardId, commentId }).lean();
 
     if (!findBoard) {
-        throw new NotFound("등록된 게시글이 없습니다."); // 404 에러
+      throw new NotFound("게시글을 찾을 수없습니다."); // 404 에러
     }
     if (!findComment) {
-        throw new NotFound("등록된 댓글이 없습니다."); // 404 에러
+      throw new NotFound("댓글을 찾을 수 없습니다."); // 404 에러
     }
     if (nickname !== findComment.nickname) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
     }
-    if (contents.trim().length === 0) {
-      throw new BadRequest("내용을 입력하세요."); // 400 에러
+
+    // Joi validation
+    const { error } = commentSchema.validate({ contents });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
     }
 
     const comment = await Comment.findOneAndUpdate(
@@ -128,22 +133,22 @@ router.delete("/:commentId", async (req, res, next) => {
     const { boardId, commentId } = req.params;
 
     const findBoard = await Board.findOne({ boardId }).lean();
-    const findComment = await Comment.findOne({ commentId }).lean();
+    const findComment = await Comment.findOne({ boardId, commentId }).lean();
 
     if (!findBoard) {
-        throw new NotFound("등록된 게시글이 없습니다."); // 404 에러
+      throw new NotFound("게시글을 찾을 수 없습니다."); // 404 에러
     }
     if (!findComment) {
-        throw new NotFound("등록된 댓글이 없습니다."); // 404 에러
+      throw new NotFound("댓글을 찾을 수 없습니다."); // 404 에러
     }
     if (nickname !== findComment.nickname) {
       throw new Forbidden("접근할 수 없습니다."); // 403 에러
     }
 
     const comment = await Comment.deleteOne({
-        nickname,
-        boardId,
-        commentId,
+      nickname,
+      boardId,
+      commentId,
     }).lean();
 
     res.status(200).json({

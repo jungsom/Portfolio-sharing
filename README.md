@@ -6,6 +6,14 @@
 
 현재 진행 상황은 [Notion 페이지](https://www.notion.so/Devcartes-14aa0f1e311d4c3a9bcb09dd15122bc6)에서 확인하실 수 있습니다.
 
+- 2024년 5월 9일 목요일
+
+  - Board API경로 수정(board -> boards)
+  - Board 댓글 검색 기능 추가
+    - Board 검색도 일반 게시글 조회와 똑같이 페이지네이션과 조회수, 좋아요 순으로 정렬이 가능합니다.
+  - middlewares 디렉토리 -> erros & utils 디렉토리로 분리
+  - validation Joi로 수정
+
 - 2024년 5월 8일 수요일
 
   - Skill MVP 추가
@@ -51,6 +59,12 @@
 
 ## 💻 백엔드 Changelog
 
+- 2024년 5월 9일 목요일
+
+  - frontend branch의 index.js와 충돌이 발생하는 부분을 수정했습니다.
+  - Board API comment 검색 추가 + 페이지네이션, 정렬
+  - joi를 이용한 Validation 추가
+
 - 2024년 5월 8일 수요일
 
   - 404 페이지 추가
@@ -95,6 +109,7 @@
 
   - 🖼️ Multer를 이용한 프로필 이미지 업로드 기능, 404 페이지 (박수정)
   - 📄 페이지네이션 (이유민)
+  - 🥅 joi를 이용한 Validation (이유민)
   - 💻 Skill MVP (채명희)
   - 🗝️ 비밀번호 변경, 회원 탈퇴 (채명희)
   - 📝 게시판 API (박수정, 이유민, 채명희)

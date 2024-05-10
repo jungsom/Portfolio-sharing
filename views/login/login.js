@@ -1,5 +1,7 @@
 //Nav 페이지이동
 function init() {
+  authcheck();
+  navBtnHide();
   clear();
 }
 
@@ -53,12 +55,12 @@ function changeModalText(txtNum) {
     document.getElementById("modaltext").innerHTML = "로그인 성공";
   } else if (txtNum == 3) {
     document.getElementById("modaltext").innerHTML =
-      "비밀번호를 다시 확인해주세요.";
+      "비밀번호를 다시 확인해주세요. (최소 4자리)";
   } else if (txtNum == 4) {
     document.getElementById("modaltext").innerHTML = "가입완료!";
   } else if (txtNum == 5) {
     document.getElementById("modaltext").innerHTML =
-      "입력되지않은 내용이 있습니다.";
+      "입력하지않은 내용이 있거나 올바른 형식이 아닙니다.";
   } else if (txtNum == 6) {
     document.getElementById("modaltext").innerHTML =
       "이미 가입되어있는 ID 입니다.";
@@ -105,30 +107,42 @@ function login() {
   const email = document.getElementById("email").value;
   const pw = document.getElementById("pw").value;
 
-  fetch("http://localhost:8080/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email,
-      password: pw,
-    }),
-  }).then((response) => {
-    if (response.status == 401) {
-      modalOpen(1);
-    } else if (response.status == 200) {
-      modalOpen(2);
-      clear();
-      localStorage.setItem("goTo", "network");
-    }
-  });
+  if (email != "" && pw != "") {
+    fetch("/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 401) {
+        modalOpen(1);
+      } else if (response.status == 200) {
+        modalOpen(2);
+        clear();
+        localStorage.setItem("goTo", "network");
+      }
+    });
+  } else {
+    return;
+  }
 }
 
 //비밀번호, 비밀번호 확인 같은지 다른지 판단
 function passwordCheck(pw, pwchk) {
-  if (pw == pwchk) {
-    return true;
+  if (pw != "" && pwchk != "") {
+    if (pw == pwchk) {
+      if (pw.length >= 4) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
@@ -137,20 +151,13 @@ function passwordCheck(pw, pwchk) {
 function passwordCompare() {
   const pw = document.getElementById("setpw").value;
   const pwchk = document.getElementById("setpwchk").value;
-  const pwChange = document.getElementById("change-setpw").value;
-  const pwChangechk = document.getElementById("change-setpwchk").value;
-
-  passwordCheck(pw, pwchk);
 
   if (pw == "") {
     document.getElementById("alert-text").style.display = "none";
-    document.getElementById("alert-text2").style.display = "none";
-  } else if (passwordCheck(pw, pwchk)) {
+  } else if (pw == pwchk) {
     document.getElementById("alert-text").style.display = "none";
-    document.getElementById("alert-text2").style.display = "none";
   } else {
     document.getElementById("alert-text").style.display = "block";
-    document.getElementById("alert-text2").style.display = "block";
   }
 }
 
@@ -173,16 +180,8 @@ function setAccount() {
       return false;
     }
   }
-
-  if (!passwordCheck(pw, pwchk)) {
-    modalOpen(3);
-  }
-  if (!emailCheck(email)) {
-    modalOpen(7);
-  }
-
   if (passwordCheck(pw, pwchk) && emailCheck(email)) {
-    fetch("http://localhost:8080/auth/join", {
+    fetch("/auth/join", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -211,6 +210,12 @@ function setAccount() {
         });
       }
     });
+  } else if (!passwordCheck(pw, pwchk)) {
+    modalOpen(3);
+    return;
+  } else if (!emailCheck(email)) {
+    modalOpen(7);
+    return;
   }
 }
 
@@ -218,7 +223,7 @@ function setAccount() {
 function accountDelete() {
   if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
     const pw = document.getElementById("delete-account-pwchk").value;
-    fetch("http://localhost:8080/auth", {
+    fetch("/auth", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -243,7 +248,7 @@ function passwordChange() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
   // console.log(prevPw, pw);
-  fetch("http://localhost:8080/auth", {
+  fetch("/auth", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -258,7 +263,7 @@ function passwordChange() {
       modalOpen(10);
       localStorage.setItem("goTo", "login");
       //변경된 비밀번호로 다시 로그인하게 유도
-      fetch("http://localhost:8080/auth/logout", {
+      fetch("/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -274,5 +279,92 @@ function passwordChange() {
     }
   });
 }
+
+function navBtnHide() {
+  document.querySelector("#userpage").style.display = "none";
+  document.querySelector("#logout").style.display = "none";
+  document.querySelector("#login").style.display = "none";
+}
+
+//Header 공통코드
+// document.querySelector("#login").addEventListener("click", gotoLogin);
+// document.querySelector("#logout").addEventListener("click", logout);
+// document.querySelector("#userpage").addEventListener("click", gotoUserpage);
+document.querySelector("#board").addEventListener("click", gotoBoard);
+
+function gotoUserpage() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        const currentUser = data.data.userId;
+        window.location.href = `/userpage?user=${currentUser}`;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        alert("로그아웃 성공");
+        window.location.href = "/";
+      }
+    });
+  }
+}
+
+function gotoLogin() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
+      } else {
+        window.location.href = "/login";
+      }
+    });
+}
+
+function gotoBoard() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        window.location.href = "/board/?page=1";
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+
+//각각 페이지 실행 시 올바른 접근인지 체크
+function authcheck() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status) {
+        alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
+        window.location.href = "/";
+      } else {
+        return;
+      }
+    });
+}
+///헤더 공통코드 끝
 
 init();

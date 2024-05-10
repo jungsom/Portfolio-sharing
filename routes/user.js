@@ -8,6 +8,7 @@ const {
   Board,
   Like,
   Skill,
+  Comment,
 } = require("../models");
 const {
   BadRequest,
@@ -15,8 +16,9 @@ const {
   Forbidden,
   NotFound,
   Conflict,
-  Identification,
-} = require("../middlewares");
+} = require("../errors");
+const { identification } = require("../utils/identification");
+const { userSchema } = require("../utils/validation");
 const multer = require("multer");
 const path = require("path");
 const { nanoid } = require("nanoid");
@@ -28,7 +30,7 @@ router.get("/", async (req, res, next) => {
   const page = Number(req.query.page || 1); // 현재 페이지
   const perPage = Number(req.query.perPage || 10); // 페이지 당 게시글 수
   const { sortName } = req.body; // 정렬할 이름
-  let sortProcess = { createAt: -1 }; // 기본은 최신 순
+  let sortProcess = { createdAt: -1 }; // 기본은 최신 순
 
   try {
     if (sortName === "이름순") {
@@ -97,12 +99,6 @@ router.get("/:userId", async (req, res, next) => {
       throw new NotFound("존재하지 않는 id입니다.");
     }
 
-    const isIdentical = Identification(req.session, user);
-    if (isIdentical) {
-      // res.redirect("/mypage"); // 본인 id 검색하면 /mypage라는 곳으로 가기
-      console.log("내 페이지로 이동");
-    }
-
     // password는 빼고 보내기
     const userData = {
       userId: user.userId,
@@ -138,21 +134,11 @@ router.put("/mypage", async (req, res, next) => {
       throw new Unauthorized("로그인 후 이용 가능합니다.");
     }
 
-    // body validation
-    if (!name || !nickname || !description) {
-      throw new BadRequest("입력되지 않은 내용이 있습니다."); // 400 에러
-    }
-    if (name.trim().length === 0) {
-      throw new BadRequest("공백은 이름으로 사용 불가능합니다."); // 400 에러
-    }
-    if (name.trim() !== name) {
-      throw new BadRequest("이름 앞뒤에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
-    }
-    if (nickname.trim().length === 0) {
-      throw new BadRequest("공백은 닉네임으로 사용 불가능합니다."); // 400 에러
-    }
-    if (nickname.split(" ").join("") !== nickname) {
-      throw new BadRequest("닉네임에는 띄어쓰기를 사용할 수 없습니다."); // 400 에러
+    // Joi validation
+    const { error } = userSchema.validate({ name, nickname, description });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new BadRequest(errorMessages[0]); // 400 에러
     }
 
     const existsNickname = await User.findOne({ nickname }).lean();
@@ -167,7 +153,7 @@ router.put("/mypage", async (req, res, next) => {
 
     // 본인 확인
     const user = await User.findOne({ userId }).lean();
-    const isIdentical = Identification(req.session, user);
+    const isIdentical = identification(req.session, user);
     if (!isIdentical) {
       throw new Forbidden("접근할 수 없습니다.");
     }
@@ -210,6 +196,18 @@ router.put("/mypage", async (req, res, next) => {
           { fromUser: nickname }
         ).lean();
       }
+      // comment nickname 변경
+      const findComment = await Comment.find({
+        nickname: req.session.passport.user.nickname,
+      }).lean();
+      if (findComment.length !== 0) {
+        await Comment.updateMany(
+          {
+            nickname: req.session.passport.user.nickname,
+          },
+          { nickname }
+        ).lean();
+      }
 
       req.session.passport.user.nickname = nickname; // session 변경
     }
@@ -234,7 +232,7 @@ router.put("/mypage", async (req, res, next) => {
   }
 });
 
-router.get("/identification/:id", async (req, res, next) => {
+router.get("/identification/:userId", async (req, res, next) => {
   const userId = req.params.userId;
 
   try {
@@ -246,7 +244,7 @@ router.get("/identification/:id", async (req, res, next) => {
     const user = await User.findOne({ userId }).lean();
 
     // 본인 확인
-    const isIdentical = Identification(req.session, user);
+    const isIdentical = identification(req.session, user);
     if (isIdentical) {
       res.status(200).json({
         status: isIdentical,
