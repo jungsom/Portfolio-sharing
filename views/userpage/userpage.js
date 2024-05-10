@@ -1,4 +1,4 @@
-updateMenu();
+ updateMenu();
 //이름, 닉네임, 설명 입력창 및 타이틀 생성
 function createInputElement(str_class) {
   const inputElem = document.createElement("input");
@@ -49,10 +49,11 @@ function removeInputElement() {
 
 //submit 클릭 시 함수
 function submitEditProfile() {
-  // 편집 값 저장 & 공백시 "없음" 출력
+
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
+    
 
   //서버로 name, nickname, description 정보 업데이트하기, 에러처리
   fetch("/users/mypage", {
@@ -68,30 +69,21 @@ function submitEditProfile() {
     }), // JSON 문자열로 변환하여 데이터 전송
   })
     .then((response) => {
-      if (!response.ok) {
-        if (response.status == 400) {
-          throw new Error("입력되지 않은 내용이 있습니다.");
-        } else if (response.status == 401) {
-          throw new Error("로그인 후 이용 가능합니다.");
-        } else if (response.status == 403) {
-          throw new Error("접근할 수 없습니다.");
-        } else if (response.status == 409) {
-          throw new Error("이미 사용중인 닉네임입니다.");
-        } else if (response.status == 500) {
-          throw new Error("서버 내부에서 오류가 발생했습니다.");
-        }
+      console.log(response);
+      if (response.ok) {
         return response.json(); // 응답을 JSON 형태로 파싱
       }
     })
     .then((data) => {
+      if(!data.error) {
       console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("프로필 정보가 성공적으로 등록되었습니다.");
-    })
-    .catch((error) => {
-      console.error("Error:", error); // 에러 처리
-      alert(error);
+      nameValue.innerText = data.data.name;
+    nicknameValue.innerText = data.data.nickname;
+    descriptionValue.innerText = data.data.description;
+      } else alert(data.error);
     });
-
+  
   //요소 보이기
   inputValueDisplaySet("block");
 
@@ -303,7 +295,6 @@ function editProfile() {
     nickname.style.display = "";
     description.style.display = "";
 
-    const imageprofile = document.querySelector(".imageprofile-container");
     const profileEditButton = document.querySelector(".profile-edit-button");
     const cancelEditButton = document.getElementById("cancel_edit_button");
     const submitEditButton = document.getElementById("submit_edit_button");
