@@ -71,6 +71,8 @@
                   </div>
                 </div>
                 <div class="edit-button-container">
+                  <input type="file" class="profileImageInput" accept=".jpg" />
+                  <button class="imageButton">이미지 제출</button>
                   <button
                     class="profile-edit-button editBtns btn2 btn-yellow"
                     onclick="editProfile()"
@@ -106,6 +108,7 @@
                         id="existed-pw"
                         class="InputBox"
                         placeholder="이전 비밀번호를 입력해주세요"
+                        oninput="modaltextclear()"
                       />
                     </div>
                   </div>

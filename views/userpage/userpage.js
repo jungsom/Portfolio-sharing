@@ -59,6 +59,7 @@ function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
+
   //서버로 name, nickname, description 정보 업데이트하기, 에러처리
   fetch("/users/mypage", {
     method: "PUT", // HTTP 메서드
@@ -73,7 +74,9 @@ function submitEditProfile() {
     }), // JSON 문자열로 변환하여 데이터 전송
   })
     .then((response) => {
-      return response.json(); // 응답을 JSON 형태로 파싱
+      if (response.ok) {
+        return response.json(); // 응답을 JSON 형태로 파싱
+      }
     })
     .then((data) => {
       if (!data.error) {
@@ -220,16 +223,6 @@ function editProfile() {
   const nameEdit = createInputElement(".Name");
   const nicknameEdit = createInputElement(".Nickname");
   const descriptionEdit = createInputElement(".Description");
-  const params = new URLSearchParams(window.location.search);
-  let currentuser = params.get("user");
-  fetch(`/users/${currentuser}`)
-    .then((res) => res.json())
-    .then((data) => {
-      nameEdit.value = data.user.name;
-      nicknameEdit.value = data.user.nickname;
-      descriptionEdit.value = data.user.description;
-    });
-
   const Name = createh4Element("이름");
   const nickname = createh4Element("닉네임");
   const description = createh4Element("설명");
@@ -259,11 +252,9 @@ function editProfile() {
     const submitEditButton = document.createElement("button");
     submitEditButton.innerText = "Submit";
     submitEditButton.id = "submit_edit_button";
-    submitEditButton.className = "btn2 btn-green";
     const cancelEditButton = document.createElement("button");
     cancelEditButton.innerText = "Cancel";
     cancelEditButton.id = "cancel_edit_button";
-    cancelEditButton.className = "btn2 btn-red";
 
     const profileBtnContainer = document.querySelector(
       ".edit-button-container"
@@ -513,9 +504,6 @@ function submitEducationUpdate() {
 }
 
 function deleteEducation(button, educationId) {
-  if (!window.confirm("진짜로 이 학력을 삭제하시겠습니까?")) {
-    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
-  }
   const plusButton = document.getElementById("education_plus_button");
   console.log(educationId);
   fetch(`/mypage/education/${educationId}`, {
@@ -731,9 +719,6 @@ function submitAwardUpdate() {
 }
 
 function deleteAward(button, awardId) {
-  if (!window.confirm("진짜로 이 수상 내역을 삭제하시겠습니까?")) {
-    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
-  }
   const plusButton = document.getElementById("award-plus-button");
   console.log(awardId);
   fetch(`/mypage/award/${awardId}`, {
@@ -962,9 +947,6 @@ function submitProjectUpdate() {
 }
 
 function deleteProject(button, projectId) {
-  if (!window.confirm("진짜로 이 프로젝트를 삭제하시겠습니까?")) {
-    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
-  }
   const plusButton = document.getElementById("project-plus-button");
   console.log(projectId);
   fetch(`/mypage/project/${projectId}`, {
@@ -1182,9 +1164,6 @@ function submitCertificateUpdate() {
 }
 
 function deleteCertificate(button, certificateId) {
-  if (!window.confirm("진짜로 이 자격증을 삭제하시겠습니까?")) {
-    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
-  }
   const plusButton = document.getElementById("certificate-plus-button");
   console.log(certificateId);
   fetch(`/mypage/certificate/${certificateId}`, {
@@ -1385,10 +1364,6 @@ function submitSkillUpdate() {
 }
 
 function deleteSkill(button, skillId) {
-  if (!window.confirm("진짜로 이 스킬을 삭제하시겠습니까?")) {
-    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
-  }
-
   const plusButton = document.getElementById("skill-plus-button");
   console.log(skillId);
   fetch(`/mypage/skill/${skillId}`, {
@@ -1412,6 +1387,8 @@ function deleteSkill(button, skillId) {
       console.error("Error:", error);
       alert(`스킬 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
+
+  plusButton.style.display = "block";
 }
 
 getUserData();
@@ -1691,3 +1668,29 @@ function authcheck() {
     });
 }
 ///헤더 공통코드 끝
+
+{
+  /* <form action="/action_page.php" method="get">
+  <input type="text" id="fname" name="fname"><br><br>
+  <input type="text" id="lname" name="lname"><br><br>
+  <input type="submit" value="Submit">
+</form> */
+}
+
+function uploadImageProfile() {
+  fileInput = document.querySelector(".profileImageInput");
+
+  const formdata = new FormData();
+  formdata.append("profileImg", fileInput.files[0]);
+
+  const requestOptions = {
+    method: "PUT",
+    body: formdata,
+    redirect: "follow",
+  };
+
+  fetch("/users/mypage/profileImg", requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+}
