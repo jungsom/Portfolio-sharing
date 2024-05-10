@@ -521,7 +521,6 @@ function deleteEducation(button, educationId) {
       alert("학력 정보가 삭제되었습니다.");
       const educationEntry = button.closest(".education-entry");
       educationEntry.remove();
-      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -1408,50 +1407,52 @@ function passwordChange() {
 function passwordChangeConfirm() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
+  const pwchk = document.getElementById("change-setpwchk").value;
   // console.log(prevPw, pw);
-  fetch("/auth", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      password: prevPw,
-      newPassword: pw,
-    }),
-  }).then((response) => {
-    // console.log("res : ", response);
-    if (response.status == 200) {
-      changepwmodalOpen(10);
-      modalbtnhide();
-      document.getElementById("move_btn1").style.display = "block";
-    } else if (response.status == 400) {
-      changepwmodalOpen(5);
-    } else if (response.status == 401) {
-      changepwmodalOpen(11);
-    } else if (response.status == 409) {
-      changepwmodalOpen(12);
-    }
-  });
-}
-function passwordCompare() {
-  const pw = document.getElementById("setpw").value;
-  const pwchk = document.getElementById("setpwchk").value;
-  const pwChange = document.getElementById("change-setpw").value;
-  const pwChangechk = document.getElementById("change-setpwchk").value;
 
-  passwordCheck(pwChange, pwChangechk);
-
-  if (pwChange == "") {
-    document.getElementById("alert-text").style.display = "none";
-  } else if (passwordCheck(pwChange, pwChangechk)) {
-    document.getElementById("alert-text").style.display = "none";
+  if (passwordCheck(pw, pwchk)) {
+    fetch("/auth", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: prevPw,
+        newPassword: pw,
+      }),
+    }).then((response) => {
+      // console.log("res : ", response);
+      if (response.status == 200) {
+        changepwmodalOpen(10);
+        modalbtnhide();
+        document.getElementById("move_btn1").style.display = "block";
+      } else if (response.status == 400) {
+        changepwmodalOpen(5);
+      } else if (response.status == 401) {
+        changepwmodalOpen(11);
+      } else if (response.status == 409) {
+        changepwmodalOpen(12);
+      }
+    });
   } else {
-    document.getElementById("alert-text").style.display = "block";
+    alert(
+      "새 비밀번호와 재확인 값이 다릅니다. (비밀번호는 최소 4자리 이상 입력해야 합니다.)"
+    );
+    return;
   }
 }
+
 function passwordCheck(pw, pwchk) {
-  if (pw == pwchk) {
-    return true;
+  if (pw != "" && pwchk != "") {
+    if (pw == pwchk) {
+      if (pw.length >= 4) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
