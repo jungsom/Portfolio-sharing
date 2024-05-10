@@ -214,8 +214,6 @@ async function updateButton() {
 /** 로그인 상태에 따라 Nav바를 업데이트하는 함수 */
 async function updateMenu() {
   const loginElem = document.querySelector(".user-status-item-left.login");
-  const joinElem = document.querySelector(".user-status-item.join");
-
   const userpageElem = document.querySelector(
     ".user-status-item-left.userpage"
   );

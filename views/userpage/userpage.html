@@ -70,7 +70,7 @@
                 </div>
                 <div class="edit-button-container">
                   <button
-                    class="profile-edit-button editBtns submitbtn"
+                    class="profile-edit-button editBtns pinkbtn"
                     onclick="editProfile()"
                   >
                     Edit
@@ -80,7 +80,7 @@
             </div>
             <div class="privacy-modify" id="privacy-modify-container">
               <button
-                class="change-password-btn editBtns submitbtn"
+                class="change-password-btn editBtns pinkbtn"
                 onclick="passwordChange()"
               >
                 비밀번호 변경
@@ -165,7 +165,7 @@
               <div class="delete-account">
                 <div id="delete_account_container" class="btnbox">
                   <button
-                    class="delete-account-btn editBtns submitbtn"
+                    class="delete-account-btn editBtns blackbtn"
                     onclick="accountDelete()"
                   >
                     회원 탈퇴
@@ -218,7 +218,7 @@
             <div class="education">
               <div class="education-title">
                 <h2>
-                  학력
+                  최종 학력
                   <div class="editBtns">
                     <button id="education-plus-button" onclick="addEducation()">
                       + 추가
@@ -290,9 +290,8 @@
             <!-- 모달 창 -->
             <div id="educationModal" class="modal">
               <div class="modal-content">
-                <span class="close">&times;</span>
                 <form id="educationForm">
-                  <select>
+                  <select id="schoolCategory">
                     <option value="">학력 구분 선택</option>
                     <option value="elementry">초등학교 졸업</option>
                     <option value="middle">중학교 졸업</option>
@@ -318,15 +317,8 @@
                     <option value="selfDropout">자퇴</option>
                     <option value="graduateIntended">졸업예정</option>
                   </select>
-                  <input type="date" placeholder="입학 년월" />
-                  <input type="date" placeholder="졸업 년월" />
-                  <button
-                    id="close-modal-button"
-                    onclick="closeModal()"
-                    style="display: none"
-                  >
-                    취소
-                  </button>
+                  <input type="date" id="sDate" placeholder="입학 년월" />
+                  <input type="date" id="eDate" placeholder="졸업 년월" />
                   <button
                     type="button"
                     id="education-confirm-button"
@@ -353,13 +345,6 @@
                   <input type="text" id="title" placeholder="수상 이름" />
                   <input type="date" id="acqDate" placeholder="입상 날짜" />
                   <input type="text" id="details" placeholder="상세 설명" />
-                  <button
-                    id="close-award-button"
-                    onclick="closeAwardModal()"
-                    style="display: none"
-                  >
-                    취소
-                  </button>
                   <button
                     type="button"
                     id="award-confirm-button"
@@ -396,13 +381,6 @@
                     placeholder="상세 설명"
                   />
                   <button
-                    id="close-project-button"
-                    onclick="closeProjectModal()"
-                    style="display: none"
-                  >
-                    취소
-                  </button>
-                  <button
                     type="button"
                     id="project-confirm-button"
                     onclick="confirmProject(event)"
@@ -432,13 +410,6 @@
                   />
                   <input type="date" id="acquireDate" placeholder="취득 날짜" />
                   <button
-                    id="close-certificate-button"
-                    onclick="closeCertificateModal()"
-                    style="display: none"
-                  >
-                    취소
-                  </button>
-                  <button
                     type="button"
                     id="certificate-confirm-button"
                     onclick="confirmCertificate(event)"
@@ -462,13 +433,6 @@
                 <span class="close">&times;</span>
                 <form id="skillForm">
                   <input type="text" id="skillTitle" placeholder="스킬" />
-                  <button
-                    id="close-skill-button"
-                    onclick="closeSkillModal()"
-                    style="display: none"
-                  >
-                    취소
-                  </button>
                   <button
                     type="button"
                     id="skill-confirm-button"
