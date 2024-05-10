@@ -340,7 +340,6 @@ function addEducation() {
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
 
   modal.style.display = "block";
 
@@ -350,6 +349,14 @@ function addEducation() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -392,9 +399,13 @@ function confirmEducation(event) {
     .then((data) => {
       console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("학력 정보가 성공적으로 등록되었습니다.");
+      document.getElementById("schoolCategory");
       document.getElementById("university").value = "";
       document.getElementById("major").value = "";
       document.getElementById("schoolStatus").value = "";
+      document.getElementById("graduationStatus").value = "";
+      document.getElementById("sDate").value = "";
+      document.getElementById("eDate").value = "";
       form.style.display = "none";
       getUserData();
     })
@@ -433,7 +444,6 @@ function openEditEducationModal(educationId) {
   const modal = document.getElementById("educationModal");
   const saveButton = document.getElementById("education-confirm-button");
   const editButton = document.getElementById("education-edit-button");
-  const cancelButton = document.getElementById("close-modal-button");
 
   console.log(document.getElementById("education-edit-button"));
 
@@ -456,7 +466,6 @@ function openEditEducationModal(educationId) {
     .setAttribute("data-education-id", educationId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
   saveButton.style.display = "none";
 
   // 모달 표시
@@ -497,19 +506,6 @@ function submitEducationUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeModal() {
-  const modal = document.getElementById("educationModal");
-  modal.style.display = "none";
-
-  window.onclick = function (event) {
-    //폼 밖을 클릭하면 꺼진다
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-}
-
 function deleteEducation(button, educationId) {
   const plusButton = document.getElementById("education_plus_button");
   console.log(educationId);
@@ -541,7 +537,6 @@ function deleteEducation(button, educationId) {
 //수상 추가 기능
 function addAward() {
   const modal = document.getElementById("awardModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-award-button");
   const confirmButton = document.getElementById("award-confirm-button");
   const editButton = document.getElementById("award-edit-button");
 
@@ -550,7 +545,6 @@ function addAward() {
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
 
   if (editButton) {
     editButton.style.display = "none";
@@ -564,6 +558,14 @@ function addAward() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -646,7 +648,6 @@ function openEditAwardModal(awardId) {
   const modal = document.getElementById("awardModal");
   const saveButton = document.getElementById("award-confirm-button");
   const editButton = document.getElementById("award-edit-button");
-  const cancelButton = document.getElementById("close-award-button");
 
   console.log(document.getElementById("award-edit-button"));
 
@@ -665,7 +666,6 @@ function openEditAwardModal(awardId) {
   document.getElementById("awardModal").setAttribute("data-award-id", awardId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
   saveButton.style.display = "none";
 
   // 모달 표시
@@ -706,11 +706,6 @@ function submitAwardUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeAwardModal() {
-  document.getElementById("awardModal").style.display = "none";
-}
-
 function deleteAward(button, awardId) {
   const plusButton = document.getElementById("award-plus-button");
   console.log(awardId);
@@ -742,7 +737,6 @@ function deleteAward(button, awardId) {
 //프로젝트 추가 기능
 function addProject() {
   const modal = document.getElementById("projectModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-project-button");
   const confirmButton = document.getElementById("project-confirm-button");
   const editButton = document.getElementById("project-edit-button");
 
@@ -751,7 +745,6 @@ function addProject() {
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
 
   if (editButton) {
     editButton.style.display = "none";
@@ -765,6 +758,14 @@ function addProject() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -852,7 +853,6 @@ function openEditProjectModal(projectId) {
   const modal = document.getElementById("projectModal");
   const saveButton = document.getElementById("project-confirm-button");
   const editButton = document.getElementById("project-edit-button");
-  const cancelButton = document.getElementById("close-project-button");
 
   console.log(document.getElementById("project-edit-button"));
 
@@ -877,7 +877,6 @@ function openEditProjectModal(projectId) {
     .setAttribute("data-project-id", projectId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
   saveButton.style.display = "none";
 
   // 모달 표시
@@ -919,11 +918,6 @@ function submitProjectUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeProjectModal() {
-  document.getElementById("projectModal").style.display = "none";
-}
-
 function deleteProject(button, projectId) {
   const plusButton = document.getElementById("project-plus-button");
   console.log(projectId);
@@ -957,7 +951,6 @@ function deleteProject(button, projectId) {
 //자격증 추가 기능
 function addCertificate() {
   const modal = document.getElementById("certificateModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-certificate-button");
   const confirmButton = document.getElementById("certificate-confirm-button");
   const editButton = document.getElementById("certificate-edit-button");
 
@@ -966,7 +959,6 @@ function addCertificate() {
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
 
   if (editButton) {
     editButton.style.display = "none";
@@ -980,6 +972,14 @@ function addCertificate() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -1060,7 +1060,6 @@ function openEditCertificateModal(certificateId) {
   const modal = document.getElementById("certificateModal");
   const saveButton = document.getElementById("certificate-confirm-button");
   const editButton = document.getElementById("certificate-edit-button");
-  const cancelButton = document.getElementById("close-certificate-button");
 
   console.log(document.getElementById("certificate-edit-button"));
 
@@ -1081,7 +1080,6 @@ function openEditCertificateModal(certificateId) {
     .setAttribute("data-certificate-id", certificateId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
   saveButton.style.display = "none"; // '취소' 버튼 보이기
 
   // 모달 표시
@@ -1121,11 +1119,6 @@ function submitCertificateUpdate() {
     });
 }
 
-// 모달 닫기 함수
-function closeCertificateModal() {
-  document.getElementById("certificateModal").style.display = "none";
-}
-
 function deleteCertificate(button, certificateId) {
   const plusButton = document.getElementById("certificate-plus-button");
   console.log(certificateId);
@@ -1157,7 +1150,6 @@ function deleteCertificate(button, certificateId) {
 //스킬 추가 기능
 function addSkill() {
   const modal = document.getElementById("skillModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-skill-button");
   const confirmButton = document.getElementById("skill-confirm-button");
   const editButton = document.getElementById("skill-edit-button");
 
@@ -1166,7 +1158,6 @@ function addSkill() {
 
   //추가 버튼 보이기
   confirmButton.style.display = "block";
-  deleteButton.style.display = "block";
 
   if (editButton) {
     editButton.style.display = "none";
@@ -1180,6 +1171,14 @@ function addSkill() {
       modal.style.display = "none";
     }
   };
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 //저장 버튼 클릭 시 post 요청
@@ -1251,7 +1250,6 @@ function updateSkillList(skillArray) {
 function openEditSkillModal(skillId) {
   const modal = document.getElementById("skillModal");
   const editButton = document.getElementById("skill-edit-button");
-  const cancelButton = document.getElementById("close-skill-button");
   const confirmButton = document.getElementById("skill-confirm-button");
 
   console.log(document.getElementById("skill-edit-button"));
@@ -1267,7 +1265,6 @@ function openEditSkillModal(skillId) {
   document.getElementById("skillModal").setAttribute("data-skill-id", skillId);
 
   editButton.style.display = "block"; // '수정' 버튼 보이기
-  cancelButton.style.display = "block"; // '취소' 버튼 보이기
   confirmButton.style.display = "none";
 
   // 모달 표시
@@ -1304,11 +1301,6 @@ function submitSkillUpdate() {
       console.error(error);
       alert("스킬 정보 업데이트에 실패했습니다.");
     });
-}
-
-// 모달 닫기 함수
-function closeSkillModal() {
-  document.getElementById("skillModal").style.display = "none";
 }
 
 function deleteSkill(button, skillId) {
