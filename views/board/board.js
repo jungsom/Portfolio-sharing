@@ -45,7 +45,6 @@ async function getPostList(page) {
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
-    console.log(data);
 
     for (let i = 0; i < listcount; i++) {
       const postlists = document.querySelector(".post-list");
@@ -178,9 +177,7 @@ async function getpostSearch(page) {
   const search = document.getElementById("search-box").value;
   const searchtype = document.getElementById("search-type").value;
   const postlists = document.querySelector(".post-list");
-  // const params = new URLSearchParams(window.location.search);
-  // let currentPage = parseInt(params.get("page"));
-  console.log("검색어", search, "검색타입", searchtype);
+  // console.log("검색어", search, "검색타입", searchtype);
   postlists.innerHTML = ``;
   try {
     const res = await fetch(
@@ -189,7 +186,7 @@ async function getpostSearch(page) {
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
-    console.log(data);
+    // console.log(data);
 
     for (let i = 0; i < listcount; i++) {
       // const postlists = document.createElement("div");
@@ -238,7 +235,7 @@ function registPost() {
           contents: contents,
         }),
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status == 201) {
           alert("게시물 작성 완료");
           window.location.href = "/board/?page=1";
@@ -248,7 +245,7 @@ function registPost() {
           alert("권한이 없습니다.");
         } else if (response.status == 400) {
           response.json().then((data) => {
-            console.log(data);
+            // console.log(data);
             if (data.error == "입력되지 않은 내용이 있습니다.") {
               alert("입력되지 않은 내용이 있습니다.");
             }
@@ -273,10 +270,10 @@ function registPost() {
           contents: contents,
         }),
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status == 201) {
           alert("게시물 수정 완료");
-          outWritePost();
+          getPostContents(boardId);
         } else if (response.status == 401) {
           alert("로그인 후 이용 가능합니다.");
         } else if (response.status == 403) {
@@ -387,15 +384,12 @@ function postLike() {
     // localStorage.removeItem("boardId");
     if (response.status == 200) {
       getPostContents(boardId);
-      localStorage.removeItem("boardId");
     } else if (response.status == 401) {
       alert("로그인 후 이용 가능합니다.");
       window.location.href = "/login";
-      localStorage.removeItem("boardId");
     } else if (response.status == 404) {
       alert("해당 게시글이 존재하지 않습니다.");
       window.location.href = "/board/?page=1";
-      localStorage.removeItem("boardId");
     }
   });
 }
@@ -433,12 +427,36 @@ function postModify() {
   fetch(`http://localhost:8080/boards/${boardId}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       const title = data.data[0].title;
       const contents = data.data[0].contents;
       document.getElementById("write-post-title").value = title;
       document.getElementById("write-post-contents").value = contents;
     });
+}
+
+//댓글 작성
+function registComment() {
+  const contents = document.getElementById("post-comment-contents").value;
+  const boardId = localStorage.getItem("boardId");
+  fetch(`http://localhost:8080/boards/${boardId}/comment`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      contents: contents,
+    }),
+  }).then((response) => {
+    if (response.status == 201) {
+      alert("댓글 작성 완료!");
+      getPostContents(boardId);
+    } else {
+      response.json().then((data) => {
+        alert(data.error);
+      });
+    }
+  });
 }
 
 function isvisiblePostBtn(num) {
@@ -455,6 +473,10 @@ function gotoPostlist() {
   window.location.href = "/board/?page=1";
 }
 
+//eventlistener
+document
+  .querySelector("#post-comment-btn")
+  .addEventListener("click", registComment);
 document
   .querySelector(".post-modify-btn")
   .addEventListener("click", postModify);

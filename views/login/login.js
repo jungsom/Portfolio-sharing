@@ -58,7 +58,7 @@ function changeModalText(txtNum) {
     document.getElementById("modaltext").innerHTML = "가입완료!";
   } else if (txtNum == 5) {
     document.getElementById("modaltext").innerHTML =
-      "입력되지않은 내용이 있습니다.";
+      "입력하지않은 내용이 있거나 올바른 형식이 아닙니다.";
   } else if (txtNum == 6) {
     document.getElementById("modaltext").innerHTML =
       "이미 가입되어있는 ID 입니다.";
