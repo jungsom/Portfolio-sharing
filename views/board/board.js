@@ -302,15 +302,13 @@ function registPost() {
 async function getPostContents(id) {
   document.getElementById("post-list-container").style.display = "none";
   document.getElementById("post-container").style.display = "block";
+  localStorage.setItem("boardId", id);
+
   try {
     const res = await fetch(`http://localhost:8080/boards/${id}`);
     const data = await res.json();
     const currentNick = localStorage.getItem("nickname");
-    if (currentNick == data.data[0].nickname) {
-      isvisiblePostBtn(1);
-    } else {
-      isvisiblePostBtn(2);
-    }
+
     const title = data.data[0].title;
     const contents = data.data[0].contents;
     const createdAt = data.data[0].createdAt.substr(0, 10); // 앞에거만 잘라써야함
@@ -357,15 +355,25 @@ async function getPostContents(id) {
 
     for (let j = 0; j < commentscount; j++) {
       iscommentdiv.innerHTML += `
-      <div class ="comment-writer">${comments[j].nickname}</div>
-      <div class ="comment-createdAt">${comments[j].createdAt.substr(
-        0,
-        10
-      )}</div>
-      <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
+      <div class ="comment-container">
+        <div class ="comment-writer">${comments[j].nickname}</div>
+        <div class ="comment-createdAt">${comments[j].createdAt.substr(
+          0,
+          10
+        )}</div>
+        <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
+        <div class ="comment-delete-btn ${nickname}" id="comment-delete-btn" onclick="deleteComment(${
+        comments[j].commentId
+      })" style="display: block">삭제</div>
+      </div>
       `;
     }
-    localStorage.setItem("boardId", id);
+    if (currentNick == data.data[0].nickname) {
+      isvisiblePostBtn(1);
+    } else {
+      isvisiblePostBtn(2);
+    }
+    document.querySelectorAll(currentNick).style.display = "block";
   } catch (error) {
     // alert("알수없는 오류로 정보를 불러오는데 실패했습니다.");
     // window.location.href = "/board/?page=1";
@@ -459,13 +467,49 @@ function registComment() {
   });
 }
 
+function deleteComment(id) {
+  if (confirm("정말로 해당 댓글을 삭제하시겠습니까?")) {
+    const commentId = id;
+    const boardId = localStorage.getItem("boardId");
+    fetch(`http://localhost:8080/boards/${boardId}/comment/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      console.log(response);
+      if (response.status == 200) {
+        response.json().then((data) => {
+          alert(data.message);
+        });
+        getPostContents(boardId);
+      } else {
+        response.json().then((data) => {
+          alert(data.error);
+        });
+      }
+    });
+  }
+}
+
 function isvisiblePostBtn(num) {
   if (num == 1) {
     document.getElementById("post-modify-btn").style.display = "block";
     document.getElementById("post-delete-btn").style.display = "block";
+    document.getElementById("comment-delete-btn").style.display = "block";
   } else if (num == 2) {
     document.getElementById("post-modify-btn").style.display = "none";
     document.getElementById("post-delete-btn").style.display = "none";
+    document.getElementById("comment-delete-btn").style.display = "none";
+  }
+}
+
+function isvisibleCommentBtn(num) {
+  if (num == 1) {
+    document.getElementById("comment-delete-btn").style.display = "block";
+  } else if (num == 2) {
+    document.getElementById("comment-delete-btn").style.display = "none";
   }
 }
 
@@ -477,6 +521,9 @@ function gotoPostlist() {
 document
   .querySelector("#post-comment-btn")
   .addEventListener("click", registComment);
+// document
+//   .querySelector("#delete-comment-btn")
+//   .addEventListener("click", deleteComment);
 document
   .querySelector(".post-modify-btn")
   .addEventListener("click", postModify);
