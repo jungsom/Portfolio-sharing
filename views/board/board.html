@@ -45,28 +45,33 @@
       <!-- contents -->
       <div class="contents">
         <!-- 네비게이션 -->
-
         <div class="main-container">
           <!-- 게시판 목록 -->
           <div class="post-list-container" id="post-list-container">
-            <div class="post-head">
-              <div class="post-head-title"><span>제목</span></div>
-              <div class="post-head-nickname"><span>작성자</span></div>
-              <div class="post-head-nickname"><span>작성일자</span></div>
+            <h3>게시판</h3>
+            <div class="serach-box">
+              <select id="search-type">
+                <option value="title">제목</option>
+                <option value="contents">내용</option>
+                <option value="titleContents">제목 + 내용</option>
+                <option value="comments">댓글</option>
+                <option value="nickname">닉네임</option>
+              </select>
+              <input id="search-box" placeholder="검색어를 입력하세요." />
+              <button class="search-btn" onclick="postSearch()">검색</button>
             </div>
-            <div class="post-list"></div>
+            <table class="board-table">
+              <thead>
+                <tr class="post-head">
+                  <th class="post-head-title">제목</th>
+                  <th class="post-head-nickname">작성자</th>
+                  <th class="post-head-createat">작성일자</th>
+                </tr>
+              </thead>
+              <tbody class="post-list"></tbody>
+            </table>
+
             <div class="post-list-bottomwrap">
-              <div class="serach-box">
-                <select id="search-type">
-                  <option value="title">제목</option>
-                  <option value="contents">내용</option>
-                  <option value="titleContents">제목 + 내용</option>
-                  <option value="comments">댓글</option>
-                  <option value="nickname">닉네임</option>
-                </select>
-                <input id="search-box" />
-                <div class="search-btn" onclick="postSearch()">검색</div>
-              </div>
               <div class="board-post-btn visible-btns">
                 <button onclick="goWritePost()">글 쓰기</button>
               </div>

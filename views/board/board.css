@@ -8,6 +8,99 @@
   padding: 100px 85px;
 }
 
+.container {
+  margin: 0 auto;
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+h3 {
+  font-size: 25px;
+}
+
+.search-box {
+  padding: 15px 0;
+  background-color: #f9f7f9;
+  position: relative;
+  /*   padding-right: 124px; */
+  margin: 0 auto;
+  width: 80%;
+  max-width: 564px;
+}
+
+.search-box input {
+  height: 40px;
+  width: 100%;
+  font-size: 14px;
+  padding: 7px 14px;
+  border: 1px solid #ccc;
+}
+
+.search-box:focus {
+  border-color: #333;
+  outline: 0;
+  border-width: 1px;
+}
+
+.search-box .search-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 108px;
+  padding: 0;
+  font-size: 16px;
+}
+
+/* 게시판 컨테이너 스타일 */
+.board-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 테이블 스타일 */
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+/* 테이블 헤더 스타일 */
+.post-head {
+  background-color: #f5f5f5;
+}
+
+.post-head th {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+/* 테이블 셀 스타일 */
+.post-list td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 버튼 스타일 */
+.board-post-btn button,
+.prev-btn button,
+.next-btn button {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.board-post-btn button:hover,
+.prev-btn button:hover,
+.next-btn button:hover {
+  background-color: #45a049;
+}
+
 a:link {
   color: black;
   text-decoration: none;
@@ -17,11 +110,6 @@ a:visited {
   text-decoration: none;
 }
 
-.menu-container {
-  float: left;
-  width: 20%;
-  position: fixed;
-}
 .main-container {
   margin-left: 7%;
   width: 100%;
@@ -31,7 +119,7 @@ a:visited {
   width: 80%;
   text-align: center;
   align-items: center;
-  border-color: black;
+  border: 3px solid #ff708ae6;
   border-style: solid;
   padding: 3%;
 }
@@ -40,26 +128,25 @@ a:visited {
   height: 50px;
   text-align: center;
   align-items: center;
-  border-color: black;
+  border: 3px solid #ff708ae6;
 }
 .post-head-title {
   position: absolute;
   text-align: center;
   align-items: center;
-  border-color: black;
+  border: 3px solid #ff708ae6;
 }
 .post-head-nickname {
   position: relative;
   text-align: center;
   align-items: center;
-  border-color: black;
+  border: 3px solid #ff708ae6;
 }
 .post-list-container {
   width: 80%;
   text-align: center;
   align-items: center;
-  border-color: black;
-  border-style: solid;
+  border: 3px solid #ff708ae6;
   padding: 3%;
 }
 
@@ -71,8 +158,7 @@ li {
   width: 80%;
   text-align: center;
   align-items: center;
-  border-color: black;
-  border-style: solid;
+  border: 3px solid #ff708ae6;
   padding: 3%;
 }
 .write-post-title {
@@ -87,24 +173,20 @@ li {
 .post-topwrap {
   width: 100%;
   height: 100px;
-  border-color: black;
-  border-style: solid;
+  border: 3px solid #ff708ae6;
 }
 .post-contents-warp {
   width: 100%;
   height: 500px;
-  border-color: black;
-  border-style: solid;
+  border: 3px solid #ff708ae6;
 }
 .post-bottomwrap {
   width: 100%;
   height: 50px;
-  border-color: black;
-  border-style: solid;
+  border: 3px solid #ff708ae6;
 }
 .post-comment-container {
   width: 100%;
   height: 100px;
-  border-color: black;
-  border-style: solid;
+  border: 3px solid #ff708ae6;
 }
