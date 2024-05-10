@@ -102,6 +102,13 @@ function outCreateAccount() {
   document.getElementById("createAccountContainer").style.display = "none";
 }
 
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    login();
+    modalClose();
+  }
+});
+
 //로그인
 function login() {
   const email = document.getElementById("email").value;
@@ -319,7 +326,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/";
+        window.location.href = "/network";
       }
     });
   }
@@ -359,7 +366,7 @@ function authcheck() {
     .then((data) => {
       if (data.status) {
         alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
-        window.location.href = "/";
+        window.location.href = "/Network";
       } else {
         return;
       }

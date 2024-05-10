@@ -344,13 +344,13 @@ async function getPostContents(id) {
     if (islikes) {
       islikediv.innerHTML = `
       <div class="post-islike" id="post-islike" onclick="postLike()">
-      ♥
+        <img class="board-like-img" src="/img/heart-red.png" alt="hear-red" />
       </div>
       `;
     } else {
       islikediv.innerHTML = `
       <div class="post-islike" id="post-islike" onclick="postLike()">
-      ♡
+        <img class="board-like-img" src="/img/heart-black.png" alt="hear-black" />
       </div>
       `;
     }

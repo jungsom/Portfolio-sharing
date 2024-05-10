@@ -25,29 +25,6 @@ async function getLoginStatus() {
   }
 }
 
-/** 모든 페이지의 데이터를 가져오는 함수 */
-async function getAllUser(currentPage) {
-  try {
-    // 첫 번째 페이지의 데이터를 가져옴
-    let allData = [];
-    let data = await getUsers(1);
-    const totalPages = data.totalPage;
-    allData = allData.concat(data.data);
-
-    // 다음 페이지가 있을 경우 반복적으로 데이터를 가져옴
-    while (currentPage < totalPages) {
-      currentPage++;
-      data = await getUsers(currentPage);
-      allData = allData.concat(data.data);
-    }
-
-    return allData;
-  } catch (error) {
-    console.error(error);
-    alert("데이터를 가져오는 중에 오류가 생겼습니다.");
-  }
-}
-
 /** Nav바 이벤트 핸들러 (유저페이지) */
 //유저가 로그인 상태이면 개인페이지 이동
 async function goToUserPage() {
@@ -121,7 +98,6 @@ async function renderUserCard() {
   try {
     const params = new URLSearchParams(window.location.search);
     let currentPage = parseInt(params.get("page")) || 1;
-    const allUserData = await getAllUser(currentPage);
 
     const userData = await getUsers(currentPage);
     const container = document.querySelector(".usercard-container");
@@ -191,21 +167,15 @@ async function updateButton() {
 
   // 첫 번째 페이지일 경우
   if (currentPage === 1) {
-    prevButton.disabled = true;
-    nextButton.disabled = false;
     prevButton.style.backgroundColor = "#ff96a993";
     nextButton.style.backgroundColor = "white";
     prevButton.style.color = "black";
     // 마지막 페이지일 경우
   } else if (currentPage === totalPages) {
-    prevButton.disabled = false;
-    nextButton.disabled = true;
     prevButton.style.backgroundColor = "white";
     nextButton.style.backgroundColor = "#ff96a993";
     nextButton.style.color = "black";
   } else {
-    prevButton.disabled = false;
-    nextButton.disabled = false;
     prevButton.style.backgroundColor = "white";
     nextButton.style.backgroundColor = "white";
   }
@@ -251,20 +221,7 @@ function getLogOut() {
   }
 }
 
-/** 초기 화면 1페이지로 이동시키는 함수 */
-function displayFirst() {
-  const params = new URLSearchParams(window.location.search);
-  let currentPage = parseInt(params.get("page")) || 1;
-
-  if (currentPage >= 2) {
-    currentPage = 1;
-
-    renderUserCard();
-  }
-}
-
 async function init() {
-  displayFirst();
   updateMenu();
   renderUserCard();
 

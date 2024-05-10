@@ -28,6 +28,11 @@ body {
   margin-bottom: 10px;
 }
 
+.image-change-button {
+  position: absolute;
+  top: 360px;
+  left: 210px;
+}
 .profile,
 .education,
 .award,
@@ -201,7 +206,6 @@ input {
   margin-right: 10px;
 }
 
-#cancel_edit_button,
 #education_delete_button,
 #awards_delete_button,
 #project_delete_button,
@@ -215,7 +219,6 @@ input {
   cursor: pointer;
 }
 
-#submit_edit_button,
 #education-confirm-button,
 #award-confirm-button,
 #project-confirm-button,
@@ -281,37 +284,6 @@ input {
   margin-bottom: 10px; /* 오른쪽 여백 추가 */
 }
 
-.pinkbtn {
-  background-color: #ff708ae6;
-  color: #fff;
-  border: none;
-  border-radius: 10%;
-  cursor: pointer;
-}
-
-.blackbtn {
-  background-color: #000;
-  color: #ffffff;
-  border: none;
-  border-radius: 10%;
-  cursor: pointer;
-}
-
-/* .submitbtn {
-  font-family: "Pretendard Variable", Pretendard, -apple-system,
-    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
-    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-  background-color: #ff708ae6;
-  color: #fff;
-  border: solid 1px #000;
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  margin: 10px;
-} */
 /* 모달 창 기본 스타일 */
 .modal {
   display: none; /* Hidden by default */

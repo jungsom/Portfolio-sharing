@@ -68,7 +68,9 @@ app.get("/board", (req, res) => {
 });
 
 app.get("/aboutus", (req, res) => {
-  res.render("aboutus/aboutus.html");
+  res.render("aboutus/aboutus.html", {
+    javascriptkey:process.env.javascriptkey
+  });
 });
 
 app.get("/404", (req, res) => {

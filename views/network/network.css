@@ -8,16 +8,10 @@
   padding: 100px 85px;
 }
 
-.usercard-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .usercard-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
 .usercard {
