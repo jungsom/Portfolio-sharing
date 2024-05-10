@@ -55,10 +55,10 @@ async function getPostList(page) {
       let boardId = data.data[i].boardId;
       let createdAt = data.data[i].createdAt.substr(0, 10);
       postlists.innerHTML += `
-      <div class="post-title-list">
-        <li class="title-list"><span class="post-title" id="${boardId}"><a onclick="getPostContents(${boardId})">${postTitle}</a></span><span>${createdAt}</span></li>
-        <span>${postWriter}</span>
-      </div>
+      <td colspan="2" class="post-title-list">
+      <li class="title-list"><span class="post-title" id="${boardId}"><a onclick="getPostContents(${boardId})">${postTitle}</a></span><span>${createdAt}</span></li>
+      <span>${postWriter}</span>
+      </td>
       `;
     }
     //페이지네이션 다음/이전 버튼 활성/비활성화
