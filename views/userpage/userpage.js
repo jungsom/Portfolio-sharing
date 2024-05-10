@@ -48,7 +48,12 @@ function removeInputElement() {
   nicknameContainer.childNodes[3].remove();
   descriptionContainer.childNodes[3].remove();
 }
-
+//요소 보이기 함수
+// function displayon(...args) {
+//   for (const i of args) {
+//     args.style.display = "";
+//   }
+// }
 //submit 클릭 시 함수
 function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
@@ -69,7 +74,6 @@ function submitEditProfile() {
     }), // JSON 문자열로 변환하여 데이터 전송
   })
     .then((response) => {
-      console.log(response);
       if (response.ok) {
         return response.json(); // 응답을 JSON 형태로 파싱
       }
@@ -111,15 +115,6 @@ function cancelEditProfile() {
   document.getElementById("submit_edit_button").remove();
   document.getElementById("cancel_edit_button").remove();
 }
-
-// // mypage/project get 테스트
-// fetch("http://localhost:8080/auth/status")
-//   .then((response) => response.json())
-//   .then((data) => {
-//     console.log(data); // 전체 데이터 구조 확인
-//   })
-//   .catch((error) => console.error("Error:", error));
-
 // edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 editBtns이라는 class 할당해서 일괄 display 설정
 function isVisibleBtns() {
   const params = new URLSearchParams(window.location.search);
@@ -138,9 +133,7 @@ function isVisibleBtns() {
     });
 }
 async function updateMenu() {
-  const loginElem = document.querySelector(".user-status-item-left.login");
-  const joinElem = document.querySelector(".user-status-item.join");
-
+  const loginElem = document.querySelector(".user-status-item.login");
   const userpageElem = document.querySelector(
     ".user-status-item-left.userpage"
   );
@@ -151,12 +144,10 @@ async function updateMenu() {
     userpageElem.style.display = "block";
     logoutElem.style.display = "block";
     loginElem.style.display = "none";
-    joinElem.style.display = "none";
   } else {
     userpageElem.style.display = "none";
     logoutElem.style.display = "none";
     loginElem.style.display = "block";
-    joinElem.style.display = "block";
   }
 
   userpageElem.childNodes[1].href = `/userpage/?user=${logintrue.data.userId}`;
@@ -420,8 +411,8 @@ function updateEducationList(educationArray) {
           <p>학위 : <p3>${educationItem.schoolStatus}</p3></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
-          <button onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -641,8 +632,8 @@ function updateAwardList(awardArray) {
           <p>설명 : <p3>${awardItem.details}</p3></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
-          <button onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -862,8 +853,8 @@ function updateProjectList(projectArray) {
           <p>설명: <p4>${projectItem.details}</p4></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
-          <button onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -1085,8 +1076,8 @@ function updateCertificateList(certificateArray) {
           <p>취득 날짜 : <p2>${certificateItem.acqDate}</p2></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
-          <button onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -1292,8 +1283,8 @@ function updateSkillList(skillArray) {
           <p><p1>${skillItem.stack}</p1></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
-          <button onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -1628,7 +1619,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }

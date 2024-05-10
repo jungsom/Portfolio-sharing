@@ -3,7 +3,7 @@
 //로그아웃
 function logout() {
   if (confirm("정말 로그아웃 하시겠습니까?")) {
-    fetch("http://localhost:8080/auth/logout", {
+    fetch("/auth/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -14,7 +14,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }
@@ -22,7 +22,7 @@ function logout() {
 
 //현재 로그인된 계정의 userId get
 function ismycontents() {
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       const currentNick = data.data.nickname;
@@ -34,7 +34,7 @@ function ismycontents() {
 //게시물 목록 페이지별 조회 및 리스트업
 async function getPostList(page) {
   try {
-    const res = await fetch(`http://localhost:8080/boards/?page=${page}`);
+    const res = await fetch(`/boards/?page=${page}`);
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
@@ -138,7 +138,7 @@ function getPrevPostList() {
 // 현재페이지
 
 function isVisibleBtns() {
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       if (data.status) {
@@ -195,7 +195,7 @@ async function getpostSearch(page) {
   postlists.innerHTML = ``;
   try {
     const res = await fetch(
-      `http://localhost:8080/boards/search/result?option=${searchtype}&keyword=${search}`
+      `/boards/search/result?option=${searchtype}&keyword=${search}`
     );
     const data = await res.json();
     const listcount = data.data.length;
@@ -239,7 +239,7 @@ function registPost() {
     const contents = document.getElementById("write-post-contents").value;
 
     if (poststate == "new") {
-      fetch("http://localhost:8080/boards", {
+      fetch("/boards", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -274,7 +274,7 @@ function registPost() {
       });
     } else if (poststate == "modify") {
       const boardId = localStorage.getItem("boardId");
-      fetch(`http://localhost:8080/boards/${boardId}`, {
+      fetch(`/boards/${boardId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -317,7 +317,7 @@ async function getPostContents(id) {
   document.getElementById("post-list-container").style.display = "none";
   document.getElementById("post-container").style.display = "block";
   try {
-    const res = await fetch(`http://localhost:8080/boards/${id}`);
+    const res = await fetch(`/boards/${id}`);
     const data = await res.json();
     const currentNick = localStorage.getItem("nickname");
     if (currentNick == data.data[0].nickname) {
@@ -371,13 +371,18 @@ async function getPostContents(id) {
 
     for (let j = 0; j < commentscount; j++) {
       iscommentdiv.innerHTML += `
+      <div class ="comment-container align-left">
       <div class ="comment-writer">${comments[j].nickname}</div>
       <div class ="comment-createdAt">${comments[j].createdAt.substr(
         0,
         10
       )}</div>
       <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
-      `;
+      <div class ="comment-delete-btn btn btn-red ${nickname}" id="comment-delete-btn" onclick="deleteComment(${
+        comments[j].commentId
+      })" style="display: block">삭제</div>
+      </div>
+        `;
     }
     localStorage.setItem("boardId", id);
   } catch (error) {
@@ -388,7 +393,7 @@ async function getPostContents(id) {
 
 function postLike() {
   const boardId = localStorage.getItem("boardId");
-  fetch(`http://localhost:8080/boards/${boardId}/likes`, {
+  fetch(`/boards/${boardId}/likes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -414,7 +419,7 @@ function postLike() {
 function postDelete() {
   if (confirm("정말로 해당 게시글을 삭제하시겠습니까?")) {
     const boardId = localStorage.getItem("boardId");
-    fetch(`http://localhost:8080/boards/${boardId}`, {
+    fetch(`/boards/${boardId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -441,7 +446,7 @@ function postModify() {
   const boardId = localStorage.getItem("boardId");
   localStorage.setItem("postState", "modify");
 
-  fetch(`http://localhost:8080/boards/${boardId}`)
+  fetch(`/boards/${boardId}`)
     .then((res) => res.json())
     .then((data) => {
       // console.log(data);
@@ -522,6 +527,12 @@ document
 document
   .querySelector(".post-delete-btn")
   .addEventListener("click", postDelete);
+document
+  .querySelector("#post-comment-btn")
+  .addEventListener("click", registComment);
+document
+  .querySelector(".post-golist-btn")
+  .addEventListener("click", gotoPostlist);
 
 //Header 공통코드
 document.querySelector("#login").addEventListener("click", gotoLogin);
@@ -530,7 +541,7 @@ document.querySelector("#userpage").addEventListener("click", gotoUserpage);
 document.querySelector("#board").addEventListener("click", gotoBoard);
 
 function gotoUserpage() {
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       // console.log(data);
@@ -545,7 +556,7 @@ function gotoUserpage() {
 }
 function logout() {
   if (confirm("정말 로그아웃 하시겠습니까?")) {
-    fetch("http://localhost:8080/auth/logout", {
+    fetch("/auth/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -556,7 +567,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }

@@ -126,28 +126,32 @@
   display: block;
   text-align: center;
 }
+.alert-text {
+  color: red;
+}
 
 /* 팝업모달 */
-h2 {
+#modaltext {
   text-align: center;
 }
 .modal_btn {
   display: block;
   margin: 40px auto;
-  padding: 10px 20px;
-  background-color: royalblue;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
+  /* padding: 10px 20px; */
+  /* border: none;
+  border-radius: 5px; */
+  color: black;
   cursor: pointer;
   transition: box-shadow 0.2s;
 }
 .modal_btn:hover {
+  background-color: #edfce3;
   box-shadow: 3px 4px 11px 0px #00000040;
 }
 
 .modal {
   /*팝업 배경*/
+  min-width: 200px;
   display: none;
   position: absolute;
   top: 0;
@@ -159,6 +163,7 @@ h2 {
 }
 .modal .modal_popup {
   /*팝업*/
+  min-width: 200px;
   position: absolute;
   top: 50%;
   left: 50%;

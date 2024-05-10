@@ -99,12 +99,6 @@ router.get("/:userId", async (req, res, next) => {
       throw new NotFound("존재하지 않는 id입니다.");
     }
 
-    const isIdentical = identification(req.session, user);
-    if (isIdentical) {
-      // res.redirect("/mypage"); // 본인 id 검색하면 /mypage라는 곳으로 가기
-      console.log("내 페이지로 이동");
-    }
-
     // password는 빼고 보내기
     const userData = {
       userId: user.userId,

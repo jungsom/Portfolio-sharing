@@ -55,7 +55,7 @@ function changeModalText(txtNum) {
     document.getElementById("modaltext").innerHTML = "로그인 성공";
   } else if (txtNum == 3) {
     document.getElementById("modaltext").innerHTML =
-      "비밀번호를 다시 확인해주세요.";
+      "비밀번호를 다시 확인해주세요. (최소 4자리)";
   } else if (txtNum == 4) {
     document.getElementById("modaltext").innerHTML = "가입완료!";
   } else if (txtNum == 5) {
@@ -107,30 +107,42 @@ function login() {
   const email = document.getElementById("email").value;
   const pw = document.getElementById("pw").value;
 
-  fetch("/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email,
-      password: pw,
-    }),
-  }).then((response) => {
-    if (response.status == 401) {
-      modalOpen(1);
-    } else if (response.status == 200) {
-      modalOpen(2);
-      clear();
-      localStorage.setItem("goTo", "network");
-    }
-  });
+  if (email != "" && pw != "") {
+    fetch("/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 401) {
+        modalOpen(1);
+      } else if (response.status == 200) {
+        modalOpen(2);
+        clear();
+        localStorage.setItem("goTo", "network");
+      }
+    });
+  } else {
+    return;
+  }
 }
 
 //비밀번호, 비밀번호 확인 같은지 다른지 판단
 function passwordCheck(pw, pwchk) {
-  if (pw == pwchk) {
-    return true;
+  if (pw != "" && pwchk != "") {
+    if (pw == pwchk) {
+      if (pw.length >= 4) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
@@ -139,20 +151,13 @@ function passwordCheck(pw, pwchk) {
 function passwordCompare() {
   const pw = document.getElementById("setpw").value;
   const pwchk = document.getElementById("setpwchk").value;
-  const pwChange = document.getElementById("change-setpw").value;
-  const pwChangechk = document.getElementById("change-setpwchk").value;
-
-  passwordCheck(pw, pwchk);
 
   if (pw == "") {
     document.getElementById("alert-text").style.display = "none";
-    document.getElementById("alert-text2").style.display = "none";
-  } else if (passwordCheck(pw, pwchk)) {
+  } else if (pw == pwchk) {
     document.getElementById("alert-text").style.display = "none";
-    document.getElementById("alert-text2").style.display = "none";
   } else {
     document.getElementById("alert-text").style.display = "block";
-    document.getElementById("alert-text2").style.display = "block";
   }
 }
 
@@ -175,14 +180,6 @@ function setAccount() {
       return false;
     }
   }
-
-  if (!passwordCheck(pw, pwchk)) {
-    modalOpen(3);
-  }
-  if (!emailCheck(email)) {
-    modalOpen(7);
-  }
-
   if (passwordCheck(pw, pwchk) && emailCheck(email)) {
     fetch("/auth/join", {
       method: "POST",
@@ -213,6 +210,12 @@ function setAccount() {
         });
       }
     });
+  } else if (!passwordCheck(pw, pwchk)) {
+    modalOpen(3);
+    return;
+  } else if (!emailCheck(email)) {
+    modalOpen(7);
+    return;
   }
 }
 
@@ -316,7 +319,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }
@@ -356,7 +359,7 @@ function authcheck() {
     .then((data) => {
       if (data.status) {
         alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
-        window.location.href = "/Network";
+        window.location.href = "/";
       } else {
         return;
       }

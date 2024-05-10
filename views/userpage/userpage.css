@@ -139,7 +139,7 @@ body {
 }
 
 .education-entry {
-  background-color: #e0a7ab;
+  background-color: white;
 }
 
 .btnbox {
@@ -253,10 +253,10 @@ input {
   display: block;
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: royalblue;
+  /* background-color: royalblue; */
   border: none;
   border-radius: 5px;
-  color: #fff;
+  color: black;
   cursor: pointer;
   transition: box-shadow 0.2s;
 }
@@ -332,4 +332,22 @@ input {
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+}
+.btn-red {
+  vertical-align: center;
+}
+.btn-red:hover {
+  background-color: rgb(255, 218, 218);
+}
+.btn-green {
+  vertical-align: center;
+}
+.btn-green:hover {
+  background-color: rgb(234, 255, 216);
+}
+.btn-yellow {
+  vertical-align: center;
+}
+.btn-yellow:hover {
+  background-color: rgb(250, 250, 189);
 }
