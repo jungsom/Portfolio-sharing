@@ -355,14 +355,14 @@ async function getPostContents(id) {
 
     for (let j = 0; j < commentscount; j++) {
       iscommentdiv.innerHTML += `
-      <div class ="comment-container">
+      <div class ="comment-container align-left">
         <div class ="comment-writer">${comments[j].nickname}</div>
         <div class ="comment-createdAt">${comments[j].createdAt.substr(
           0,
           10
         )}</div>
         <div class ="comment-box" id="commnet-box">${comments[j].contents}</div>
-        <div class ="comment-delete-btn ${nickname}" id="comment-delete-btn" onclick="deleteComment(${
+        <div class ="comment-delete-btn btn btn-red ${nickname}" id="comment-delete-btn" onclick="deleteComment(${
         comments[j].commentId
       })" style="display: block">삭제</div>
       </div>
@@ -521,9 +521,9 @@ function gotoPostlist() {
 document
   .querySelector("#post-comment-btn")
   .addEventListener("click", registComment);
-// document
-//   .querySelector("#delete-comment-btn")
-//   .addEventListener("click", deleteComment);
+document
+  .querySelector(".post-golist-btn")
+  .addEventListener("click", gotoPostlist);
 document
   .querySelector(".post-modify-btn")
   .addEventListener("click", postModify);
