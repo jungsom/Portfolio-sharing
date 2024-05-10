@@ -49,11 +49,11 @@ function removeInputElement() {
   descriptionContainer.childNodes[3].remove();
 }
 //요소 보이기 함수
-function displayon(...args) {
-  for (const i of args) {
-    args.style.display = "";
-  }
-}
+// function displayon(...args) {
+//   for (const i of args) {
+//     args.style.display = "";
+//   }
+// }
 //submit 클릭 시 함수
 function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
