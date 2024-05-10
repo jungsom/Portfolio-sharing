@@ -14,7 +14,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }
@@ -548,7 +548,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }
