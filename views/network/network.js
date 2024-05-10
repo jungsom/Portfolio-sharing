@@ -1,5 +1,3 @@
-// import { importTest } from "./login.js";
-
 /** 네크워크에 띄울 유저 정보 api 요청 */
 async function getUsers(page) {
   try {
@@ -22,29 +20,6 @@ async function getLoginStatus() {
     return data;
   } catch (error) {
     console.error(error);
-  }
-}
-
-/** 모든 페이지의 데이터를 가져오는 함수 */
-async function getAllUser(currentPage) {
-  try {
-    // 첫 번째 페이지의 데이터를 가져옴
-    let allData = [];
-    let data = await getUsers(1);
-    const totalPages = data.totalPage;
-    allData = allData.concat(data.data);
-
-    // 다음 페이지가 있을 경우 반복적으로 데이터를 가져옴
-    while (currentPage < totalPages) {
-      currentPage++;
-      data = await getUsers(currentPage);
-      allData = allData.concat(data.data);
-    }
-
-    return allData;
-  } catch (error) {
-    console.error(error);
-    alert("데이터를 가져오는 중에 오류가 생겼습니다.");
   }
 }
 
@@ -121,7 +96,6 @@ async function renderUserCard() {
   try {
     const params = new URLSearchParams(window.location.search);
     let currentPage = parseInt(params.get("page")) || 1;
-    const allUserData = await getAllUser(currentPage);
 
     const userData = await getUsers(currentPage);
     const container = document.querySelector(".usercard-container");
@@ -135,12 +109,14 @@ async function renderUserCard() {
       const cardinner = document.createElement("div");
       const cardfront = document.createElement("div");
       const cardback = document.createElement("div");
+      const cardwrap = document.createElement("div");
       const userimage = document.createElement("img");
       const title = document.createElement("p");
       const content = document.createElement("p");
 
       usercard.className = "usercard";
       cardinner.className = "usercard-Inner";
+      cardwrap.className = "usercard-Wrap";
       cardfront.className = "usercard-Front";
       cardback.className = "usercard-Back";
       userimage.className = "userImage";
@@ -163,7 +139,8 @@ async function renderUserCard() {
 
       cardback.appendChild(content);
       cardinner.appendChild(cardback);
-      usercard.appendChild(cardinner);
+      cardwrap.appendChild(cardinner);
+      usercard.appendChild(cardwrap);
       container.appendChild(usercard);
 
       usercard.addEventListener("click", () => {
@@ -191,21 +168,15 @@ async function updateButton() {
 
   // 첫 번째 페이지일 경우
   if (currentPage === 1) {
-    prevButton.disabled = true;
-    nextButton.disabled = false;
     prevButton.style.backgroundColor = "#ff96a993";
     nextButton.style.backgroundColor = "white";
     prevButton.style.color = "black";
     // 마지막 페이지일 경우
   } else if (currentPage === totalPages) {
-    prevButton.disabled = false;
-    nextButton.disabled = true;
     prevButton.style.backgroundColor = "white";
     nextButton.style.backgroundColor = "#ff96a993";
     nextButton.style.color = "black";
   } else {
-    prevButton.disabled = false;
-    nextButton.disabled = false;
     prevButton.style.backgroundColor = "white";
     nextButton.style.backgroundColor = "white";
   }
@@ -251,20 +222,7 @@ function getLogOut() {
   }
 }
 
-/** 초기 화면 1페이지로 이동시키는 함수 */
-function displayFirst() {
-  const params = new URLSearchParams(window.location.search);
-  let currentPage = parseInt(params.get("page")) || 1;
-
-  if (currentPage >= 2) {
-    currentPage = 1;
-
-    renderUserCard();
-  }
-}
-
 async function init() {
-  displayFirst();
   updateMenu();
   renderUserCard();
 

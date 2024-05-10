@@ -17,7 +17,7 @@
 .usercard-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
 .usercard {
@@ -67,6 +67,13 @@
   transform-style: preserve-3d;
 }
 
+.usercard-Wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+}
+
 .usercard-Front,
 .usercard-Back {
   box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
@@ -104,6 +111,6 @@
   transform: rotateY(180deg);
 }
 
-.usercard-Inner:hover {
+.usercard-Wrap:hover {
   transform: rotateY(180deg);
 }
