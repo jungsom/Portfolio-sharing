@@ -10,7 +10,7 @@ function goUserpage() {
 //로그아웃
 function logout() {
   if (confirm("정말 로그아웃 하시겠습니까?")) {
-    fetch("http://localhost:8080/auth/logout", {
+    fetch("/auth/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

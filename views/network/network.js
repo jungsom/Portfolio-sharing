@@ -237,7 +237,7 @@ async function updateMenu() {
 /** 로그아웃 함수 */
 function getLogOut() {
   if (confirm("정말 로그아웃 하시겠습니까?")) {
-    fetch("http://localhost:8080/auth/logout", {
+    fetch("/auth/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -4,6 +4,10 @@
   margin-bottom: 20px;
 }
 
+.contents {
+  padding: 100px 85px;
+}
+
 #logo {
   color: #ff708ae6;
   font-weight: 700;

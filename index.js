@@ -72,7 +72,7 @@ app.get("/aboutus", (req, res) => {
 });
 
 app.get("/404", (req, res) => {
-  res.status(404).render("404.html");
+  res.status(404).render("404/404.html");
 });
 
 // 서버 설정
