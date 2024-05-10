@@ -8,6 +8,12 @@
   padding: 100px 85px;
 }
 
+.usercard-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .usercard-container {
   width: 100%;
   display: grid;
