@@ -1682,7 +1682,6 @@ function uploadImageProfile() {
 
   const formdata = new FormData();
   formdata.append("profileImg", fileInput.files[0]);
-
   const requestOptions = {
     method: "PUT",
     body: formdata,
@@ -1691,6 +1690,12 @@ function uploadImageProfile() {
 
   fetch("/users/mypage/profileImg", requestOptions)
     .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((data) => {
+      if (!data.error) {
+        console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+        alert("프로필 정보가 성공적으로 등록되었습니다.");
+      } else alert(data.error);
+      getUserData();
+    })
     .catch((error) => console.error(error));
 }

@@ -18,6 +18,13 @@ body {
   font-family: Arial, sans-serif;
 }
 
+.imageButton {
+  align-self: flex-end;
+}
+
+.profileImageInput {
+  align-self: flex-end;
+}
 .imageprofile-container {
   display: flex;
 }
@@ -28,11 +35,6 @@ body {
   margin-bottom: 10px;
 }
 
-.image-change-button {
-  position: absolute;
-  top: 360px;
-  left: 210px;
-}
 .profile,
 .education,
 .award,
@@ -47,7 +49,6 @@ body {
 .profile {
   display: flex;
   justify-content: space-between;
-  background-color: #f5e4e4;
 }
 
 .profile-container {

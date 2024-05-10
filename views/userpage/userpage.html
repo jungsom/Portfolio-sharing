@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/main.css" />
     <link rel="stylesheet" href="/layout/header.css" />
     <link rel="stylesheet" href="./userpage_new.css" />
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon" />
   </head>
   <body>
     <div class="container">
@@ -55,7 +56,11 @@
           <div class="profile">
             <div class="imageprofile-container">
               <!-- 프로필 정보 -->
-              <img class="profile-image" alt="프로필 이미지" />
+              <img
+                class="profile-image"
+                id="porfile_image"
+                alt="프로필 이미지"
+              />
               <div class="profile-container">
                 <div class="profilediv">
                   <div class="name-container">
@@ -72,8 +77,6 @@
                   </div>
                 </div>
                 <div class="edit-button-container">
-                  <input type="file" class="profileImageInput" accept=".jpg" />
-                  <button class="imageButton">이미지 제출</button>
                   <button
                     class="profile-edit-button editBtns btn2 btn-yellow"
                     onclick="editProfile()"
@@ -82,6 +85,18 @@
                   </button>
                 </div>
               </div>
+              <input
+                type="file"
+                class="profileImageInput editBtns btn2 btn-green"
+                id="profileImageInput"
+                accept=".jpg"
+              />
+              <button
+                class="imageButton editBtns btn2 btn-green"
+                onclick="uploadImageProfile()"
+              >
+                이미지 제출
+              </button>
             </div>
             <div class="privacy-modify" id="privacy-modify-container">
               <button

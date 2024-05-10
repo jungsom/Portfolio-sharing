@@ -302,7 +302,7 @@ router.put(
         throw new BadRequest("프로필 이미지가 등록되지 않았습니다."); // 400 에러
       }
 
-      const profileImg = `/${req.file.path}`;
+      const profileImg = req.file.filename;
 
       const user = await User.findOneAndUpdate(
         { userId },
