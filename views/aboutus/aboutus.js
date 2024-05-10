@@ -68,12 +68,34 @@ async function goToUserPage() {
   }
 }
 
+/** Nav바 이벤트 핸들러 (게시판) */
+//유저가 로그인 상태이면 게시판 이동
+async function goToBoard() {
+  try {
+    const logintrue = await getLoginStatus();
+
+    if (logintrue.status === true) {
+      window.location.href = `/board/?page=1`;
+    } else {
+      alert("로그인 창으로 이동합니다.");
+      window.location.href = `/login`;
+    }
+  } catch (error) {
+    console.error(error);
+    alert("로그인 창으로 이동합니다.");
+    window.location.href = `/login`;
+  }
+}
+
 updateMenu();
 
 const logoutElem = document.querySelector(".user-status-item.logout");
 const userpageElem = document.querySelector(".user-status-item-left.userpage");
+const boardElem = document.querySelector(".menu-items.board");
 
 logoutElem.addEventListener("click", () => {
   getLogOut();
 });
+
 userpageElem.addEventListener("click", goToUserPage);
+boardElem.addEventListener("click", goToBoard);

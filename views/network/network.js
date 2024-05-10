@@ -152,13 +152,13 @@ async function renderUserCard() {
 
       cardfront.appendChild(userimage);
 
-      title.innerHTML = `${user.name}의 포트폴리오`;
+      title.innerHTML = `${user.nickname}의 포트폴리오`;
 
       cardfront.appendChild(title);
       cardinner.appendChild(cardfront);
 
       content.innerHTML = `안녕하세요! <br> <br>
-                    제 이름은 ${user.name} 입니다.<br>
+                    나는 ${user.name} 입니다.<br>
                      ${user.description}`;
 
       cardback.appendChild(content);
