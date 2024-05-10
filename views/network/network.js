@@ -1,3 +1,5 @@
+// import { importTest } from "./login.js";
+
 /** 네크워크에 띄울 유저 정보 api 요청 */
 async function getUsers(page) {
   try {
@@ -109,14 +111,12 @@ async function renderUserCard() {
       const cardinner = document.createElement("div");
       const cardfront = document.createElement("div");
       const cardback = document.createElement("div");
-      const cardwrap = document.createElement("div");
       const userimage = document.createElement("img");
       const title = document.createElement("p");
       const content = document.createElement("p");
 
       usercard.className = "usercard";
       cardinner.className = "usercard-Inner";
-      cardwrap.className = "usercard-Wrap";
       cardfront.className = "usercard-Front";
       cardback.className = "usercard-Back";
       userimage.className = "userImage";
@@ -139,8 +139,7 @@ async function renderUserCard() {
 
       cardback.appendChild(content);
       cardinner.appendChild(cardback);
-      cardwrap.appendChild(cardinner);
-      usercard.appendChild(cardwrap);
+      usercard.appendChild(cardinner);
       container.appendChild(usercard);
 
       usercard.addEventListener("click", () => {
