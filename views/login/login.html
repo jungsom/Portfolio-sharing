@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>Dev.cartes!</title>
+    <title>Login</title>
 
     <link rel="stylesheet" href="/main.css" />
     <link rel="stylesheet" href="/layout/header.css" />
@@ -16,28 +16,26 @@
         </a>
       </div>
       <div class="menu">
-        <div class="menu-items home">
+        <div class="menu-items home" id="home">
           <a href="/">홈</a>
         </div>
-        <div class="menu-items board">
-          <a href="/board/?page=1">게시판</a>
+        <div class="menu-items board" id="board">
+          <a>게시판</a>
         </div>
-        <div class="menu-items aboutUs">
+        <div class="menu-items aboutUs" id="aboutUs">
           <a href="/aboutUs">About Us</a>
         </div>
       </div>
       <div class="user-status">
-        <!-- 로그인 전 -->
-        <div class="user-status-item-left login">
-          <a href="/login">로그인</a>
+        <div class="user-status-item-left userpage" id="userpage">
+          <a>내 정보</a>
         </div>
-        <!-- 로그인 후 -->
-        <!-- <div class="user-status-item-left login">
-            <a href="/login">내 정보</a>
+        <div class="user-status-item logout" id="logout">
+          <a>로그아웃</a>
         </div>
-        <div class="user-status-item join">
-            <a href="/join">로그아웃</a>
-        </div> -->
+        <div class="user-status-item-left login" id="login">
+          <a>로그인</a>
+        </div>
       </div>
     </div>
     <div class="maincontainer">

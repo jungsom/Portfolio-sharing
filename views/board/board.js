@@ -1,11 +1,4 @@
 //메뉴바 이동
-function goNetwork() {
-  window.location.href = "/";
-}
-
-function goUserpage() {
-  window.location.href = "/userpage";
-}
 
 //로그아웃
 function logout() {
@@ -45,7 +38,6 @@ async function getPostList(page) {
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
-    console.log(data);
 
     for (let i = 0; i < listcount; i++) {
       const postlists = document.querySelector(".post-list");
@@ -180,7 +172,7 @@ async function getpostSearch(page) {
   const postlists = document.querySelector(".post-list");
   // const params = new URLSearchParams(window.location.search);
   // let currentPage = parseInt(params.get("page"));
-  console.log("검색어", search, "검색타입", searchtype);
+  // console.log("검색어", search, "검색타입", searchtype);
   postlists.innerHTML = ``;
   try {
     const res = await fetch(
@@ -189,7 +181,7 @@ async function getpostSearch(page) {
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
-    console.log(data);
+    // console.log(data);
 
     for (let i = 0; i < listcount; i++) {
       // const postlists = document.createElement("div");
@@ -238,7 +230,7 @@ function registPost() {
           contents: contents,
         }),
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status == 201) {
           alert("게시물 작성 완료");
           window.location.href = "/board/?page=1";
@@ -248,7 +240,7 @@ function registPost() {
           alert("권한이 없습니다.");
         } else if (response.status == 400) {
           response.json().then((data) => {
-            console.log(data);
+            // console.log(data);
             if (data.error == "입력되지 않은 내용이 있습니다.") {
               alert("입력되지 않은 내용이 있습니다.");
             }
@@ -273,7 +265,7 @@ function registPost() {
           contents: contents,
         }),
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status == 201) {
           alert("게시물 수정 완료");
           outWritePost();
@@ -438,7 +430,7 @@ function postModify() {
   fetch(`/boards/${boardId}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       const title = data.data[0].title;
       const contents = data.data[0].contents;
       document.getElementById("write-post-title").value = title;
@@ -481,7 +473,7 @@ function deleteComment(id) {
       },
       body: JSON.stringify({}),
     }).then((response) => {
-      console.log(response);
+      // console.log(response);
       if (response.status == 200) {
         response.json().then((data) => {
           alert(data.message);
@@ -523,18 +515,91 @@ document
 document
   .querySelector(".post-delete-btn")
   .addEventListener("click", postDelete);
+
+//Header 공통코드
+document.querySelector("#login").addEventListener("click", gotoLogin);
+document.querySelector("#logout").addEventListener("click", logout);
 document.querySelector("#userpage").addEventListener("click", gotoUserpage);
+document.querySelector("#board").addEventListener("click", gotoBoard);
 
 function gotoUserpage() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      const currentUser = data.data.userId;
-      window.location.href = `/userpage?user=${currentUser}`;
+      // console.log(data);
+      if (data.status) {
+        const currentUser = data.data.userId;
+        window.location.href = `/userpage?user=${currentUser}`;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        alert("로그아웃 성공");
+        window.location.href = "/network";
+      }
+    });
+  }
+}
+
+function gotoLogin() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      // console.log(data);
+      if (data.status) {
+        alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
+      } else {
+        window.location.href = "/login";
+      }
     });
 }
 
+function gotoBoard() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      // console.log(data);
+      if (data.status) {
+        window.location.href = "/board/?page=1";
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+
+//각각 페이지 실행 시 올바른 접근인지 체크
+function authcheck() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      // console.log(data);
+      if (data.status) {
+        return;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+///헤더 공통코드 끝
+
 function init() {
+  authcheck();
   isVisibleBtns();
   displayFirst();
   ismycontents();

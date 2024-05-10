@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dev.cartes!</title>
+    <title>Userpage</title>
     <link rel="stylesheet" href="./userpage.css" />
     <link rel="stylesheet" href="/main.css" />
     <link rel="stylesheet" href="/layout/header.css" />
@@ -12,7 +12,6 @@
   </head>
   <body>
     <div class="container">
-      <!-- header -->
       <div class="header">
         <div class="logo">
           <a href="/">
@@ -20,30 +19,25 @@
           </a>
         </div>
         <div class="menu">
-          <div class="menu-items home">
+          <div class="menu-items home" id="home">
             <a href="/">홈</a>
           </div>
-          <div class="menu-items board">
-            <a href="/board/?page=1">게시판</a>
+          <div class="menu-items board" id="board">
+            <a>게시판</a>
           </div>
-          <div class="menu-items aboutUs">
+          <div class="menu-items aboutUs" id="aboutUs">
             <a href="/aboutUs">About Us</a>
           </div>
         </div>
         <div class="user-status">
-          <!-- 로그인 전 -->
-          <div class="user-status-item-left login" style="display: none">
-            <a href="/login">로그인</a>
-          </div>
-          <div class="user-status-item join" style="display: none">
-            <a href="/join">회원가입</a>
-          </div>
-          <!-- 로그인 후 -->
-          <div class="user-status-item-left userpage" style="display: none">
+          <div class="user-status-item-left userpage" id="userpage">
             <a>내 정보</a>
           </div>
-          <div class="user-status-item logout" style="display: none">
-            <a onclick="logout()" style="cursor: pointer">로그아웃</a>
+          <div class="user-status-item logout" id="logout">
+            <a>로그아웃</a>
+          </div>
+          <div class="user-status-item login" id="login">
+            <a>로그인</a>
           </div>
         </div>
       </div>

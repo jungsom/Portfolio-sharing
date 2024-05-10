@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dev.cartes!</title>
+    <title>Network</title>
 
     <link rel="stylesheet" href="/main.css" />
     <link rel="stylesheet" href="/layout/header.css" />
@@ -19,27 +19,25 @@
           </a>
         </div>
         <div class="menu">
-          <div class="menu-items home">
+          <div class="menu-items home" id="home">
             <a href="/">홈</a>
           </div>
-          <div class="menu-items board">
+          <div class="menu-items board" id="board">
             <a>게시판</a>
           </div>
-          <div class="menu-items aboutUs">
-            <a href="/aboutus">About Us</a>
+          <div class="menu-items aboutUs" id="aboutUs">
+            <a href="/aboutUs">About Us</a>
           </div>
         </div>
         <div class="user-status">
-          <!-- 로그인 전 -->
-          <div class="user-status-item-left login">
-            <a>로그인</a>
-          </div>
-          <!-- 로그인 후 -->
-          <div class="user-status-item-left userpage">
+          <div class="user-status-item-left userpage" id="userpage">
             <a>내 정보</a>
           </div>
-          <div class="user-status-item logout">
+          <div class="user-status-item logout" id="logout">
             <a>로그아웃</a>
+          </div>
+          <div class="user-status-item-left login" id="login">
+            <a>로그인</a>
           </div>
         </div>
       </div>

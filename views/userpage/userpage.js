@@ -1,4 +1,6 @@
- updateMenu();
+authcheck();
+updateMenu();
+
 //이름, 닉네임, 설명 입력창 및 타이틀 생성
 function createInputElement(str_class) {
   const inputElem = document.createElement("input");
@@ -49,11 +51,9 @@ function removeInputElement() {
 
 //submit 클릭 시 함수
 function submitEditProfile() {
-
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
   const { nameContainer, nicknameContainer, descriptionContainer } =
     inputContainerDefine();
-    
 
   //서버로 name, nickname, description 정보 업데이트하기, 에러처리
   fetch("/users/mypage", {
@@ -75,15 +75,15 @@ function submitEditProfile() {
       }
     })
     .then((data) => {
-      if(!data.error) {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
-      alert("프로필 정보가 성공적으로 등록되었습니다.");
-      nameValue.innerText = data.data.name;
-    nicknameValue.innerText = data.data.nickname;
-    descriptionValue.innerText = data.data.description;
+      if (!data.error) {
+        console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+        alert("프로필 정보가 성공적으로 등록되었습니다.");
+        nameValue.innerText = data.data.name;
+        nicknameValue.innerText = data.data.nickname;
+        descriptionValue.innerText = data.data.description;
       } else alert(data.error);
     });
-  
+
   //요소 보이기
   inputValueDisplaySet("block");
 
@@ -183,6 +183,9 @@ function getUserData() {
   fetch(`/users/${currentuser}`)
     .then((res) => res.json())
     .then((data) => {
+      if (!data.user) {
+        window.location.href = "/404";
+      }
       //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
       console.log(`${currentuser}`);
       document.querySelector(".Name").innerText = data.user.name;
@@ -1591,3 +1594,85 @@ function modalClose() {
   document.getElementById("delete_account_modal").style.display = "none";
   document.getElementById("password_change_modal").style.display = "none";
 }
+
+//Header 공통코드
+document.querySelector("#login").addEventListener("click", gotoLogin);
+document.querySelector("#logout").addEventListener("click", logout);
+document.querySelector("#userpage").addEventListener("click", gotoUserpage);
+document.querySelector("#board").addEventListener("click", gotoBoard);
+
+function gotoUserpage() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        const currentUser = data.data.userId;
+        window.location.href = `/userpage?user=${currentUser}`;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+function logout() {
+  if (confirm("정말 로그아웃 하시겠습니까?")) {
+    fetch("http://localhost:8080/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((response) => {
+      if (response.status == 401) {
+        alert("로그인 후 이용 가능합니다.");
+      } else if (response.status == 200) {
+        alert("로그아웃 성공");
+        window.location.href = "/network";
+      }
+    });
+  }
+}
+
+function gotoLogin() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
+      } else {
+        window.location.href = "/login";
+      }
+    });
+}
+
+function gotoBoard() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        window.location.href = "/board/?page=1";
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+
+//각각 페이지 실행 시 올바른 접근인지 체크
+function authcheck() {
+  fetch("/auth/status")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        return;
+      } else {
+        alert("잘못 된 접근입니다. 로그인 후 이용해주세요.");
+        window.location.href = "/login";
+      }
+    });
+}
+///헤더 공통코드 끝
