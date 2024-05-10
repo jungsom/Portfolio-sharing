@@ -327,7 +327,6 @@ function editProfile() {
 //학력 추가 기능
 function addEducation() {
   const modal = document.getElementById("educationModal"); //폼 데이터를 가져와서 띄운다
-  const deleteButton = document.getElementById("close-modal-button");
   const confirmButton = document.getElementById("education-confirm-button");
   const editButton = document.getElementById("education-edit-button");
 
@@ -399,13 +398,9 @@ function confirmEducation(event) {
     .then((data) => {
       console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("학력 정보가 성공적으로 등록되었습니다.");
-      document.getElementById("schoolCategory");
       document.getElementById("university").value = "";
       document.getElementById("major").value = "";
       document.getElementById("schoolStatus").value = "";
-      document.getElementById("graduationStatus").value = "";
-      document.getElementById("sDate").value = "";
-      document.getElementById("eDate").value = "";
       form.style.display = "none";
       getUserData();
     })
@@ -425,9 +420,11 @@ function updateEducationList(educationArray) {
     educationDiv.classList.add("education-entry");
     educationDiv.setAttribute("data-education-id", educationItem.educationId);
     educationDiv.innerHTML = `
-          <p>학교 이름: <p1>${educationItem.schoolName}</p1></p>
-          <p>전공: <p2>${educationItem.major}</p2></p>
-          <p>학위: <p3>${educationItem.schoolStatus}</p3></p>
+          <div>
+          <p>학교 이름 : <p1>${educationItem.schoolName}</p1></p>
+          <p>전공이름 / 없음 : <p2>${educationItem.major}</p2></p>
+          <p>학위 : <p3>${educationItem.schoolStatus}</p3></p>
+          </div>
           <div class="editBtns">
           <button onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
           <button onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
@@ -532,13 +529,12 @@ function deleteEducation(button, educationId) {
       alert("학력 정보가 삭제되었습니다.");
       const educationEntry = button.closest(".education-entry");
       educationEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
@@ -638,9 +634,11 @@ function updateAwardList(awardArray) {
     awardDiv.classList.add("award-entry");
     awardDiv.setAttribute("data-award-id", awardItem.awardId);
     awardDiv.innerHTML = `
-          <p>수상 내역: <p1>${awardItem.title}</p1></p>
-          <p>수상 시기: <p2>${awardItem.acqDate}</p2></p>
-          <p>상세 설명: <p3>${awardItem.details}</p3></p>
+          <div>
+          <p>이름 : <p1>${awardItem.title}</p1></p>
+          <p>수상 시기 : <p2>${awardItem.acqDate}</p2></p>
+          <p>설명 : <p3>${awardItem.details}</p3></p>
+          </div>
           <div class="editBtns">
           <button onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
           <button onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
@@ -740,13 +738,12 @@ function deleteAward(button, awardId) {
       alert("수상 정보가 삭제되었습니다.");
       const awardEntry = button.closest(".award-entry");
       awardEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`수상 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
@@ -850,10 +847,12 @@ function updateProjectList(projectArray) {
     projectDiv.classList.add("project-entry");
     projectDiv.setAttribute("data-project-id", projectItem.projectId);
     projectDiv.innerHTML = `
-          <p>수상 내역: <p1>${projectItem.title}</p1></p>
-          <p>수상 시기: <p2>${projectItem.startDate}</p2></p>
-          <p>수상 시기: <p3>${projectItem.endDate}</p3></p>
-          <p>상세 설명: <p4>${projectItem.details}</p4></p>
+          <div>
+          <p>이름 : <p1>${projectItem.title}</p1></p>
+          <p>시작 날짜 : <p2>${projectItem.startDate}</p2></p>
+          <p>종료 날짜 : <p3>${projectItem.endDate}</p3></p>
+          <p>설명: <p4>${projectItem.details}</p4></p>
+          </div>
           <div class="editBtns">
           <button onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
           <button onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
@@ -960,6 +959,7 @@ function deleteProject(button, projectId) {
       alert("프로젝트 정보가 삭제되었습니다.");
       const projectEntry = button.closest(".project-entry");
       projectEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -967,8 +967,6 @@ function deleteProject(button, projectId) {
         `프로젝트 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`
       );
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
@@ -1067,8 +1065,10 @@ function updateCertificateList(certificateArray) {
       certificateItem.certificateId
     );
     certificateDiv.innerHTML = ` 
-          <p>자격증 이름: <p1>${certificateItem.title}</p1></p>
-          <p>취득 날짜: <p2>${certificateItem.acqDate}</p2></p>
+          <div>
+          <p>이름 : <p1>${certificateItem.title}</p1></p>
+          <p>취득 날짜 : <p2>${certificateItem.acqDate}</p2></p>
+          </div>
           <div class="editBtns">
           <button onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
           <button onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
@@ -1169,13 +1169,12 @@ function deleteCertificate(button, certificateId) {
       alert("자격증 정보가 삭제되었습니다.");
       const certificateEntry = button.closest(".certificate-entry");
       certificateEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);
       alert(`자격증 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 //---------------------------------------------------------------------------------
@@ -1267,7 +1266,9 @@ function updateSkillList(skillArray) {
     skillDiv.classList.add("skill-entry");
     skillDiv.setAttribute("data-skill-id", skillItem.skillId);
     skillDiv.innerHTML = `
-          <p>스킬: <p1>${skillItem.stack}</p1></p>
+          <div>
+          <p><p1>${skillItem.stack}</p1></p>
+          </div>
           <div class="editBtns">
           <button onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
           <button onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
@@ -1355,13 +1356,13 @@ function deleteSkill(button, skillId) {
         throw new Error(`에러!! status: ${response.status}`);
       }
       return response.json();
-      return response.json();
     })
     .then((data) => {
       console.log(data);
       alert("스킬 정보가 삭제되었습니다.");
       const skillEntry = button.closest(".skill-entry");
       skillEntry.remove();
+      plusButton.style.display = "block";
     })
     .catch((error) => {
       console.error("Error:", error);

@@ -58,21 +58,14 @@ body {
   height: fit-content;
 }
 
-.education-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
+.education-list,
 .award-list,
 .project-list,
 .certificate-list,
 .skill-list {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -87,21 +80,29 @@ body {
 
 .award-list > div {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
 .project-list > div {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
 .certificate-list > div {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
 .skill-list > div {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 /* select 박스와 input 필드의 스타일 */
@@ -192,8 +193,7 @@ input {
 
 .profile-edit-button,
 .change-password-btn,
-.delete-account-btn
- {
+.delete-account-btn {
   margin-right: 10px;
 }
 
@@ -277,7 +277,7 @@ input {
   margin-bottom: 10px; /* 오른쪽 여백 추가 */
 }
 
-.pinkbtn{
+.pinkbtn {
   background-color: #ff708ae6;
   color: #fff;
   border: none;
@@ -285,10 +285,10 @@ input {
   cursor: pointer;
 }
 
-.blackbtn{
+.blackbtn {
   background-color: #000;
   color: #ffffff;
-  border:none;
+  border: none;
   border-radius: 10%;
   cursor: pointer;
 }
