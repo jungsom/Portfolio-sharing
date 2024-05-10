@@ -38,35 +38,54 @@ async function getPostList(page) {
     const data = await res.json();
     const listcount = data.data.length;
     const totalPage = data.totalPage;
+    const postList = document.querySelector(".post-list");
 
-    for (let i = 0; i < listcount; i++) {
-      const postlists = document.querySelector(".post-list");
-      // const postlists = document.createElement("div");
-      let postTitle = data.data[i].title;
-      let postWriter = data.data[i].nickname;
-      let boardId = data.data[i].boardId;
-      let createdAt = data.data[i].createdAt.substr(0, 10);
-      postlists.innerHTML += `
-      <div class="post-title-list">
-        <li class="title-list"><span class="post-title" id="${boardId}"><a onclick="getPostContents(${boardId})">${postTitle}</a></span><span>${createdAt}</span></li>
-        <span>${postWriter}</span>
-      </div>
-      `;
-    }
-    //페이지네이션 다음/이전 버튼 활성/비활성화
-    if (totalPage == 1) {
-      isvisibleNextPrevBtn(3);
-    } else if (page == 1) {
-      isvisibleNextPrevBtn(1);
-    } else if (page == totalPage) {
-      isvisibleNextPrevBtn(2);
-    } else {
-      isvisibleNextPrevBtn(0);
-    }
-    localStorage.removeItem("search");
+    // 기존 목록을 초기화
+    postList.innerHTML = "";
+
+    // 새로운 게시물 목록 생성
+    data.data.forEach((post) => {
+      // 테이블 행 생성
+      const row = document.createElement("tr");
+
+      // 제목 열 생성
+      const titleTd = document.createElement("td");
+      const titleLink = document.createElement("a");
+      titleLink.setAttribute("href", `#`);
+      titleLink.setAttribute("onclick", `getPostContents(${post.boardId})`);
+      titleLink.textContent = post.title;
+      titleTd.appendChild(titleLink);
+
+      // 작성자 열 생성
+      const writerTd = document.createElement("td");
+      writerTd.textContent = post.nickname;
+
+      // 작성일자 열 생성
+      const dateTd = document.createElement("td");
+      dateTd.textContent = post.createdAt.substr(0, 10);
+
+      // 행에 열 추가
+      row.appendChild(titleTd);
+      row.appendChild(writerTd);
+      row.appendChild(dateTd);
+
+      // 목록에 행 추가
+      postList.appendChild(row);
+    });
+
+    // 페이지네이션 다음/이전 버튼 활성/비활성화
+    isvisibleNextPrevBtn(totalPage, page);
   } catch (error) {
-    // console.error(error);
+    console.error("게시물 목록을 불러오는데 실패했습니다.", error);
   }
+}
+
+// 페이지네이션 버튼 활성/비활성화 함수 업데이트
+function isvisibleNextPrevBtn(totalPage, currentPage) {
+  document.getElementById("prev-btn").style.display =
+    currentPage === 1 ? "none" : "block";
+  document.getElementById("next-btn").style.display =
+    currentPage === totalPage ? "none" : "block";
 }
 
 //페이지네이션 버튼 활성/비활성화 구분
