@@ -107,6 +107,7 @@ function getNextPostList() {
   if (isSearch == "Y") {
     window.location.href = `/board/search/result?page=${currentPage}`;
     getpostSearch(currentPage);
+    localStorage.removeItem("search");
   } else {
     window.location.href = `/board/?page=${currentPage}`;
     getPostList(currentPage);
@@ -237,8 +238,12 @@ function registPost() {
       }).then((response) => {
         // console.log(response);
         if (response.status == 201) {
-          alert("게시물 작성 완료");
-          window.location.href = "/board/?page=1";
+          response.json().then((data) => {
+            alert("게시물 작성 완료");
+            getPostContents(data.data.boardId);
+            document.getElementById("write-post-container").style.display =
+              "none";
+          });
         } else if (response.status == 401) {
           alert("로그인 후 이용 가능합니다.");
         } else if (response.status == 403) {
@@ -413,7 +418,11 @@ function postDelete() {
       body: JSON.stringify({}),
     }).then((response) => {
       if (response.status == 204) {
-        outWritePost();
+        alert("게시글 삭제 완료");
+        // document.querySelector("#post-list-container").style.display = "block";
+        // document.querySelector("#write-po st-container").style.display = "none";
+        localStorage.removeItem("postState");
+        displayFirst();
       } else if (response.status == 401) {
         alert("로그인 후 이용 가능합니다.");
         window.location.href = "/login";

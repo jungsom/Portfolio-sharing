@@ -1257,7 +1257,7 @@ function confirmSkill(event) {
     })
     .then((data) => {
       //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
-      alert("자격증 정보가 성공적으로 등록되었습니다.");
+      alert("Skill 정보가 성공적으로 등록되었습니다.");
       document.getElementById("skillTitle").value = "";
       form.style.display = "none";
       getUserData();
