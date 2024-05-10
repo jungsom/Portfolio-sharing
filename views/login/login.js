@@ -107,24 +107,28 @@ function login() {
   const email = document.getElementById("email").value;
   const pw = document.getElementById("pw").value;
 
-  fetch("/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email,
-      password: pw,
-    }),
-  }).then((response) => {
-    if (response.status == 401) {
-      modalOpen(1);
-    } else if (response.status == 200) {
-      modalOpen(2);
-      clear();
-      localStorage.setItem("goTo", "network");
-    }
-  });
+  if (email != "" && pw != "") {
+    fetch("/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: pw,
+      }),
+    }).then((response) => {
+      if (response.status == 401) {
+        modalOpen(1);
+      } else if (response.status == 200) {
+        modalOpen(2);
+        clear();
+        localStorage.setItem("goTo", "network");
+      }
+    });
+  } else {
+    return;
+  }
 }
 
 //비밀번호, 비밀번호 확인 같은지 다른지 판단
@@ -315,7 +319,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }
@@ -355,7 +359,7 @@ function authcheck() {
     .then((data) => {
       if (data.status) {
         alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
-        window.location.href = "/Network";
+        window.location.href = "/";
       } else {
         return;
       }

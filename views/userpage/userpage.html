@@ -72,7 +72,7 @@
                 </div>
                 <div class="edit-button-container">
                   <button
-                    class="profile-edit-button editBtns pinkbtn"
+                    class="profile-edit-button editBtns btn2 btn-red"
                     onclick="editProfile()"
                   >
                     Edit
@@ -82,7 +82,7 @@
             </div>
             <div class="privacy-modify" id="privacy-modify-container">
               <button
-                class="change-password-btn editBtns pinkbtn"
+                class="change-password-btn editBtns btn2 btn-red"
                 onclick="passwordChange()"
               >
                 비밀번호 변경
@@ -140,14 +140,14 @@
                   <div style="display: flex; justify-content: center">
                     <button
                       type="button"
-                      class="modal_btn"
+                      class="modal_btn btn2 btn-green"
                       onclick="passwordChangeConfirm()"
                     >
                       확인
                     </button>
                     <button
                       type="button"
-                      class="modal_btn"
+                      class="modal_btn btn2 btn-red"
                       onclick="modalClose()"
                     >
                       닫기
@@ -167,7 +167,7 @@
               <div class="delete-account">
                 <div id="delete_account_container" class="btnbox">
                   <button
-                    class="delete-account-btn editBtns blackbtn"
+                    class="delete-account-btn editBtns btn2 btn-red"
                     onclick="accountDelete()"
                   >
                     회원 탈퇴
@@ -188,14 +188,14 @@
                       <div style="display: flex; justify-content: center">
                         <button
                           type="button"
-                          class="modal_btn"
+                          class="modal_btn btn2 btn-green"
                           onclick="accountDeleteConfirm()"
                         >
                           확인
                         </button>
                         <button
                           type="button"
-                          class="modal_btn"
+                          class="modal_btn btn2 btn-red"
                           onclick="modalClose()"
                         >
                           닫기
@@ -222,7 +222,11 @@
                 <h2>
                   최종 학력
                   <div class="editBtns">
-                    <button id="education-plus-button" onclick="addEducation()">
+                    <button
+                      class="btn2 btn-green"
+                      id="education-plus-button"
+                      onclick="addEducation()"
+                    >
                       + 추가
                     </button>
                   </div>
@@ -236,7 +240,11 @@
                 <h2>
                   수상
                   <div class="editBtns">
-                    <button id="award-plus-button" onclick="addAward()">
+                    <button
+                      class="btn2 btn-green"
+                      id="award-plus-button"
+                      onclick="addAward()"
+                    >
                       + 추가
                     </button>
                   </div>
@@ -250,7 +258,11 @@
                 <h2>
                   프로젝트
                   <div class="editBtns">
-                    <button id="project-plus-button" onclick="addProject()">
+                    <button
+                      class="btn2 btn-green"
+                      id="project-plus-button"
+                      onclick="addProject()"
+                    >
                       + 추가
                     </button>
                   </div>
@@ -265,6 +277,7 @@
                   자격증
                   <div class="editBtns">
                     <button
+                      class="btn2 btn-green"
                       id="certificate-plus-button"
                       onclick="addCertificate()"
                     >
@@ -281,7 +294,11 @@
                 <h2>
                   스킬
                   <div class="editBtns">
-                    <button id="skill-plus-button" onclick="addSkill()">
+                    <button
+                      class="btn2 btn-green"
+                      id="skill-plus-button"
+                      onclick="addSkill()"
+                    >
                       + 추가
                     </button>
                   </div>
@@ -305,6 +322,7 @@
                   <input type="text" id="university" placeholder="학교 이름" />
                   <input type="text" id="major" placeholder="전공 or 없음" />
                   <button
+                    class="btn2 btn-green"
                     type="button"
                     id="education-confirm-button"
                     onclick="confirmEducation(event)"
@@ -313,6 +331,7 @@
                     저장
                   </button>
                   <button
+                    class="btn2 btn-yellow"
                     type="button"
                     id="education-edit-button"
                     onclick="submitEducationUpdate()"
@@ -331,6 +350,7 @@
                   <input type="date" id="acqDate" placeholder="입상 날짜" />
                   <input type="text" id="details" placeholder="상세 설명" />
                   <button
+                    class="btn2 btn-green"
                     type="button"
                     id="award-confirm-button"
                     onclick="confirmAward(event)"
@@ -339,6 +359,7 @@
                     저장
                   </button>
                   <button
+                    class="btn2 btn-yellow"
                     type="button"
                     id="award-edit-button"
                     onclick="submitAwardUpdate()"
@@ -366,6 +387,7 @@
                     placeholder="상세 설명"
                   />
                   <button
+                    class="btn2 btn-green"
                     type="button"
                     id="project-confirm-button"
                     onclick="confirmProject(event)"
@@ -374,6 +396,7 @@
                     저장
                   </button>
                   <button
+                    class="btn2 btn-yellow"
                     type="button"
                     id="project-edit-button"
                     onclick="submitProjectUpdate()"
@@ -395,6 +418,7 @@
                   />
                   <input type="date" id="acquireDate" placeholder="취득 날짜" />
                   <button
+                    class="btn2 btn-green"
                     type="button"
                     id="certificate-confirm-button"
                     onclick="confirmCertificate(event)"
@@ -403,6 +427,7 @@
                     저장
                   </button>
                   <button
+                    class="btn2 btn-yellow"
                     type="button"
                     id="certificate-edit-button"
                     onclick="submitCertificateUpdate()"
@@ -419,6 +444,7 @@
                 <form id="skillForm">
                   <input type="text" id="skillTitle" placeholder="스킬" />
                   <button
+                    class="btn2 btn-green"
                     type="button"
                     id="skill-confirm-button"
                     onclick="confirmSkill(event)"
@@ -427,6 +453,7 @@
                     저장
                   </button>
                   <button
+                    class="btn2 btn-yellow"
                     type="button"
                     id="skill-edit-button"
                     onclick="submitSkillUpdate()"

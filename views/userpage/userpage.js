@@ -411,8 +411,8 @@ function updateEducationList(educationArray) {
           <p>학위 : <p3>${educationItem.schoolStatus}</p3></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
-          <button onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteEducation(this, '${educationItem.educationId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditEducationModal('${educationItem.educationId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -632,8 +632,8 @@ function updateAwardList(awardArray) {
           <p>설명 : <p3>${awardItem.details}</p3></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
-          <button onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteAward(this, '${awardItem.awardId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditAwardModal('${awardItem.awardId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -853,8 +853,8 @@ function updateProjectList(projectArray) {
           <p>설명: <p4>${projectItem.details}</p4></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
-          <button onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteProject(this, '${projectItem.projectId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditProjectModal('${projectItem.projectId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -1076,8 +1076,8 @@ function updateCertificateList(certificateArray) {
           <p>취득 날짜 : <p2>${certificateItem.acqDate}</p2></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
-          <button onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteCertificate(this, '${certificateItem.certificateId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditCertificateModal('${certificateItem.certificateId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
@@ -1283,8 +1283,8 @@ function updateSkillList(skillArray) {
           <p><p1>${skillItem.stack}</p1></p>
           </div>
           <div class="editBtns">
-          <button onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
-          <button onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
+          <button class="btn2 btn-red" onclick="deleteSkill(this, '${skillItem.skillId}')">삭제</button>
+          <button class="btn2 btn-yellow" onclick="openEditSkillModal('${skillItem.skillId}')">수정</button>
           </div>
       `;
     isVisibleBtns();
