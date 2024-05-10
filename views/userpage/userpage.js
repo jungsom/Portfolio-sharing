@@ -48,7 +48,12 @@ function removeInputElement() {
   nicknameContainer.childNodes[3].remove();
   descriptionContainer.childNodes[3].remove();
 }
-
+//요소 보이기 함수
+function displayon(...args) {
+  for (const i of args) {
+    args.style.display = "";
+  }
+}
 //submit 클릭 시 함수
 function submitEditProfile() {
   const { nameValue, nicknameValue, descriptionValue } = inputValueDefine();
@@ -69,7 +74,6 @@ function submitEditProfile() {
     }), // JSON 문자열로 변환하여 데이터 전송
   })
     .then((response) => {
-      console.log(response);
       if (response.ok) {
         return response.json(); // 응답을 JSON 형태로 파싱
       }
@@ -111,15 +115,6 @@ function cancelEditProfile() {
   document.getElementById("submit_edit_button").remove();
   document.getElementById("cancel_edit_button").remove();
 }
-
-// // mypage/project get 테스트
-// fetch("http://localhost:8080/auth/status")
-//   .then((response) => response.json())
-//   .then((data) => {
-//     console.log(data); // 전체 데이터 구조 확인
-//   })
-//   .catch((error) => console.error("Error:", error));
-
 // edit, 추가, 수정 등 내 페이지일때만 버튼 활성화되게 해당 div 나 button 에 editBtns이라는 class 할당해서 일괄 display 설정
 function isVisibleBtns() {
   const params = new URLSearchParams(window.location.search);
@@ -138,9 +133,7 @@ function isVisibleBtns() {
     });
 }
 async function updateMenu() {
-  const loginElem = document.querySelector(".user-status-item-left.login");
-  const joinElem = document.querySelector(".user-status-item.join");
-
+  const loginElem = document.querySelector(".user-status-item.login");
   const userpageElem = document.querySelector(
     ".user-status-item-left.userpage"
   );
@@ -151,12 +144,10 @@ async function updateMenu() {
     userpageElem.style.display = "block";
     logoutElem.style.display = "block";
     loginElem.style.display = "none";
-    joinElem.style.display = "none";
   } else {
     userpageElem.style.display = "none";
     logoutElem.style.display = "none";
     loginElem.style.display = "block";
-    joinElem.style.display = "block";
   }
 
   userpageElem.childNodes[1].href = `/userpage/?user=${logintrue.data.userId}`;
