@@ -47,6 +47,7 @@ body {
 .profile {
   display: flex;
   justify-content: space-between;
+  background-color: #f5e4e4;
 }
 
 .profile-container {

@@ -124,12 +124,12 @@ h3 {
 }
 
 .btn-red {
-  background-color: #f44336;
+  background-color: #ed867e;
   color: white;
 }
 
 .btn-green {
-  background-color: #4caf50;
+  background-color: #7fc881;
   color: white;
 }
 
@@ -186,7 +186,7 @@ h3 {
   padding: 20px;
   border: 1px solid #ccc; /* 테두리 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  background-color: #f3dada;
+  background-color: #f5e4e4;
 }
 
 .post-header {
