@@ -55,7 +55,7 @@ function submitEditProfile() {
     inputContainerDefine();
 
   //서버로 name, nickname, description 정보 업데이트하기, 에러처리
-  fetch("http://localhost:8080/users/mypage", {
+  fetch("/users/mypage", {
     method: "PUT", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -132,13 +132,13 @@ function cancelEditProfile() {
 function isVisibleBtns() {
   const params = new URLSearchParams(window.location.search);
   let currentuser = params.get("user");
-  fetch("http://localhost:8080/auth/status")
+  fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
         if (data.data.userId == currentuser) {
-          target.style.display = "block";
+          target.style.display = "flex";
         } else {
           target.style.display = "none";
         }
@@ -173,7 +173,7 @@ async function updateMenu() {
 /** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
 async function getLoginStatus() {
   try {
-    const response = await fetch(`http://localhost:8080/auth/status`);
+    const response = await fetch(`/auth/status`);
     if (!response.ok) {
       throw new Errow("데이터를 불러오는 중에 문제가 발생했습니다.");
     }
@@ -188,7 +188,7 @@ async function getLoginStatus() {
 function getUserData() {
   const params = new URLSearchParams(window.location.search);
   let currentuser = params.get("user");
-  fetch(`http://localhost:8080/users/${currentuser}`)
+  fetch(`/users/${currentuser}`)
     .then((res) => res.json())
     .then((data) => {
       //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
@@ -197,9 +197,7 @@ function getUserData() {
       document.querySelector(".Nickname").innerText = data.user.nickname;
       document.querySelector(".Email").innerText = data.user.email;
       document.querySelector(".Description").innerText = data.user.description;
-      document.querySelector(
-        ".profile-image"
-      ).src = `http://localhost:8080/${data.user.profileImg}`;
+      document.querySelector(".profile-image").src = `/${data.user.profileImg}`;
       // console.log(data); // 전체 데이터 구조 확인
       if (!data || !Array.isArray(data.education)) {
         console.error("Education data is not available or not an array:", data);
@@ -214,7 +212,7 @@ function getUserData() {
 }
 function logout() {
   if (confirm("정말 로그아웃 하시겠습니까?")) {
-    fetch("http://localhost:8080/auth/logout", {
+    fetch("/auth/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -377,7 +375,7 @@ function confirmEducation(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/education`, {
+  fetch(`/mypage/education`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -476,7 +474,7 @@ function submitEducationUpdate() {
     schoolStatus: document.getElementById("schoolStatus").value,
   };
 
-  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
+  fetch(`/mypage/education/${educationId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -515,7 +513,7 @@ function closeModal() {
 function deleteEducation(button, educationId) {
   const plusButton = document.getElementById("education_plus_button");
   console.log(educationId);
-  fetch(`http://localhost:8080/mypage/education/${educationId}`, {
+  fetch(`/mypage/education/${educationId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -591,7 +589,7 @@ function confirmAward(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/award`, {
+  fetch(`/mypage/award`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -685,7 +683,7 @@ function submitAwardUpdate() {
     details: document.getElementById("details").value,
   };
 
-  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+  fetch(`/mypage/award/${awardId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -716,7 +714,7 @@ function closeAwardModal() {
 function deleteAward(button, awardId) {
   const plusButton = document.getElementById("award-plus-button");
   console.log(awardId);
-  fetch(`http://localhost:8080/mypage/award/${awardId}`, {
+  fetch(`/mypage/award/${awardId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -795,7 +793,7 @@ function confirmProject(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/project`, {
+  fetch(`/mypage/project`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -898,7 +896,7 @@ function submitProjectUpdate() {
     details: document.getElementById("projectDetails").value,
   };
 
-  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+  fetch(`/mypage/project/${projectId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -929,7 +927,7 @@ function closeProjectModal() {
 function deleteProject(button, projectId) {
   const plusButton = document.getElementById("project-plus-button");
   console.log(projectId);
-  fetch(`http://localhost:8080/mypage/project/${projectId}`, {
+  fetch(`/mypage/project/${projectId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -1004,7 +1002,7 @@ function confirmCertificate(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/certificate`, {
+  fetch(`/mypage/certificate`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -1100,7 +1098,7 @@ function submitCertificateUpdate() {
     acqDate: document.getElementById("acquireDate").value,
   };
 
-  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+  fetch(`/mypage/certificate/${certificateId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -1131,7 +1129,7 @@ function closeCertificateModal() {
 function deleteCertificate(button, certificateId) {
   const plusButton = document.getElementById("certificate-plus-button");
   console.log(certificateId);
-  fetch(`http://localhost:8080/mypage/certificate/${certificateId}`, {
+  fetch(`/mypage/certificate/${certificateId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -1201,7 +1199,7 @@ function confirmSkill(event) {
 
   console.log(postData);
 
-  fetch(`http://localhost:8080/mypage/skill`, {
+  fetch(`/mypage/skill`, {
     method: "POST", // HTTP 메서드
     headers: {
       "Content-Type": "application/json", // 컨텐트 타입 설정
@@ -1285,7 +1283,7 @@ function submitSkillUpdate() {
     stack: document.getElementById("skillTitle").value,
   };
 
-  fetch(`http://localhost:8080/mypage/skill/${skillId}`, {
+  fetch(`/mypage/skill/${skillId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -1316,7 +1314,7 @@ function closeSkillModal() {
 function deleteSkill(button, skillId) {
   const plusButton = document.getElementById("skill-plus-button");
   console.log(skillId);
-  fetch(`http://localhost:8080/mypage/skill/${skillId}`, {
+  fetch(`/mypage/skill/${skillId}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -1358,7 +1356,7 @@ function passwordChangeConfirm() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
   // console.log(prevPw, pw);
-  fetch("http://localhost:8080/auth", {
+  fetch("/auth", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -1417,7 +1415,7 @@ function accountDeleteConfirm() {
     const modalClosebtn = document.querySelector(".modal_btn");
     modalClosebtn.style.display = "block";
     const pw = document.getElementById("delete-account-pwchk").value;
-    fetch("http://localhost:8080/auth", {
+    fetch("/auth", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -1453,7 +1451,7 @@ function delaccmodalOpen(txtNum) {
 function gotologin() {
   modalClose();
   //변경된 비밀번호로 다시 로그인하게 유도
-  fetch("http://localhost:8080/auth/logout", {
+  fetch("/auth/logout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1461,7 +1459,7 @@ function gotologin() {
     body: JSON.stringify({}),
   });
   localStorage.setItem("goTo", "login");
-  window.location.href = "http://localhost:8080";
+  window.location.href = "/login";
 }
 
 function clear() {
