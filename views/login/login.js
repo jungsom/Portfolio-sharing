@@ -181,7 +181,6 @@ function setAccount() {
   //email 정규식 확인
   function emailCheck(email) {
     if (emailpattern.test(email)) {
-      // console.log(emailpattern.test(email));
       return true;
     } else {
       return false;
@@ -207,7 +206,6 @@ function setAccount() {
         modalOpen(5);
       } else if (response.status == 409) {
         response.json().then((data) => {
-          // console.log(data.error);
           if (data.error == "이미 가입된 이메일입니다.") {
             modalOpen(6);
           }
@@ -254,7 +252,6 @@ function accountDelete() {
 function passwordChange() {
   const prevPw = document.getElementById("existed-pw").value;
   const pw = document.getElementById("change-setpw").value;
-  // console.log(prevPw, pw);
   fetch("/auth", {
     method: "PUT",
     headers: {
@@ -265,7 +262,6 @@ function passwordChange() {
       newPassword: pw,
     }),
   }).then((response) => {
-    // console.log("res : ", response);
     if (response.status == 200) {
       modalOpen(10);
       localStorage.setItem("goTo", "login");
@@ -303,7 +299,6 @@ function gotoUserpage() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       if (data.status) {
         const currentUser = data.data.userId;
         window.location.href = `/userpage?user=${currentUser}`;
@@ -326,7 +321,7 @@ function logout() {
         alert("로그인 후 이용 가능합니다.");
       } else if (response.status == 200) {
         alert("로그아웃 성공");
-        window.location.href = "/network";
+        window.location.href = "/";
       }
     });
   }
@@ -336,7 +331,6 @@ function gotoLogin() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       if (data.status) {
         alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
       } else {
@@ -349,7 +343,6 @@ function gotoBoard() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       if (data.status) {
         window.location.href = "/board/?page=1";
       } else {
@@ -366,7 +359,7 @@ function authcheck() {
     .then((data) => {
       if (data.status) {
         alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
-        window.location.href = "/Network";
+        window.location.href = "/";
       } else {
         return;
       }

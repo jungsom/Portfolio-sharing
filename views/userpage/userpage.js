@@ -80,7 +80,7 @@ function submitEditProfile() {
     })
     .then((data) => {
       if (!data.error) {
-        console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+        //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
         alert("프로필 정보가 성공적으로 등록되었습니다.");
         nameValue.innerText = data.data.name;
         nicknameValue.innerText = data.data.nickname;
@@ -151,7 +151,7 @@ async function updateMenu() {
   }
 
   userpageElem.childNodes[1].href = `/userpage/?user=${logintrue.data.userId}`;
-  console.log(userpageElem.childNodes[1].href);
+  //console.log(userpageElem.childNodes[1].href);
 }
 /** 현재 사용자가 로그인이 되어있을 경우 유저 정보 api 요청*/
 async function getLoginStatus() {
@@ -178,7 +178,7 @@ function getUserData() {
         window.location.href = "/404";
       }
       //학력, 수강이력 등 정보는 각각 data.education , data.awards 등으로 변수 정해서 해결할것
-      console.log(`${currentuser}`);
+      //console.log(`${currentuser}`);
       document.querySelector(".Name").innerText = data.user.name;
       document.querySelector(".Nickname").innerText = data.user.nickname;
       document.querySelector(".Email").innerText = data.user.email;
@@ -353,9 +353,9 @@ function confirmEducation(event) {
   const major = document.getElementById("major").value; // 전공
   const schoolStatus = document.getElementById("schoolStatus").value; // 전공
 
-  console.log(typeof schoolName);
-  console.log(typeof major);
-  console.log(typeof schoolStatus);
+  //console.log(typeof schoolName);
+  //console.log(typeof major);
+  //console.log(typeof schoolStatus);
 
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
@@ -364,7 +364,7 @@ function confirmEducation(event) {
     schoolStatus: schoolStatus,
   };
 
-  console.log(postData);
+  //console.log(postData);
 
   fetch(`/mypage/education`, {
     method: "POST", // HTTP 메서드
@@ -381,7 +381,7 @@ function confirmEducation(event) {
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("학력 정보가 성공적으로 등록되었습니다.");
       document.getElementById("university").value = "";
       document.getElementById("major").value = "";
@@ -390,7 +390,7 @@ function confirmEducation(event) {
       getUserData();
     })
     .catch((error) => {
-      console.error("Error:", error); // 에러 처리
+      //console.error("Error:", error); // 에러 처리
       alert("학력 정보 등록에 실패하였습니다.");
     });
 }
@@ -427,7 +427,7 @@ function openEditEducationModal(educationId) {
   const saveButton = document.getElementById("education-confirm-button");
   const editButton = document.getElementById("education-edit-button");
 
-  console.log(document.getElementById("education-edit-button"));
+  //console.log(document.getElementById("education-edit-button"));
 
   const educationEntry = document.querySelector(
     `[data-education-id="${educationId}"]`
@@ -492,13 +492,13 @@ function submitEducationUpdate() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("학력 정보가 성공적으로 수정되었습니다.");
       document.getElementById("educationModal").style.display = "none";
       getUserData();
     })
     .catch((error) => {
-      console.error(error);
+      //console.error(error);
       alert("학력 정보 업데이트에 실패했습니다.");
     });
 }
@@ -517,13 +517,13 @@ function deleteEducation(button, educationId) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("학력 정보가 삭제되었습니다.");
       const educationEntry = button.closest(".education-entry");
       educationEntry.remove();
     })
     .catch((error) => {
-      console.error("Error:", error);
+      //console.error("Error:", error);
       alert(`학력 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
 }
@@ -573,9 +573,9 @@ function confirmAward(event) {
   const acqDate = document.getElementById("acqDate").value; // 입상 날짜
   const details = document.getElementById("details").value; // 상세 설명
 
-  console.log(typeof title);
-  console.log(typeof acqDate);
-  console.log(typeof details);
+  //console.log(typeof title);
+  //console.log(typeof acqDate);
+  //console.log(typeof details);
 
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
@@ -584,7 +584,7 @@ function confirmAward(event) {
     details: details,
   };
 
-  console.log(postData);
+  //console.log(postData);
 
   fetch(`/mypage/award`, {
     method: "POST", // HTTP 메서드
@@ -601,7 +601,7 @@ function confirmAward(event) {
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("수상 정보가 성공적으로 등록되었습니다.");
       document.getElementById("title").value = "";
       document.getElementById("acqDate").value = "";
@@ -610,7 +610,7 @@ function confirmAward(event) {
       getUserData();
     })
     .catch((error) => {
-      console.error("Error:", error); // 에러 처리
+      //console.error("Error:", error); // 에러 처리
       alert("수상 정보 등록에 실패하였습니다.");
     });
 }
@@ -646,7 +646,7 @@ function openEditAwardModal(awardId) {
   const saveButton = document.getElementById("award-confirm-button");
   const editButton = document.getElementById("award-edit-button");
 
-  console.log(document.getElementById("award-edit-button"));
+  //console.log(document.getElementById("award-edit-button"));
 
   const awardEntry = document.querySelector(`[data-award-id="${awardId}"]`);
   const title = awardEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
@@ -707,13 +707,13 @@ function submitAwardUpdate() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("수상 정보가 성공적으로 수정되었습니다.");
       document.getElementById("awardModal").style.display = "none";
       getUserData();
     })
     .catch((error) => {
-      console.error(error);
+      //console.error(error);
       alert("수상 정보 업데이트에 실패했습니다.");
     });
 }
@@ -732,14 +732,14 @@ function deleteAward(button, awardId) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("수상 정보가 삭제되었습니다.");
       const awardEntry = button.closest(".award-entry");
       awardEntry.remove();
       plusButton.style.display = "block";
     })
     .catch((error) => {
-      console.error("Error:", error);
+      //console.error("Error:", error);
       alert(`수상 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
 }
@@ -790,10 +790,10 @@ function confirmProject(event) {
   const endDate = document.getElementById("endDate").value; // 종료 날짜
   const details = document.getElementById("projectDetails").value; // 상세 설명
 
-  console.log(typeof title);
-  console.log(typeof startDate);
-  console.log(typeof endDate);
-  console.log(typeof details);
+  //console.log(typeof title);
+  //console.log(typeof startDate);
+  //console.log(typeof endDate);
+  //console.log(typeof details);
 
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
@@ -803,7 +803,7 @@ function confirmProject(event) {
     details: details,
   };
 
-  console.log(postData);
+  //console.log(postData);
 
   fetch(`/mypage/project`, {
     method: "POST", // HTTP 메서드
@@ -820,7 +820,7 @@ function confirmProject(event) {
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("프로젝트 정보가 성공적으로 등록되었습니다.");
       document.getElementById("projectTitle").value = "";
       document.getElementById("startDate").value = "";
@@ -830,7 +830,7 @@ function confirmProject(event) {
       getUserData();
     })
     .catch((error) => {
-      console.error("Error:", error); // 에러 처리
+      //console.error("Error:", error); // 에러 처리
       alert("프로젝트 정보 등록에 실패하였습니다.");
     });
 }
@@ -867,7 +867,7 @@ function openEditProjectModal(projectId) {
   const saveButton = document.getElementById("project-confirm-button");
   const editButton = document.getElementById("project-edit-button");
 
-  console.log(document.getElementById("project-edit-button"));
+  //console.log(document.getElementById("project-edit-button"));
 
   const projectEntry = document.querySelector(
     `[data-project-id="${projectId}"]`
@@ -935,20 +935,20 @@ function submitProjectUpdate() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("수상 정보가 성공적으로 수정되었습니다.");
       document.getElementById("projectModal").style.display = "none";
       getUserData();
     })
     .catch((error) => {
-      console.error(error);
+      //console.error(error);
       alert("수상 정보 업데이트에 실패했습니다.");
     });
 }
 
 function deleteProject(button, projectId) {
   const plusButton = document.getElementById("project-plus-button");
-  console.log(projectId);
+  //console.log(projectId);
   fetch(`/mypage/project/${projectId}`, {
     method: "DELETE",
   })
@@ -960,14 +960,14 @@ function deleteProject(button, projectId) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("프로젝트 정보가 삭제되었습니다.");
       const projectEntry = button.closest(".project-entry");
       projectEntry.remove();
       plusButton.style.display = "block";
     })
     .catch((error) => {
-      console.error("Error:", error);
+      //console.error("Error:", error);
       alert(
         `프로젝트 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`
       );
@@ -1018,8 +1018,8 @@ function confirmCertificate(event) {
   const title = document.getElementById("certificateTitle").value; // 자격증 이름
   const acqDate = document.getElementById("acquireDate").value; // 취득 날짜
 
-  console.log(typeof title);
-  console.log(typeof acqDate);
+  //console.log(typeof title);
+  //console.log(typeof acqDate);
 
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
@@ -1027,7 +1027,7 @@ function confirmCertificate(event) {
     acqDate: acqDate,
   };
 
-  console.log(postData);
+  //console.log(postData);
 
   fetch(`/mypage/certificate`, {
     method: "POST", // HTTP 메서드
@@ -1044,7 +1044,7 @@ function confirmCertificate(event) {
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("자격증 정보가 성공적으로 등록되었습니다.");
       document.getElementById("certificateTitle").value = "";
       document.getElementById("acquireDate").value = "";
@@ -1052,7 +1052,7 @@ function confirmCertificate(event) {
       getUserData();
     })
     .catch((error) => {
-      console.error("Error:", error); // 에러 처리
+      //console.error("Error:", error); // 에러 처리
       alert("자격증 정보 등록에 실패하였습니다.");
     });
 }
@@ -1090,7 +1090,7 @@ function openEditCertificateModal(certificateId) {
   const saveButton = document.getElementById("certificate-confirm-button");
   const editButton = document.getElementById("certificate-edit-button");
 
-  console.log(document.getElementById("certificate-edit-button"));
+  //console.log(document.getElementById("certificate-edit-button"));
 
   const certificateEntry = document.querySelector(
     `[data-certificate-id="${certificateId}"]`
@@ -1152,20 +1152,20 @@ function submitCertificateUpdate() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("자격증 정보가 성공적으로 수정되었습니다.");
       document.getElementById("certificateModal").style.display = "none";
       getUserData();
     })
     .catch((error) => {
-      console.error(error);
+      //console.error(error);
       alert("자격증 정보 업데이트에 실패했습니다.");
     });
 }
 
 function deleteCertificate(button, certificateId) {
   const plusButton = document.getElementById("certificate-plus-button");
-  console.log(certificateId);
+  //console.log(certificateId);
   fetch(`/mypage/certificate/${certificateId}`, {
     method: "DELETE",
   })
@@ -1177,14 +1177,14 @@ function deleteCertificate(button, certificateId) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("자격증 정보가 삭제되었습니다.");
       const certificateEntry = button.closest(".certificate-entry");
       certificateEntry.remove();
       plusButton.style.display = "block";
     })
     .catch((error) => {
-      console.error("Error:", error);
+      //console.error("Error:", error);
       alert(`자격증 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
 }
@@ -1232,14 +1232,14 @@ function confirmSkill(event) {
 
   const stack = document.getElementById("skillTitle").value; // 자격증 이름
 
-  console.log(typeof stack);
+  //console.log(typeof stack);
 
   // 가져온 데이터를 객체로 구성합니다.
   const postData = {
     stack: stack,
   };
 
-  console.log(postData);
+  //console.log(postData);
 
   fetch(`/mypage/skill`, {
     method: "POST", // HTTP 메서드
@@ -1256,14 +1256,14 @@ function confirmSkill(event) {
       return res.json(); // 응답을 JSON 형태로 파싱
     })
     .then((data) => {
-      console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
+      //console.log("Success:", data); // 성공적으로 데이터를 받으면 로그에 출력
       alert("자격증 정보가 성공적으로 등록되었습니다.");
       document.getElementById("skillTitle").value = "";
       form.style.display = "none";
       getUserData();
     })
     .catch((error) => {
-      console.error("Error:", error); // 에러 처리
+      //console.error("Error:", error); // 에러 처리
       alert("자격증 정보 등록에 실패하였습니다.");
     });
 }
@@ -1297,7 +1297,7 @@ function openEditSkillModal(skillId) {
   const editButton = document.getElementById("skill-edit-button");
   const confirmButton = document.getElementById("skill-confirm-button");
 
-  console.log(document.getElementById("skill-edit-button"));
+  //console.log(document.getElementById("skill-edit-button"));
 
   const skillEntry = document.querySelector(`[data-skill-id="${skillId}"]`);
   const stack = skillEntry.querySelector("p1").textContent; // input의 값은 value로 가져옴
@@ -1352,20 +1352,20 @@ function submitSkillUpdate() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("스킬 정보가 성공적으로 수정되었습니다.");
       document.getElementById("skillModal").style.display = "none";
       getUserData();
     })
     .catch((error) => {
-      console.error(error);
+      //console.error(error);
       alert("스킬 정보 업데이트에 실패했습니다.");
     });
 }
 
 function deleteSkill(button, skillId) {
   const plusButton = document.getElementById("skill-plus-button");
-  console.log(skillId);
+  //console.log(skillId);
   fetch(`/mypage/skill/${skillId}`, {
     method: "DELETE",
   })
@@ -1377,14 +1377,14 @@ function deleteSkill(button, skillId) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       alert("스킬 정보가 삭제되었습니다.");
       const skillEntry = button.closest(".skill-entry");
       skillEntry.remove();
       plusButton.style.display = "block";
     })
     .catch((error) => {
-      console.error("Error:", error);
+      //console.error("Error:", error);
       alert(`스킬 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
 
@@ -1597,7 +1597,7 @@ function gotoUserpage() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       if (data.status) {
         const currentUser = data.data.userId;
         window.location.href = `/userpage?user=${currentUser}`;
@@ -1630,7 +1630,7 @@ function gotoLogin() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       if (data.status) {
         alert("잘못 된 접근입니다. 이미 로그인 되어 있습니다.");
       } else {
@@ -1643,7 +1643,7 @@ function gotoBoard() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       if (data.status) {
         window.location.href = "/board/?page=1";
       } else {
@@ -1658,7 +1658,7 @@ function authcheck() {
   fetch("/auth/status")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       if (data.status) {
         return;
       } else {
