@@ -1,0 +1,12 @@
+.modal .modal_popup {
+    background-color: rgb(255 255 255);
+    color: black;
+}
+
+.modal-password-check {
+    margin-bottom: 18px;
+}
+
+.btnbox {
+    padding-top: 10px;
+}

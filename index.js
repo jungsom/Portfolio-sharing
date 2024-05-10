@@ -9,12 +9,15 @@ const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const ejs = require("ejs");
 const path = require("path");
+const helmet = require("helmet");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
-const educationRouter = require("./routes/education");
-const awardRouter = require("./routes/award");
-const projectRouter = require("./routes/project");
+const mypageRouter = require("./routes/mypage");
+const boardRouter = require("./routes/board");
+const commentRouter = require("./routes/comment");
+
+const { NotFound } = require("./errors");
 
 // DB 연결 관련
 mongoose.connect(process.env.MONGO_URI);
@@ -38,30 +41,57 @@ app.set("views", __dirname + "/views");
 
 //static 파일 경로 설정 (추가)
 app.use(express.static(path.join(__dirname, "views")));
+app.use(express.static(path.join(".", "uploads/profileImg")));
 
 // 화면 engine을 ejs로 설정
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 app.get("/", (req, res) => {
-  res.render("network.html");
+  res.render("network/network.html");
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.html");
+  res.render("login/login.html");
 });
 
 app.get("/userpage", (req, res) => {
-  res.render("userpage.html");
+  res.render("userpage/userpage.html");
 });
 
 app.get("/network", (req, res) => {
-  res.render("network.html");
+  res.render("network/network.html");
+});
+
+app.get("/board", (req, res) => {
+  res.render("board/board.html");
+});
+
+app.get("/aboutus", (req, res) => {
+  res.render("aboutus/aboutus.html", {
+    javascriptkey:process.env.javascriptkey
+  });
+});
+
+app.get("/404", (req, res) => {
+  res.status(404).render("404/404.html");
 });
 
 // 서버 설정
 app.use(express.json());
-app.use(bodyParser.json());
+
+// Helmet 설정, CSP 설정 true로 하면 오류가 나서 false로 변경함
+app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'", "example.com"],
+        "style-src": null,
+      },
+    },
+  })
+);
 
 // 세션 설정
 app.use(cookieParser());
@@ -82,15 +112,28 @@ app.use(passport.session());
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
-app.use("/education", educationRouter);
-app.use("/award", awardRouter);
-app.use("/project", projectRouter);
+app.use("/mypage", mypageRouter);
+app.use("/boards", boardRouter);
+app.use("/boards/:boardId/comment", commentRouter);
+
+app.use((req, res, next) => {
+  res.redirect("/404");
+});
 
 // 오류 처리
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).send({
-    error: err.message || "서버 내부에서 오류가 발생했습니다.",
-    data: err.data,
+app.use((error, req, res, next) => {
+  const { name, message, status, data } = error;
+  if (status >= 500) {
+    console.error(name, message);
+    res.status(status).json({
+      error: "서버에서 오류가 발생하였습니다. 잠시후에 다시 시도해주세요.",
+      data,
+    });
+    return;
+  }
+  res.status(status).json({
+    error: message,
+    data,
   });
 });
 

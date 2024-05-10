@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Network</title>
+
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/layout/header.css" />
+    <link rel="stylesheet" href="/network/network.css" />
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- header -->
+      <div class="header">
+        <div class="logo">
+          <a href="/">
+            <img class="logo-image" src="/img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <div class="menu">
+          <div class="menu-items home" id="home">
+            <a href="/">홈</a>
+          </div>
+          <div class="menu-items board" id="board">
+            <a>게시판</a>
+          </div>
+          <div class="menu-items aboutUs" id="aboutUs">
+            <a href="/aboutUs">About Us</a>
+          </div>
+        </div>
+        <div class="user-status">
+          <div
+            class="user-status-item-left userpage"
+            id="userpage"
+            style="display: none"
+          >
+            <a>내 정보</a>
+          </div>
+          <div
+            class="user-status-item logout"
+            id="logout"
+            style="display: none"
+          >
+            <a>로그아웃</a>
+          </div>
+          <div
+            class="user-status-item-left login"
+            id="login"
+            style="display: none"
+          >
+            <a>로그인</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- contents -->
+      <div class="contents">
+        <!-- usercard -->
+        <div class="usercard-wrap">
+          <div class="usercard-container">
+            <div class="usercard"></div>
+          </div>
+
+          <!-- button -->
+          <div class="btn-container">
+            <button class="btn btn-left" type="button">Prev page</button>
+            <button class="btn btn-right" type="button">Next page</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/layout/header.js"></script>
+    <script src="/network/network.js"></script>
+  </body>
+</html>

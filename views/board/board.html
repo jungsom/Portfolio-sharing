@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Board</title>
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/layout/header.css" />
+    <link rel="stylesheet" href="/board/board.css" />
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon">
+  </head>
+  <body>
+      <div class="header">
+        <div class="logo">
+          <a href="/">
+            <img src="/img/logo.png" alt="logo" class="logo-image" />
+          </a>
+        </div>
+        <div class="menu">
+          <div class="menu-items home" id="home">
+            <a href="/">홈</a>
+          </div>
+          <div class="menu-items board" id="board">
+            <a>게시판</a>
+          </div>
+          <div class="menu-items aboutUs" id="aboutUs">
+            <a href="/aboutUs">About Us</a>
+          </div>
+        </div>
+        <div class="user-status">
+          <div
+            class="user-status-item-left userpage"
+            id="userpage"
+            style="display: none"
+          >
+            <a>내 정보</a>
+          </div>
+          <div
+            class="user-status-item logout"
+            id="logout"
+            style="display: none"
+          >
+            <a>로그아웃</a>
+          </div>
+          <div
+            class="user-status-item-left login"
+            id="login"
+            style="display: none"
+          >
+            <a>로그인</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- contents -->
+      <div class="contents">
+        <!-- 네비게이션 -->
+        <div class="main-container" style="display: flex">
+          <!-- 게시판 목록 -->
+          <div class="post-list-container" id="post-list-container">
+            <h3>게시판</h3>
+            <div class="search-box">
+              <select id="search-type">
+                <option value="title">제목</option>
+                <option value="contents">내용</option>
+                <option value="titleContents">제목 + 내용</option>
+                <option value="comments">댓글</option>
+                <option value="nickname">닉네임</option>
+              </select>
+              <input id="search-box" placeholder="검색어를 입력하세요." />
+              <button class="search-btn" onclick="postSearch()">검색</button>
+            </div>
+            <table class="board-table">
+              <thead>
+                <tr>
+                  <th class="post-head-title">게시물 제목</th>
+                  <th class="post-head-nickname">작성자</th>
+                  <th class="post-head-createat">작성일자</th>
+                </tr>
+              </thead>
+              <tbody class="post-list">
+                <!-- 게시물 내용 -->
+              </tbody>
+            </table>
+
+            <div class="post-list-bottomwrap">
+              <div class="board-post-btn visible-btns">
+                <button onclick="goWritePost()">글 쓰기</button>
+              </div>
+              <div class="prev-btn" id="prev-btn">
+                <button onclick="getPrevPostList()">이전</button>
+              </div>
+              <div class="next-btn" id="next-btn">
+                <button onclick="getNextPostList()">다음</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 작성버튼 -->
+
+          <!-- 게시물 작성 창 -->
+          <div
+            class="write-post-container"
+            id="write-post-container"
+            style="display: none"
+          >
+            <div class="align-left">Title</div>
+            <input class="write-post-title input-box" id="write-post-title" />
+            <div class="align-left">Contents</div>
+            <textarea
+              class="write-post-contents input-box"
+              id="write-post-contents"
+            ></textarea>
+            <button class="btn btn-red" onclick="outWritePost()">취소</button>
+            <button class="btn btn-green" onclick="registPost()">작성</button>
+          </div>
+
+          <!-- 게시글 내용 (1개보여줌) -->
+          <div class="post-container" id="post-container" style="display: none">
+            <div class="post-header">
+              <div class="post-title align-left-title" id="post-title"></div>
+              <div class="post-info">
+                <div
+                  class="post-writtentime align-right"
+                  id="post-writtentime"
+                ></div>
+                <div class="post-nickname align-right" id="post-nickname"></div>
+              </div>
+            </div>
+            <div class="post-contents" id="post-contents"></div>
+            <div class="post-view-wrap">
+              <div class="post-golist-btn align-left btn" id="post-golist-btn">
+                게시글 목록으로 돌아가기
+              </div>
+              <div class="btn-group">
+                <div
+                  class="post-modify-btn align-left btn btn-yellow"
+                  id="post-modify-btn"
+                >
+                  수정
+                </div>
+                <div
+                  class="post-delete-btn align-left btn btn-red"
+                  id="post-delete-btn"
+                >
+                  삭제
+                </div>
+              </div>
+            </div>
+            <div class="post-bottomwrap">
+              <div class="post-likes align-right" id="post-likes"></div>
+              <div class="post-like-list align-right" id="post-like-list"></div>
+            </div>
+
+            <div class="post-comment-container">
+              <textarea
+                class="post-comment-contents"
+                id="post-comment-contents"
+                placeholder="댓글을 입력하세요"
+              ></textarea>
+              <div class="post-comment-wrap">
+                <div
+                  class="post-comment-btn align-right btn btn-green"
+                  id="post-comment-btn"
+                >
+                  등록
+                </div>
+              </div>
+              <div class="post-comment" id="post-comments">
+                여기에 댓글이 표시됩니다...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/layout/header.js"></script>
+    <script type="text/javascript" src="/board/board.js"></script>
+  </body>
+</html>

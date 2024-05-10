@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/layout/header.css" />
+    <link rel="stylesheet" href="/login/login.css" />
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <a href="/">
+          <img class="logo-image" src="/img/logo.png" alt="logo" />
+        </a>
+      </div>
+      <div class="menu">
+        <div class="menu-items home" id="home">
+          <a href="/">홈</a>
+        </div>
+        <div class="menu-items board" id="board">
+          <a>게시판</a>
+        </div>
+        <div class="menu-items aboutUs" id="aboutUs">
+          <a href="/aboutUs">About Us</a>
+        </div>
+      </div>
+      <div class="user-status">
+        <div class="user-status-item-left userpage" id="userpage">
+          <a>내 정보</a>
+        </div>
+        <div class="user-status-item logout" id="logout">
+          <a>로그아웃</a>
+        </div>
+        <div class="user-status-item-left login" id="login">
+          <a>로그인</a>
+        </div>
+      </div>
+    </div>
+    <div class="maincontainer">
+      <div class="logocontainer">
+        <div class="texts">
+          <span
+            >안녕하세요! <a id="logo">Dev.cartes! </a>포트폴리오
+            공유사이트입니다.</span
+          >
+        </div>
+        <div class="gotoNetworkpage"></div>
+      </div>
+      <div class="LoginContainer" id="LoginContainer" style="display: block">
+        <span class="login-title"> Login </span>
+        <label for="email" class="label"> Email address </label>
+        <div class="LoginAccount">
+          <input
+            type="text"
+            id="email"
+            class="InputBox"
+            placeholder="E-Mail을 입력해주세요."
+          />
+        </div>
+
+        <label for="email" class="label"> Password </label>
+        <div class="LoginPw">
+          <input
+            type="password"
+            id="pw"
+            class="InputBox"
+            placeholder="비밀번호를 입력해주세요."
+          />
+        </div>
+
+        <div class="btns">
+          <div class="btnbox">
+            <!-- <button class = "LoginBtn" type = "login"><span>로그인</span></button> -->
+            <button class="submit" onclick="login()">
+              <span>로그인</span>
+            </button>
+            <button class="submit" onclick="goCreateAccount()">회원가입</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 회원가입창 -->
+      <div
+        class="createAccountContainer"
+        id="createAccountContainer"
+        style="display: none"
+      >
+        <span class="register-title"> Register </span>
+        <lable for="email" class="label">Email address </lable>
+        <div class="btnbox">
+          <input
+            type="text"
+            id="setemail"
+            class="InputBox"
+            placeholder="example@example.com/net"
+          />
+        </div>
+        <label for="name" class="label">name</label>
+        <div class="btnbox">
+          <input
+            type="text"
+            id="setname"
+            class="InputBox"
+            placeholder="이름을 입력해주세요 (2~30 글자)"
+          />
+        </div>
+
+        <label for="nickname" class="label">Nickname</label>
+        <div class="btnbox">
+          <input
+            type="text"
+            id="setNickname"
+            class="InputBox"
+            placeholder="사용하실 닉네임을 입력해주세요 (2~30 글자)"
+          />
+        </div>
+        <label for="password" class="label">Password</label>
+        <div class="btnbox">
+          <input
+            type="password"
+            id="setpw"
+            class="InputBox"
+            placeholder="사용하실 비밀번호를 입력해주세요. (최소 4글자)"
+            onkeyup="passwordCompare()"
+          />
+        </div>
+
+        <label for="password" class="label">Confirm password</label>
+        <div class="btnbox">
+          <input
+            type="password"
+            id="setpwchk"
+            class="InputBox"
+            placeholder="비밀번호를 다시 입력해주세요."
+            onkeyup="passwordCompare()"
+          />
+          <span class="alert-text" id="alert-text"
+            >비밀번호가 일치하지 않습니다.</span
+          >
+        </div>
+
+        <div class="btnbox">
+          <button class="submit" onclick="outCreateAccount()">
+            <span>취소</span>
+          </button>
+          <button class="submit" onclick="setAccount()">
+            <span>회원가입</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- 팝업모달창 div -->
+    <div class="modal" id="modal" display="none">
+      <div class="modal_popup">
+        <p id="modaltext"></p>
+        <button type="button" class="btn modal_btn" onclick="modalClose()">
+          확인
+        </button>
+      </div>
+    </div>
+
+    <script src="/layout/header.js"></script>
+    <script src="/login/login.js"></script>
+  </body>
+</html>
+
+<!-- 개인정보 변경 (회원탈퇴&비밀번호변경)-->
+<!-- =================================================================================
+      <div
+        class="privacy-modify"
+        id="privacy-modify-container"
+        style="display: block"
+      >
+        <span>임시로 띄워둔 개인정보 변경 div로 추후 수정예정(기능은작동합니다)</span>
+
+        <div class="change-password-container">
+          <p>비밀번호 변경</p>
+          <span>이전 비밀번호</span>
+          <div class="btnbox">
+            <input
+              type="password"
+              id="existed-pw"
+              class="InputBox"
+              placeholder="이전 비밀번호를 입력해주세요"
+            />
+          </div>
+          <span>변경 할 비밀번호</span>
+          <div class="btnbox">
+            <input
+              type="password"
+              id="change-setpw"
+              class="InputBox"
+              placeholder="변경하실 비밀번호를 입력해주세요."
+            />
+          </div>
+          <span>비밀번호 재확인</span>
+          <div class="btnbox">
+            <input
+              type="password"
+              id="change-setpwchk"
+              class="InputBox"
+              placeholder="변경하실 비밀번호를 다시 입력해주세요."
+              onkeyup="passwordCompare()"
+            />
+            <span class="alert-text2" id="alert-text2"
+              >비밀번호가 일치하지 않습니다.</span
+            >
+          </div>
+          <button class="change-password-btn" onclick="passwordChange()">
+            비밀번호 변경
+          </button>
+        </div>
+
+        <div class="delete-account-container">
+          <span>회원탈퇴를 진행하시려면 현재 비밀번호를 입력해주세요.</span>
+          <div class="btnbox">
+            <input
+              type="password"
+              id="delete-account-pwchk"
+              class="InputBox"
+              placeholder="현재 비밀번호를 입력해주세요."
+            />
+          </div>
+          <button class="delete-account-btn" onclick="accountDelete()">
+            회원 탈퇴
+          </button>
+        </div>
+      </div>
+
+    </div> -->
