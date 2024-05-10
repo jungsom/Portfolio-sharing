@@ -470,6 +470,14 @@ function openEditEducationModal(educationId) {
 
   // 모달 표시
   modal.style.display = "block";
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -670,6 +678,14 @@ function openEditAwardModal(awardId) {
 
   // 모달 표시
   modal.style.display = "block";
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -881,6 +897,14 @@ function openEditProjectModal(projectId) {
 
   // 모달 표시
   modal.style.display = "block";
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -1084,6 +1108,14 @@ function openEditCertificateModal(certificateId) {
 
   // 모달 표시
   modal.style.display = "block";
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
@@ -1269,6 +1301,14 @@ function openEditSkillModal(skillId) {
 
   // 모달 표시
   modal.style.display = "block";
+
+  // ESC 키를 누르면 닫힘
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      // "Escape"는 ESC 키의 키 이벤트
+      modal.style.display = "none";
+    }
+  });
 }
 
 // 수정된 폼 데이터를 서버에 전송하는 함수
