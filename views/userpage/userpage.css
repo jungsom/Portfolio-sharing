@@ -270,7 +270,7 @@ input {
 }
 
 .editBtns {
-  display: flex;
+  display: none;
   justify-content: start; /*버튼을 컨테이너 시작 부분에 정렬 */
   align-items: center;
 }

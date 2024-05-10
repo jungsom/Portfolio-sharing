@@ -138,7 +138,7 @@ function isVisibleBtns() {
       targets = document.querySelectorAll(".editBtns");
       targets.forEach((target) => {
         if (data.data.userId == currentuser) {
-          target.style.display = "block";
+          target.style.display = "flex";
         } else {
           target.style.display = "none";
         }
