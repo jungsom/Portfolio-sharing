@@ -207,10 +207,11 @@ input {
   margin-right: 10px;
 }
 
-#education_delete_button,
-#awards_delete_button,
-#project_delete_button,
-#certificate_delete_button {
+#education_edit_button,
+#awards_edit_button,
+#project_edit_button,
+#certificate_edit_button,
+#skill-confirm-button {
   margin-right: 10px;
   background-color: #d67d86;
   color: white;
@@ -218,6 +219,7 @@ input {
   border: none;
   border-radius: 10%;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 #education-confirm-button,
@@ -230,8 +232,9 @@ input {
   color: white;
   padding: 0 15px;
   border: none;
-  border-radius: 10%;
+  border-radius: 5px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .education-title h2,

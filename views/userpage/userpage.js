@@ -513,6 +513,9 @@ function submitEducationUpdate() {
 }
 
 function deleteEducation(button, educationId) {
+  if (!window.confirm("진짜로 이 학력을 삭제하시겠습니까?")) {
+    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
+  }
   const plusButton = document.getElementById("education_plus_button");
   console.log(educationId);
   fetch(`/mypage/education/${educationId}`, {
@@ -728,6 +731,9 @@ function submitAwardUpdate() {
 }
 
 function deleteAward(button, awardId) {
+  if (!window.confirm("진짜로 이 수상 내역을 삭제하시겠습니까?")) {
+    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
+  }
   const plusButton = document.getElementById("award-plus-button");
   console.log(awardId);
   fetch(`/mypage/award/${awardId}`, {
@@ -956,6 +962,9 @@ function submitProjectUpdate() {
 }
 
 function deleteProject(button, projectId) {
+  if (!window.confirm("진짜로 이 프로젝트를 삭제하시겠습니까?")) {
+    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
+  }
   const plusButton = document.getElementById("project-plus-button");
   console.log(projectId);
   fetch(`/mypage/project/${projectId}`, {
@@ -1173,6 +1182,9 @@ function submitCertificateUpdate() {
 }
 
 function deleteCertificate(button, certificateId) {
+  if (!window.confirm("진짜로 이 자격증을 삭제하시겠습니까?")) {
+    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
+  }
   const plusButton = document.getElementById("certificate-plus-button");
   console.log(certificateId);
   fetch(`/mypage/certificate/${certificateId}`, {
@@ -1373,6 +1385,10 @@ function submitSkillUpdate() {
 }
 
 function deleteSkill(button, skillId) {
+  if (!window.confirm("진짜로 이 스킬을 삭제하시겠습니까?")) {
+    return; // 사용자가 취소를 클릭하면 함수 실행을 중단
+  }
+
   const plusButton = document.getElementById("skill-plus-button");
   console.log(skillId);
   fetch(`/mypage/skill/${skillId}`, {
@@ -1396,8 +1412,6 @@ function deleteSkill(button, skillId) {
       console.error("Error:", error);
       alert(`스킬 정보 삭제에 실패하였습니다. (에러 코드: ${error.message})`);
     });
-
-  plusButton.style.display = "block";
 }
 
 getUserData();
