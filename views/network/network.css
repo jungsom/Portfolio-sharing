@@ -107,3 +107,8 @@
 .usercard-Inner:hover {
   transform: rotateY(180deg);
 }
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+}
