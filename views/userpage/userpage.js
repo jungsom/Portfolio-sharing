@@ -218,6 +218,15 @@ function editProfile() {
   // console.log(nameContainer.childNodes[3]) = Name;
   // console.log(nameContainer.childNodes[4]) = nameEdit;
 
+  const params = new URLSearchParams(window.location.search);
+  let currentuser = params.get("user");
+  fetch(`/users/${currentuser}`)
+    .then((res) => res.json())
+    .then((data) => {
+      nameEdit.value = data.user.name;
+      nicknameEdit.value = data.user.nickname;
+      descriptionEdit.value = data.user.description;
+    });
   // 프로필 편집 로직
   //입력창 및 타이틀 생성 함수로부터 변수 반환
   const nameEdit = createInputElement(".Name");
