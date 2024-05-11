@@ -33,18 +33,27 @@
   width: 300px;
 }
 
-.member-name {
-
-}
-
-.member-img-wrap {
-  
-}
 
 .member-img {
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 15px;
+}
+
+.member-description-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.member-name {
+  margin: 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.element {
+  padding-bottom: 5px;
 }
 
 .map-title {
@@ -56,4 +65,5 @@
 #map {
   width:600px;
   height:400px;
+  border: 1px solid #ccc;
 }
