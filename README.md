@@ -1,4 +1,9 @@
-# ✨Dev.cartes! backend Page (임시 페이지)
+# ✨Dev.cartes! Refactoring
+
+- 2024년 5월 20일 월요일
+  - 로그인 페이지 html, css style 변경
+
+# ✨Dev.cartes! backend
 
 ## 🪄 API 수정 사항
 
