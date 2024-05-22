@@ -109,34 +109,47 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-//로그인
-function login() {
-  const email = document.getElementById("email").value;
-  const pw = document.getElementById("pw").value;
+/* 서버로부터 로그인 api 요청 */
+async function postLogin() {
+  try {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-  if (email != "" && pw != "") {
-    fetch("/auth/login", {
+    const response = await fetch("/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email: email,
-        password: pw,
+        password: password,
       }),
-    }).then((response) => {
-      if (response.status == 401) {
-        modalOpen(1);
-      } else if (response.status == 200) {
-        modalOpen(2);
-        clear();
-        localStorage.setItem("goTo", "network");
-      }
     });
-  } else {
-    return;
+    return response;
+  } catch (error) {
+    throw new Error(error);
   }
 }
+
+/* 사용자 로그인 함수 */
+async function login(event) {
+  event.preventDefault();
+  try {
+    const response = await postLogin();
+
+    if (response.status === 401) {
+      alert("로그인에 실패했습니다. 다시 시도해주세요.");
+    } else if (response.status === 200) {
+      alert("로그인에 성공했습니다!");
+      window.location.href = "/?page=1";
+    }
+  } catch (error) {
+    console.error(error);
+    alert("로그인 중 에러가 발생했습니다. 나중에 다시 시도해주세요.");
+  }
+}
+
+document.querySelector(".submit").addEventListener("click", login);
 
 //비밀번호, 비밀번호 확인 같은지 다른지 판단
 function passwordCheck(pw, pwchk) {
@@ -225,63 +238,63 @@ function setAccount() {
 }
 
 //회원탈퇴
-function accountDelete() {
-  if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
-    const pw = document.getElementById("delete-account-pwchk").value;
-    fetch("/auth", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: pw,
-      }),
-    }).then((response) => {
-      if (response.status == 401) {
-        modalOpen(8);
-      } else if (response.status == 200) {
-        localStorage.setItem("goTo", "login");
-        modalOpen(9);
-        clear();
-      }
-    });
-  }
-}
+// function accountDelete() {
+//   if (confirm("정말 회원탈퇴를 진행하시겠습니까?")) {
+//     const pw = document.getElementById("delete-account-pwchk").value;
+//     fetch("/auth", {
+//       method: "DELETE",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         password: pw,
+//       }),
+//     }).then((response) => {
+//       if (response.status == 401) {
+//         modalOpen(8);
+//       } else if (response.status == 200) {
+//         localStorage.setItem("goTo", "login");
+//         modalOpen(9);
+//         clear();
+//       }
+//     });
+//   }
+// }
 
 //비밀번호 변경
-function passwordChange() {
-  const prevPw = document.getElementById("existed-pw").value;
-  const pw = document.getElementById("change-setpw").value;
-  fetch("/auth", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      password: prevPw,
-      newPassword: pw,
-    }),
-  }).then((response) => {
-    if (response.status == 200) {
-      modalOpen(10);
-      localStorage.setItem("goTo", "login");
-      //변경된 비밀번호로 다시 로그인하게 유도
-      fetch("/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      });
-    } else if (response.status == 400) {
-      modalOpen(5);
-    } else if (response.status == 401) {
-      modalOpen(11);
-    } else if (response.status == 409) {
-      modalOpen(12);
-    }
-  });
-}
+// function passwordChange() {
+//   const prevPw = document.getElementById("existed-pw").value;
+//   const pw = document.getElementById("change-setpw").value;
+//   fetch("/auth", {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       password: prevPw,
+//       newPassword: pw,
+//     }),
+//   }).then((response) => {
+//     if (response.status == 200) {
+//       modalOpen(10);
+//       localStorage.setItem("goTo", "login");
+//       //변경된 비밀번호로 다시 로그인하게 유도
+//       fetch("/auth/logout", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({}),
+//       });
+//     } else if (response.status == 400) {
+//       modalOpen(5);
+//     } else if (response.status == 401) {
+//       modalOpen(11);
+//     } else if (response.status == 409) {
+//       modalOpen(12);
+//     }
+//   });
+// }
 
 function navBtnHide() {
   document.querySelector("#userpage").style.display = "none";
