@@ -50,6 +50,8 @@
         >
       </div>
       <div class="gotoNetworkpage"></div> -->
+
+      <!-- ====================로그인==================== -->
       <div class="login-container">
         <div class="login-card">
           <div class="login-card-body">
@@ -78,7 +80,7 @@
                   class="input"
                   required
                 />
-                <label class="label"> Password </label>
+                <label class="label" for="password"> Password </label>
               </div>
 
               <div class="login-options"> 
@@ -92,10 +94,87 @@
                   </div>
                 </div>
 
-              <button type="submit" class="submit">로그인</button>
+              <button type="submit" id="login-submit">로그인</button>
             </form>
             <div>
-              <p> 계정이 없으신가요? <a href="#"> 회원가입 </a></p>
+              <p> 계정이 없으신가요? <a href="#" id="go_to_register"> 회원가입 </a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================회원가입==================== -->
+      <div class="register-container"  style="display: none;">
+        <div class="register-card">
+          <div class="register-card-body">
+            <div class="register-card-title">
+              <h5> 회원가입을 해주세요. </h5>
+            </div>
+
+            <form class="form">
+              <div class="input-group">
+                <input
+                  type="email"
+                  name="set-email"
+                  id="set-email"
+                  class="input"
+                  placeholder="example@example.com/net"
+                  required
+                />
+                <label class="label" for="email"> Email </label>
+              </div>
+
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="set-name"
+                  id="set-name"
+                  class="input"
+                  placeholder="이름을 입력해주세요 (2~30 글자)"
+                  required
+                />
+                <label class="label" for="name"> Name </label>
+              </div>
+
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="set-nickname"
+                  id="set-nickname"
+                  class="input"
+                  placeholder="사용하실 닉네임을 입력해주세요 (2~30 글자)"
+                  required
+                />
+                <label class="label" for="nickname"> Nickname </label>
+              </div>
+
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="set-pwd"
+                  id="set-pwd"
+                  class="input"
+                  placeholder="사용하실 비밀번호를 입력해주세요. (최소 4글자)"
+                  required
+                />
+                <label class="label" for="password"> Password </label>
+              </div>
+
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="set-pwd-chk"
+                  id="set-pwd-chk"
+                  class="input"
+                  placeholder="사용하실 비밀번호를 입력해주세요. (최소 4글자)"
+                  required
+                />
+                <label class="label" for="password"> Confirm password </label>
+              </div>
+
+            <div class="btnbox">
+              <button class="submit" id="out_to_register"> 취소 </button> 
+              <button class="submit"  id="register-submit"> 회원가입</button>
             </div>
           </div>
         </div>
@@ -118,111 +197,4 @@
 </html>
 
 
-
-
-
-
-
-    <!-- <div class="LoginContainer" id="LoginContainer" style="display: block">
-        <span class="login-title"> Login </span>
-        <label for="email" class="label"> Email address </label>
-        <div class="LoginAccount">
-          <input
-            type="text"
-            id="email"
-            class="InputBox"
-            placeholder="E-Mail을 입력해주세요."
-          />
-        </div>
-
-        <label for="email" class="label"> Password </label>
-        <div class="LoginPw">
-          <input
-            type="password"
-            id="pw"
-            class="InputBox"
-            placeholder="비밀번호를 입력해주세요."
-          />
-        </div>
-
-        <div class="btns">
-          <div class="btnbox">
-            <button class="submit" onclick="login()">
-              <span>로그인</span>
-            </button>
-            <button class="submit" onclick="goCreateAccount()">회원가입</button>
-          </div>
-        </div>
-      </div> -->
-
-    <!-- 회원가입창 -->
-    <!-- <div
-        class="createAccountContainer"
-        id="createAccountContainer"
-        style="display: none"
-      >
-        <span class="register-title"> Register </span>
-        <lable for="email" class="label">Email address </lable>
-        <div class="btnbox">
-          <input
-            type="text"
-            id="setemail"
-            class="InputBox"
-            placeholder="example@example.com/net"
-          />
-        </div>
-        <label for="name" class="label">name</label>
-        <div class="btnbox">
-          <input
-            type="text"
-            id="setname"
-            class="InputBox"
-            placeholder="이름을 입력해주세요 (2~30 글자)"
-          />
-        </div>
-
-        <label for="nickname" class="label">Nickname</label>
-        <div class="btnbox">
-          <input
-            type="text"
-            id="setNickname"
-            class="InputBox"
-            placeholder="사용하실 닉네임을 입력해주세요 (2~30 글자)"
-          />
-        </div>
-        <label for="password" class="label">Password</label>
-        <div class="btnbox">
-          <input
-            type="password"
-            id="setpw"
-            class="InputBox"
-            placeholder="사용하실 비밀번호를 입력해주세요. (최소 4글자)"
-            onkeyup="passwordCompare()"
-          />
-        </div>
-
-        <label for="password" class="label">Confirm password</label>
-        <div class="btnbox">
-          <input
-            type="password"
-            id="setpwchk"
-            class="InputBox"
-            placeholder="비밀번호를 다시 입력해주세요."
-            onkeyup="passwordCompare()"
-          />
-          <span class="alert-text" id="alert-text"
-            >비밀번호가 일치하지 않습니다.</span
-          >
-        </div>
-
-        <div class="btnbox">
-          <button class="submit" onclick="outCreateAccount()">
-            <span>취소</span>
-          </button>
-          <button class="submit" onclick="setAccount()">
-            <span>회원가입</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
+   
