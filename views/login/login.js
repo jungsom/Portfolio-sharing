@@ -131,7 +131,7 @@ function emailCheck(email) {
 /* 회원가입창 진입 */
 function goToRegister() {
   document.querySelector(".login-container").style.display = "none";
-  document.querySelector(".register-container").style.display = "block";
+  document.querySelector(".register-container").style.display = "flex";
 }
 
 /* 회원가입창 취소 */
@@ -164,6 +164,7 @@ function gotoUserpage() {
       }
     });
 }
+
 function logout() {
   if (confirm("정말 로그아웃 하시겠습니까?")) {
     fetch("http://localhost:8080/auth/logout", {

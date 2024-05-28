@@ -1,31 +1,39 @@
-.login-container {
+.login-container,
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.login-card {
-  margin: 30px;
+.login-card,
+.register-card {
+  padding: 10px;
+  margin: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  padding: 30px;
   width: 30rem;
-  height: 23rem;
+  height: 25rem;
   border-radius: 7px;
   background-color: #fbeeee;
   box-shadow: 0 4px 20px #8c8c8c89;
 }
 
-.login-card-body h5 {
+.register-card {
+  height: 36rem;
+}
+
+.login-card-body h5,
+.register-card-body h5 {
   font-size: 1.5rem;
   font-weight: 600;
   color: #ff708ae6;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
-.login-card-body p {
+.login-card-body p,
+.register-card-body p {
   font-size: 1rem;
   letter-spacing: 0.5px;
   color: #6b6b6b;
@@ -88,6 +96,7 @@ a {
 .form button {
   width: 90%;
   padding: 1.2rem 3rem;
+  margin-bottom: 10px;
   font-size: 20px;
   text-transform: uppercase;
   letter-spacing: 2.5px;
@@ -104,6 +113,16 @@ a {
     BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
     "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+
+.btnbox button {
+  justify-content: space-between;
+  width: 40%;
+  padding: 1rem 2rem;
+  font-size: 16px;
+  margin-right: 30px;
+  margin-top: 30px;
 }
 
 .form button:hover {

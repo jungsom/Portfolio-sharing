@@ -52,6 +52,7 @@
       <div class="gotoNetworkpage"></div> -->
 
       <!-- ====================로그인==================== -->
+      <div class="contents">
       <div class="login-container">
         <div class="login-card">
           <div class="login-card-body">
@@ -97,7 +98,7 @@
               <button type="submit" id="login-submit">로그인</button>
             </form>
             <div>
-              <p> 계정이 없으신가요? <a href="#" id="go_to_register"> 회원가입 </a></p>
+              <p> 계정이 없으신가요? <a id="go_to_register"> 회원가입 </a></p>
             </div>
           </div>
         </div>
@@ -109,6 +110,7 @@
           <div class="register-card-body">
             <div class="register-card-title">
               <h5> 회원가입을 해주세요. </h5>
+              <p> 새로운 이메일, 이름, 닉네임, 비밀번호를 입력해 주세요. </p>
             </div>
 
             <form class="form">
@@ -118,7 +120,6 @@
                   name="set-email"
                   id="set-email"
                   class="input"
-                  placeholder="example@example.com/net"
                   required
                 />
                 <label class="label" for="email"> Email </label>
@@ -130,10 +131,9 @@
                   name="set-name"
                   id="set-name"
                   class="input"
-                  placeholder="이름을 입력해주세요 (2~30 글자)"
                   required
                 />
-                <label class="label" for="name"> Name </label>
+                <label class="label" for="name"> Name(2~30글자) </label>
               </div>
 
               <div class="input-group">
@@ -142,10 +142,9 @@
                   name="set-nickname"
                   id="set-nickname"
                   class="input"
-                  placeholder="사용하실 닉네임을 입력해주세요 (2~30 글자)"
                   required
                 />
-                <label class="label" for="nickname"> Nickname </label>
+                <label class="label" for="nickname"> Nickname(2~30글자) </label>
               </div>
 
               <div class="input-group">
@@ -154,10 +153,9 @@
                   name="set-pwd"
                   id="set-pwd"
                   class="input"
-                  placeholder="사용하실 비밀번호를 입력해주세요. (최소 4글자)"
                   required
                 />
-                <label class="label" for="password"> Password </label>
+                <label class="label" for="password"> Password(4글자 이상) </label>
               </div>
 
               <div class="input-group">
@@ -166,20 +164,22 @@
                   name="set-pwd-chk"
                   id="set-pwd-chk"
                   class="input"
-                  placeholder="사용하실 비밀번호를 입력해주세요. (최소 4글자)"
                   required
                 />
                 <label class="label" for="password"> Confirm password </label>
               </div>
+           
 
             <div class="btnbox">
               <button class="submit" id="out_to_register"> 취소 </button> 
-              <button class="submit"  id="register-submit"> 회원가입</button>
+              <button class="submit"  id="register-submit"> 회원가입</button> 
+            </form>
             </div>
           </div>
         </div>
       </div>
     </div>
+
 
     <!-- ====================팝업 모달창==================== -->
     <div class="modal" id="modal" display="none">
