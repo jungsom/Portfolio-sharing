@@ -4,6 +4,8 @@
   - 로그인 페이지 html, css style 변경
 - 2024년 5월 27일 월요일
   - 로그인, 회원가입 기능 에러 처리
+  2024s년 5월 28일 화요일
+  - 회원가입 페이지 html, css style 변경
 
 # ✨Dev.cartes! backend
 
