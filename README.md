@@ -6,6 +6,7 @@
   - 로그인, 회원가입 기능 에러 처리
   2024s년 5월 28일 화요일
   - 회원가입 페이지 html, css style 변경
+  .
 
 # ✨Dev.cartes! backend
 
